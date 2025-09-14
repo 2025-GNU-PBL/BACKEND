@@ -1,5 +1,6 @@
 package gnu.project.backend.auth.provider.impl;
 
+import static gnu.project.backend.auth.constant.KakaoOauthConstants.BEARER_PREFIX;
 import static gnu.project.backend.auth.constant.KakaoOauthConstants.CLIENT_ID_KEY;
 import static gnu.project.backend.auth.constant.KakaoOauthConstants.CLIENT_SECRET_KEY;
 import static gnu.project.backend.auth.constant.KakaoOauthConstants.CODE_KEY;
@@ -7,12 +8,17 @@ import static gnu.project.backend.auth.constant.KakaoOauthConstants.GRANT_TYPE;
 import static gnu.project.backend.auth.constant.KakaoOauthConstants.GRANT_TYPE_KEY;
 import static gnu.project.backend.auth.constant.KakaoOauthConstants.REDIRECT_URI_KEY;
 import static gnu.project.backend.common.error.ErrorCode.OAUTH_TOKEN_REQUEST_FAILED;
+import static gnu.project.backend.common.error.ErrorCode.OAUTH_USERINFO_RESPONSE_EMPTY;
 
 import gnu.project.backend.auth.dto.response.KakaoAccessTokenResponse;
+import gnu.project.backend.auth.dto.response.KakaoUserInfoResponse;
 import gnu.project.backend.auth.enurmerated.SocialProvider;
 import gnu.project.backend.auth.provider.OauthProvider;
+import gnu.project.backend.auth.userinfo.KakaoUserInfo;
+import gnu.project.backend.auth.userinfo.OauthUserInfo;
 import gnu.project.backend.common.exception.AuthException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -55,7 +61,7 @@ public class KakaoProvider implements OauthProvider {
 
     @Override
     public String getAccessToken(String code) {
-        MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
+        final MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add(GRANT_TYPE_KEY, GRANT_TYPE);
         data.add(CLIENT_ID_KEY, clientId);
         data.add(REDIRECT_URI_KEY, redirectUri);
@@ -73,6 +79,27 @@ public class KakaoProvider implements OauthProvider {
             .bodyToMono(KakaoAccessTokenResponse.class)
             .map(KakaoAccessTokenResponse::accessToken)
             .block();
+    }
+
+    @Override
+    public OauthUserInfo getUserInfo(String accessToken) {
+        return new KakaoUserInfo(fetchUserInfo(accessToken));
+    }
+
+    private KakaoUserInfoResponse fetchUserInfo(String accessToken) {
+        return webClient
+            .post()
+            .uri(userInfoUri)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .header(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + accessToken)
+            .retrieve()
+            .onStatus(
+                HttpStatusCode::isError,
+                this::handleOauthError
+            )
+            .bodyToMono(KakaoUserInfoResponse.class)
+            .blockOptional()
+            .orElseThrow(() -> new AuthException(OAUTH_USERINFO_RESPONSE_EMPTY));
     }
 
     private Mono<? extends Throwable> handleOauthError(final ClientResponse response) {

@@ -10,4 +10,5 @@ public interface OauthUserInfo {
     String getEmail();
 
     String getName();
+    
 }
