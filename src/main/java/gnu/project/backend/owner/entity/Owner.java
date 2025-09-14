@@ -1,6 +1,9 @@
 package gnu.project.backend.owner.entity;
 
+import gnu.project.backend.auth.entity.OauthInfo;
+import gnu.project.backend.common.entity.BaseEntity;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -14,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Owner {
+public class Owner extends BaseEntity {
 
     @Id
     @Column
@@ -30,13 +33,14 @@ public class Owner {
     private String phoneNumber;
 
     //TODO : 차후 변경
-    @Column
-    private String SocialProvider;
 
     @Column
     private String bzNumber;
 
     @Column
     private String bankAccount;
+
+    @Embedded
+    private OauthInfo oauthInfo;
 
 }
