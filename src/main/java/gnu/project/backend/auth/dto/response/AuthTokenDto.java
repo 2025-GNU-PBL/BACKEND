@@ -4,4 +4,7 @@ public record AuthTokenDto(
     String accessToken
 ) {
 
+    public static AuthTokenDto of(String accessToken) {
+        return new AuthTokenDto(accessToken);
+    }
 }

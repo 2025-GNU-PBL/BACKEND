@@ -4,9 +4,12 @@ import gnu.project.backend.auth.entity.OauthInfo;
 import gnu.project.backend.auth.entity.OauthUser;
 import gnu.project.backend.auth.enurmerated.SocialProvider;
 import gnu.project.backend.common.entity.BaseEntity;
+import gnu.project.backend.common.enurmerated.UserRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -42,6 +45,11 @@ public class Owner extends BaseEntity implements OauthUser {
     @Column
     private String bankAccount;
 
+    @Column
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
+
+
     @Embedded
     private OauthInfo oauthInfo;
 
@@ -52,6 +60,6 @@ public class Owner extends BaseEntity implements OauthUser {
         final SocialProvider provider
     ) {
         final OauthInfo oauthInfo = OauthInfo.of(email, name, socialId, provider);
-        return new Owner(null, null, null, null, null, null, oauthInfo);
+        return new Owner(null, null, null, null, null, null, UserRole.OWNER, oauthInfo);
     }
 }

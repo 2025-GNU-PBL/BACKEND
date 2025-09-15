@@ -1,22 +1,22 @@
-spring :
-    application :
-      name : BACKEND
-    jpa:
-      hibernate:
-        ddl-auto: create-drop
-      defer-datasource-initialization: true
-      show-sql: true
-    h2:
-      console:
-        enabled: true
-        settings:
-          web-allow-others: true
-        path: /h2-console
-    datasource:
-      driver-class-name: org.h2.Driver
-      url: jdbc:h2:mem:test
-      username: sa
-      password:
+spring:
+  application:
+    name: BACKEND
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+      path: /h2-console
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test
+    username: sa
+    password:
 
 oauth:
   kakao:
@@ -25,3 +25,8 @@ oauth:
     token-uri: https://kauth.kakao.com/oauth/token
     user-info-uri: https://kapi.kakao.com/v2/user/me
     secret: ${KAKAO_CLIENT_SECRET}
+
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  accessToken-expiration-millis: 1800000
