@@ -6,10 +6,13 @@ import static gnu.project.backend.auth.constant.JwtConstants.USER_ROLE;
 import gnu.project.backend.auth.enurmerated.TokenType;
 import gnu.project.backend.common.enurmerated.UserRole;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtProvider {
@@ -41,6 +44,7 @@ public class JwtProvider {
         final TokenType tokenType,
         final UserRole userRole
     ) {
+        log.info(String.valueOf(jwtProperties.getSecretKey()));
         final Date now = new Date();
         final Date expiredDate = new Date(now.getTime() + expirationMillis);
 
@@ -50,7 +54,7 @@ public class JwtProvider {
             .setIssuedAt(now)
             .setExpiration(expiredDate)
             .claim(TOKEN_TYPE, tokenType.name())
-            .signWith(jwtProperties.getSecretKey())
+            .signWith(jwtProperties.getSecretKey(), SignatureAlgorithm.HS256)
             .compact();
     }
 }

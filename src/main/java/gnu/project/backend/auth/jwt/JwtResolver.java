@@ -12,10 +12,11 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtResolver {
@@ -31,11 +32,11 @@ public class JwtResolver {
         }
     }
 
-    public UUID extractPublicId(String token) {
-        return UUID.fromString(parseClaims(token).getSubject());
+    public String extractSocialId(String token) {
+        return (parseClaims(token).getSubject());
     }
 
-    public UserRole extractUserType(String token) {
+    public UserRole extractUserRole(String token) {
         String value = parseClaims(token).get(USER_ROLE, String.class);
         return UserRole.valueOf(value);
     }
@@ -48,6 +49,7 @@ public class JwtResolver {
 
     private Claims parseClaims(String token) {
         try {
+            log.info(String.valueOf(jwtProperties.getSecretKey()));
             return Jwts.parserBuilder()
                 .setSigningKey(jwtProperties.getSecretKey())
                 .build()

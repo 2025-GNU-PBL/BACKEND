@@ -11,7 +11,6 @@ import gnu.project.backend.common.enurmerated.UserRole;
 import gnu.project.backend.common.exception.AuthException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -30,7 +29,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         @NonNull Object handler
     ) throws Exception {
 
-        String token = extractToken(request);
+        final String token = extractToken(request);
 
         if (token == null) {
             setGuestAttributes(request);
@@ -54,10 +53,10 @@ public class JwtInterceptor implements HandlerInterceptor {
     }
 
     private void setUserAttributes(HttpServletRequest request, String token) {
-        UUID publicId = jwtResolver.extractPublicId(token);
-        UserRole userRole = jwtResolver.extractUserType(token);
+        String socialId = jwtResolver.extractSocialId(token);
+        UserRole userRole = jwtResolver.extractUserRole(token);
 
-        request.setAttribute(REQUEST_ATTR_SOCIAL_ID, publicId);
+        request.setAttribute(REQUEST_ATTR_SOCIAL_ID, socialId);
         request.setAttribute(REQUEST_ATTR_USER_ROLE, userRole);
     }
 
