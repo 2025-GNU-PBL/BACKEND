@@ -49,7 +49,6 @@ public class JwtResolver {
 
     private Claims parseClaims(String token) {
         try {
-            log.info(String.valueOf(jwtProperties.getSecretKey()));
             return Jwts.parserBuilder()
                 .setSigningKey(jwtProperties.getSecretKey())
                 .build()

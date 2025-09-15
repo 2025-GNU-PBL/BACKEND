@@ -44,7 +44,6 @@ public class JwtProvider {
         final TokenType tokenType,
         final UserRole userRole
     ) {
-        log.info(String.valueOf(jwtProperties.getSecretKey()));
         final Date now = new Date();
         final Date expiredDate = new Date(now.getTime() + expirationMillis);
 
