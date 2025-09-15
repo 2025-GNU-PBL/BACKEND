@@ -21,9 +21,11 @@ public class OauthUserFactory {
             case OWNER -> findOrCreateOwner(userInfo, provider);
             case CUSTOMER -> null;
             case ADMIN -> null;
-            /*
+            case GUEST -> null;
+             /*
             TODO : 추후 추가 예정
              */
+
         };
     }
 

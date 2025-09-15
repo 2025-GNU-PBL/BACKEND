@@ -4,6 +4,7 @@ import gnu.project.backend.auth.dto.request.OauthLoginRequest;
 import gnu.project.backend.auth.dto.response.AuthTokenDto;
 import gnu.project.backend.auth.entity.OauthUser;
 import gnu.project.backend.auth.factory.OauthUserFactory;
+import gnu.project.backend.auth.jwt.JwtProvider;
 import gnu.project.backend.auth.provider.OauthProvider;
 import gnu.project.backend.auth.provider.OauthProviders;
 import gnu.project.backend.auth.userinfo.OauthUserInfo;
@@ -18,6 +19,7 @@ public class OauthService {
 
     private final OauthProviders oauthProviders;
     private final OauthUserFactory oauthUserFactory;
+    private final JwtProvider jwtProvider;
 
     public AuthTokenDto login(final OauthLoginRequest request) {
         final OauthProvider provider = oauthProviders.getProvider(request.socialProvider());
@@ -28,7 +30,9 @@ public class OauthService {
             provider.getProvider(),
             request.userRole()
         );
-        return null;
+        return AuthTokenDto.of(
+            jwtProvider.createAccessToken(user.getSocialId(), user.getUserRole())
+        );
     }
 
 }
