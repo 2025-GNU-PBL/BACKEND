@@ -55,7 +55,7 @@ public class Product extends BaseEntity {
     private double starCount = 0;
 
     @Column
-    private Integer cnt_star = 0;
+    private Integer averageRating = 0;
 
     @Column(nullable = false)
     private String name;
