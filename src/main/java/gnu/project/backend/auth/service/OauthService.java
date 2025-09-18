@@ -13,6 +13,7 @@ import gnu.project.backend.auth.provider.OauthProviders;
 import gnu.project.backend.auth.userinfo.OauthUserInfo;
 import gnu.project.backend.common.enurmerated.UserRole;
 import gnu.project.backend.common.exception.AuthException;
+import gnu.project.backend.customer.repository.CustomerRepository;
 import gnu.project.backend.owner.repository.OwnerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ public class OauthService {
     private final OwnerRepository ownerRepository;
     private final OauthUserFactory oauthUserFactory;
     private final JwtProvider jwtProvider;
+    private final CustomerRepository customerRepository;
 
     public AuthTokenDto login(final OauthLoginRequest request) {
         final OauthProvider provider = oauthProviders.getProvider(request.socialProvider());
@@ -56,7 +58,7 @@ public class OauthService {
     private boolean isUserExists(String socialId, UserRole userRole) {
         return switch (userRole) {
             case OWNER -> ownerRepository.existsByOauthInfo_SocialId(socialId);
-            // TODO : Customer 추가 예정
+            case CUSTOMER -> customerRepository.existsByOauthInfo_SocialId(socialId);
             default -> false;
         };
     }
