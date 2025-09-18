@@ -8,6 +8,7 @@ public record OauthLoginRequest(
     String code,
     SocialProvider socialProvider,
     UserRole userRole
+    // String state //naver 필드
 ) {
 
 }
