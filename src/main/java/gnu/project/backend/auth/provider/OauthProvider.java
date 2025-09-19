@@ -7,6 +7,7 @@ public interface OauthProvider {
 
     SocialProvider getProvider();
 
+    //naver 추후 parmeter state 추가
     String getAccessToken(String code);
 
     OauthUserInfo getUserInfo(String accessToken);

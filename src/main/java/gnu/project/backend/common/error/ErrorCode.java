@@ -27,14 +27,24 @@ public enum ErrorCode {
         "소셜 로그인 중 사용자 정보 응답이 비어 있습니다."),
 
     //
-    OWNER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "OWNER001", "사장을 찾을 수 없습니다.");
+    OWNER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "OWNER001", "사장을 찾을 수 없습니다."),
+
+    // Customer EXCEPTION ADD.
+    CUSTOMER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "CUSTOMER001", "고객을 찾을 수 없습니다.");
+
+
     private final HttpStatus status;
     private final String code;
     private final String message;
+
+
+
 
     ErrorCode(final HttpStatus status, final String code, final String message) {
         this.status = status;
         this.code = code;
         this.message = message;
     }
+
+
 }
