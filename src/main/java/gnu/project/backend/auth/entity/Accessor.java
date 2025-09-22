@@ -1,6 +1,6 @@
 package gnu.project.backend.auth.entity;
 
-import gnu.project.backend.common.enurmerated.UserRole;
+import gnu.project.backend.common.enumerated.UserRole;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

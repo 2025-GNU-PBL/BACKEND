@@ -4,7 +4,7 @@ import static gnu.project.backend.auth.constant.JwtConstants.TOKEN_TYPE;
 import static gnu.project.backend.auth.constant.JwtConstants.USER_ROLE;
 
 import gnu.project.backend.auth.enurmerated.TokenType;
-import gnu.project.backend.common.enurmerated.UserRole;
+import gnu.project.backend.common.enumerated.UserRole;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;

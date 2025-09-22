@@ -7,7 +7,7 @@ import static gnu.project.backend.auth.constant.JwtConstants.REQUEST_ATTR_USER_R
 import static gnu.project.backend.auth.constant.KakaoOauthConstants.BEARER_PREFIX;
 import static gnu.project.backend.common.error.ErrorCode.AUTH_TOKEN_INVALID;
 
-import gnu.project.backend.common.enurmerated.UserRole;
+import gnu.project.backend.common.enumerated.UserRole;
 import gnu.project.backend.common.exception.AuthException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -11,7 +11,7 @@ import gnu.project.backend.auth.jwt.JwtProvider;
 import gnu.project.backend.auth.provider.OauthProvider;
 import gnu.project.backend.auth.provider.OauthProviders;
 import gnu.project.backend.auth.userinfo.OauthUserInfo;
-import gnu.project.backend.common.enurmerated.UserRole;
+import gnu.project.backend.common.enumerated.UserRole;
 import gnu.project.backend.common.exception.AuthException;
 import gnu.project.backend.customer.repository.CustomerRepository;
 import gnu.project.backend.owner.repository.OwnerRepository;
@@ -46,7 +46,7 @@ public class OauthService {
 
     public Accessor getCurrentAccessor(final String socialId, final UserRole userRole) {
         log.debug("Getting accessor for socialId: {}, userRole: {}", socialId, userRole);
-        
+
         if (!isUserExists(socialId, userRole)) {
             log.warn("User not found for socialId: {}, userRole: {}", socialId, userRole);
             throw new AuthException(AUTH_USER_NOT_FOUND);

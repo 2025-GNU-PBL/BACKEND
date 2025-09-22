@@ -3,7 +3,7 @@ package gnu.project.backend.auth.factory;
 import gnu.project.backend.auth.entity.OauthUser;
 import gnu.project.backend.auth.enurmerated.SocialProvider;
 import gnu.project.backend.auth.userinfo.OauthUserInfo;
-import gnu.project.backend.common.enurmerated.UserRole;
+import gnu.project.backend.common.enumerated.UserRole;
 import gnu.project.backend.customer.entity.Customer;
 import gnu.project.backend.customer.repository.CustomerRepository;
 import gnu.project.backend.owner.entity.Owner;
