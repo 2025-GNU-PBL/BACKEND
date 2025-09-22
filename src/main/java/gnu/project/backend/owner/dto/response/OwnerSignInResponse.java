@@ -10,7 +10,8 @@ public record OwnerSignInResponse(
     Short age,
     String phoneNumber,
     String bzNumber,
-    String bankAccount
+    String bankAccount,
+    String bzName
 ) {
 
     public static OwnerSignInResponse from(Owner owner) {
@@ -22,7 +23,8 @@ public record OwnerSignInResponse(
             owner.getAge(),
             owner.getPhoneNumber(),
             owner.getBzNumber(),
-            owner.getBankAccount()
+            owner.getBankAccount(),
+            owner.getBzName()
         );
     }
 

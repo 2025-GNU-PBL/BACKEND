@@ -20,6 +20,7 @@ public class OwnerConstant {
     public static final String BANK_ACCOUNT_REQUIRED_MESSAGE = "계좌번호는 필수 입력값입니다.";
     public static final String BANK_ACCOUNT_PATTERN_MESSAGE = "계좌번호는 숫자와 하이픈(-) 만 입력 가능합니다.";
     public static final String BANK_ACCOUNT_SIZE_MESSAGE = "계좌번호는 10자 이상 20자 이하여야 합니다.";
+    public static final String BIZ_NAME_REQUIRED_MESSAGE = "회사명은 필수 입력값입니다.";
 
 
 }

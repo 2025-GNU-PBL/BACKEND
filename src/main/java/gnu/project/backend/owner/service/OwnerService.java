@@ -36,7 +36,8 @@ public class OwnerService {
             signInRequest.age(),
             signInRequest.phoneNumber(),
             signInRequest.bzNumber(),
-            signInRequest.bankAccount()
+            signInRequest.bankAccount(),
+            signInRequest.bzName()
         );
         return OwnerSignInResponse.from(owner);
     }
@@ -51,7 +52,8 @@ public class OwnerService {
             updateRequest.age(),
             updateRequest.phoneNumber(),
             updateRequest.bzNumber(),
-            updateRequest.bankAccount()
+            updateRequest.bankAccount(),
+            updateRequest.bzName()
         );
 
         return OwnerUpdateResponse.from(owner);

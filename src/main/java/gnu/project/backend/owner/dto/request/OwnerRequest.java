@@ -6,6 +6,7 @@ import static gnu.project.backend.owner.constant.OwnerConstant.AGE_REQUIRED_MESS
 import static gnu.project.backend.owner.constant.OwnerConstant.BANK_ACCOUNT_PATTERN_MESSAGE;
 import static gnu.project.backend.owner.constant.OwnerConstant.BANK_ACCOUNT_REQUIRED_MESSAGE;
 import static gnu.project.backend.owner.constant.OwnerConstant.BANK_ACCOUNT_SIZE_MESSAGE;
+import static gnu.project.backend.owner.constant.OwnerConstant.BIZ_NAME_REQUIRED_MESSAGE;
 import static gnu.project.backend.owner.constant.OwnerConstant.BZ_NUMBER_PATTERN_MESSAGE;
 import static gnu.project.backend.owner.constant.OwnerConstant.BZ_NUMBER_REQUIRED_MESSAGE;
 import static gnu.project.backend.owner.constant.OwnerConstant.PHONE_NUMBER_PATTERN_MESSAGE;
@@ -48,7 +49,10 @@ public record OwnerRequest(
         message = BANK_ACCOUNT_PATTERN_MESSAGE
     )
     @Size(min = 10, max = 20, message = BANK_ACCOUNT_SIZE_MESSAGE)
-    String bankAccount
+    String bankAccount,
+
+    @NotBlank(message = BIZ_NAME_REQUIRED_MESSAGE)
+    String bzName
 ) {
 
 }

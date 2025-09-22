@@ -34,6 +34,8 @@ public class Owner extends BaseEntity implements OauthUser {
     private String profileImage;
 
     @Column
+    private String bzName;
+    @Column
     private Short age;
 
     @Column
@@ -60,7 +62,7 @@ public class Owner extends BaseEntity implements OauthUser {
         final SocialProvider provider
     ) {
         final OauthInfo oauthInfo = OauthInfo.of(email, name, socialId, provider);
-        return new Owner(null, null, null, null, null, null, UserRole.OWNER, oauthInfo);
+        return new Owner(null, null, null, null, null, null, null, UserRole.OWNER, oauthInfo);
     }
 
     public void signIn(
@@ -68,8 +70,10 @@ public class Owner extends BaseEntity implements OauthUser {
         final Short age,
         final String phoneNumber,
         final String bzNumber,
-        final String bankAccount
+        final String bankAccount,
+        final String bzName
     ) {
+        this.bzName = bzName;
         this.profileImage = profileImage;
         this.age = age;
         this.phoneNumber = phoneNumber;
@@ -82,8 +86,10 @@ public class Owner extends BaseEntity implements OauthUser {
         final Short age,
         final String phoneNumber,
         final String bzNumber,
-        final String bankAccount
+        final String bankAccount,
+        final String bzName
     ) {
+        this.bzName = bzName;
         this.profileImage = profileImage;
         this.age = age;
         this.phoneNumber = phoneNumber;
