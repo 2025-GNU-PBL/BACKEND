@@ -4,7 +4,7 @@ import gnu.project.backend.auth.entity.OauthInfo;
 import gnu.project.backend.auth.entity.OauthUser;
 import gnu.project.backend.auth.enurmerated.SocialProvider;
 import gnu.project.backend.common.entity.BaseEntity;
-import gnu.project.backend.common.enurmerated.UserRole;
+import gnu.project.backend.common.enumerated.UserRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;

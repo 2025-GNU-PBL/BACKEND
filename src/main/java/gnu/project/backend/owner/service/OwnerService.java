@@ -4,8 +4,8 @@ import static gnu.project.backend.common.error.ErrorCode.OWNER_NOT_FOUND_EXCEPTI
 
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.exception.BusinessException;
-import gnu.project.backend.owner.dto.request.OwnerSignInRequest;
-import gnu.project.backend.owner.dto.request.OwnerUpdateRequest;
+import gnu.project.backend.owner.dto.request.OwnerRequest;
+import gnu.project.backend.owner.dto.response.OwnerResponse;
 import gnu.project.backend.owner.dto.response.OwnerSignInResponse;
 import gnu.project.backend.owner.dto.response.OwnerUpdateResponse;
 import gnu.project.backend.owner.entity.Owner;
@@ -21,22 +21,16 @@ public class OwnerService {
 
     private final OwnerRepository ownerRepository;
 
-    public Owner read(final Accessor accessor) {
-        return ownerRepository.
-            findByOauthInfo_SocialId(accessor.getSocialId())
-            .orElseThrow(() -> new BusinessException(
-                OWNER_NOT_FOUND_EXCEPTION)
-            );
+    @Transactional(readOnly = true)
+    public OwnerResponse findOwner(final Accessor accessor) {
+        return OwnerResponse.from(findOwnerBySocialId(accessor));
     }
 
-    public OwnerSignInResponse signInOwner(
+    public OwnerSignInResponse signIn(
         final Accessor accessor,
-        final OwnerSignInRequest signInRequest
+        final OwnerRequest signInRequest
     ) {
-        final Owner owner = ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
-            .orElseThrow(() -> new BusinessException(
-                OWNER_NOT_FOUND_EXCEPTION)
-            );
+        final Owner owner = findOwnerBySocialId(accessor);
         owner.signIn(
             signInRequest.profileImage(),
             signInRequest.age(),
@@ -47,14 +41,11 @@ public class OwnerService {
         return OwnerSignInResponse.from(owner);
     }
 
-    public OwnerUpdateResponse updateOwner(
+    public OwnerUpdateResponse update(
         final Accessor accessor,
-        final OwnerUpdateRequest updateRequest
+        final OwnerRequest updateRequest
     ) {
-        final Owner owner = ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
-            .orElseThrow(() -> new BusinessException(
-                OWNER_NOT_FOUND_EXCEPTION)
-            );
+        final Owner owner = findOwnerBySocialId(accessor);
         owner.updateProfile(
             updateRequest.profileImage(),
             updateRequest.age(),
@@ -64,5 +55,12 @@ public class OwnerService {
         );
 
         return OwnerUpdateResponse.from(owner);
+    }
+
+    private Owner findOwnerBySocialId(final Accessor accessor) {
+        return ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
+            .orElseThrow(() -> new BusinessException(
+                OWNER_NOT_FOUND_EXCEPTION)
+            );
     }
 }
