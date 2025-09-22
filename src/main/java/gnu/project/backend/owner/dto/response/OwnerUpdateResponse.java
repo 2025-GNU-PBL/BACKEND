@@ -10,7 +10,8 @@ public record OwnerUpdateResponse(
     Short age,
     String phoneNumber,
     String bzNumber,
-    String bankAccount
+    String bankAccount,
+    String bzName
 ) {
 
     public static OwnerUpdateResponse from(Owner owner) {
@@ -22,7 +23,8 @@ public record OwnerUpdateResponse(
             owner.getAge(),
             owner.getPhoneNumber(),
             owner.getBzNumber(),
-            owner.getBankAccount()
+            owner.getBankAccount(),
+            owner.getBzName()
         );
     }
 

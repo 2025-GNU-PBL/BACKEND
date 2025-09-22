@@ -26,12 +26,12 @@ public class OwnerService {
         return OwnerResponse.from(findOwnerBySocialId(accessor));
     }
 
-    public OwnerSignInResponse signIn(
+    public OwnerSignInResponse signUp(
         final Accessor accessor,
         final OwnerRequest signInRequest
     ) {
         final Owner owner = findOwnerBySocialId(accessor);
-        owner.signIn(
+        owner.signUp(
             signInRequest.profileImage(),
             signInRequest.age(),
             signInRequest.phoneNumber(),

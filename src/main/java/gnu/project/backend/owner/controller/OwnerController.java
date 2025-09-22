@@ -30,7 +30,7 @@ public class OwnerController {
         @Auth final Accessor accessor,
         @RequestBody final OwnerRequest signInRequest
     ) {
-        return ResponseEntity.ok(ownerService.signIn(accessor, signInRequest));
+        return ResponseEntity.ok(ownerService.signUp(accessor, signInRequest));
     }
 
     @PatchMapping()

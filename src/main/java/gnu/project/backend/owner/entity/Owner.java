@@ -65,7 +65,7 @@ public class Owner extends BaseEntity implements OauthUser {
         return new Owner(null, null, null, null, null, null, null, UserRole.OWNER, oauthInfo);
     }
 
-    public void signIn(
+    public void signUp(
         final String profileImage,
         final Short age,
         final String phoneNumber,
