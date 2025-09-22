@@ -49,11 +49,11 @@ public class Owner extends BaseEntity implements OauthUser {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-
     @Embedded
     private OauthInfo oauthInfo;
 
-    public static Owner signIn(
+
+    public static Owner createFromOAuth(
         final String email,
         final String name,
         final String socialId,
@@ -61,5 +61,33 @@ public class Owner extends BaseEntity implements OauthUser {
     ) {
         final OauthInfo oauthInfo = OauthInfo.of(email, name, socialId, provider);
         return new Owner(null, null, null, null, null, null, UserRole.OWNER, oauthInfo);
+    }
+
+    public void signIn(
+        final String profileImage,
+        final Short age,
+        final String phoneNumber,
+        final String bzNumber,
+        final String bankAccount
+    ) {
+        this.profileImage = profileImage;
+        this.age = age;
+        this.phoneNumber = phoneNumber;
+        this.bzNumber = bzNumber;
+        this.bankAccount = bankAccount;
+    }
+
+    public void updateProfile(
+        final String profileImage,
+        final Short age,
+        final String phoneNumber,
+        final String bzNumber,
+        final String bankAccount
+    ) {
+        this.profileImage = profileImage;
+        this.age = age;
+        this.phoneNumber = phoneNumber;
+        this.bzNumber = bzNumber;
+        this.bankAccount = bankAccount;
     }
 }

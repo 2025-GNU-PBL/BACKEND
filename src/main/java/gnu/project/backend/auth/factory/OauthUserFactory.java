@@ -36,16 +36,18 @@ public class OauthUserFactory {
     private Owner findOrCreateOwner(OauthUserInfo userInfo, SocialProvider provider) {
         return ownerRepository.findByOauthInfo_SocialId(userInfo.getSocialId())
             .orElseGet(() -> ownerRepository.save(
-                Owner.signIn(userInfo.getEmail(), userInfo.getName(), userInfo.getSocialId(),
+                Owner.createFromOAuth(userInfo.getEmail(), userInfo.getName(),
+                    userInfo.getSocialId(),
                     provider)
             ));
     }
 
     private Customer findOrCreateCustomer(OauthUserInfo userInfo, SocialProvider provider) {
         return customerRepository.findByOauthInfo_SocialId(userInfo.getSocialId())
-                .orElseGet(()-> customerRepository.save(
-                        Customer.signIn(userInfo.getEmail(), userInfo.getName(), userInfo.getSocialId(), provider)
-                ));
+            .orElseGet(() -> customerRepository.save(
+                Customer.signIn(userInfo.getEmail(), userInfo.getName(), userInfo.getSocialId(),
+                    provider)
+            ));
     }
 
 }
