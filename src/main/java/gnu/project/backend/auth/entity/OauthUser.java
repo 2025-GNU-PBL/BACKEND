@@ -1,7 +1,7 @@
 package gnu.project.backend.auth.entity;
 
 import gnu.project.backend.auth.enurmerated.SocialProvider;
-import gnu.project.backend.common.enurmerated.UserRole;
+import gnu.project.backend.common.enumerated.UserRole;
 
 public interface OauthUser {
 

@@ -4,7 +4,7 @@ import gnu.project.backend.auth.entity.OauthInfo;
 import gnu.project.backend.auth.entity.OauthUser;
 import gnu.project.backend.auth.enurmerated.SocialProvider;
 import gnu.project.backend.common.entity.BaseEntity;
-import gnu.project.backend.common.enurmerated.UserRole;
+import gnu.project.backend.common.enumerated.UserRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -34,6 +34,8 @@ public class Owner extends BaseEntity implements OauthUser {
     private String profileImage;
 
     @Column
+    private String bzName;
+    @Column
     private Short age;
 
     @Column
@@ -49,17 +51,49 @@ public class Owner extends BaseEntity implements OauthUser {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-
     @Embedded
     private OauthInfo oauthInfo;
 
-    public static Owner signIn(
+
+    public static Owner createFromOAuth(
         final String email,
         final String name,
         final String socialId,
         final SocialProvider provider
     ) {
         final OauthInfo oauthInfo = OauthInfo.of(email, name, socialId, provider);
-        return new Owner(null, null, null, null, null, null, UserRole.OWNER, oauthInfo);
+        return new Owner(null, null, null, null, null, null, null, UserRole.OWNER, oauthInfo);
+    }
+
+    public void signUp(
+        final String profileImage,
+        final Short age,
+        final String phoneNumber,
+        final String bzNumber,
+        final String bankAccount,
+        final String bzName
+    ) {
+        this.bzName = bzName;
+        this.profileImage = profileImage;
+        this.age = age;
+        this.phoneNumber = phoneNumber;
+        this.bzNumber = bzNumber;
+        this.bankAccount = bankAccount;
+    }
+
+    public void updateProfile(
+        final String profileImage,
+        final Short age,
+        final String phoneNumber,
+        final String bzNumber,
+        final String bankAccount,
+        final String bzName
+    ) {
+        this.bzName = bzName;
+        this.profileImage = profileImage;
+        this.age = age;
+        this.phoneNumber = phoneNumber;
+        this.bzNumber = bzNumber;
+        this.bankAccount = bankAccount;
     }
 }

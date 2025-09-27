@@ -6,7 +6,7 @@ import static gnu.project.backend.common.error.ErrorCode.AUTH_USER_NOT_FOUND;
 
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.auth.service.OauthService;
-import gnu.project.backend.common.enurmerated.UserRole;
+import gnu.project.backend.common.enumerated.UserRole;
 import gnu.project.backend.common.exception.AuthException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

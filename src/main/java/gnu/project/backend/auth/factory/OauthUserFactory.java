@@ -3,7 +3,7 @@ package gnu.project.backend.auth.factory;
 import gnu.project.backend.auth.entity.OauthUser;
 import gnu.project.backend.auth.enurmerated.SocialProvider;
 import gnu.project.backend.auth.userinfo.OauthUserInfo;
-import gnu.project.backend.common.enurmerated.UserRole;
+import gnu.project.backend.common.enumerated.UserRole;
 import gnu.project.backend.customer.entity.Customer;
 import gnu.project.backend.customer.repository.CustomerRepository;
 import gnu.project.backend.owner.entity.Owner;
@@ -36,16 +36,18 @@ public class OauthUserFactory {
     private Owner findOrCreateOwner(OauthUserInfo userInfo, SocialProvider provider) {
         return ownerRepository.findByOauthInfo_SocialId(userInfo.getSocialId())
             .orElseGet(() -> ownerRepository.save(
-                Owner.signIn(userInfo.getEmail(), userInfo.getName(), userInfo.getSocialId(),
+                Owner.createFromOAuth(userInfo.getEmail(), userInfo.getName(),
+                    userInfo.getSocialId(),
                     provider)
             ));
     }
 
     private Customer findOrCreateCustomer(OauthUserInfo userInfo, SocialProvider provider) {
         return customerRepository.findByOauthInfo_SocialId(userInfo.getSocialId())
-                .orElseGet(()-> customerRepository.save(
-                        Customer.signIn(userInfo.getEmail(), userInfo.getName(), userInfo.getSocialId(), provider)
-                ));
+            .orElseGet(() -> customerRepository.save(
+                Customer.signIn(userInfo.getEmail(), userInfo.getName(), userInfo.getSocialId(),
+                    provider)
+            ));
     }
 
 }

@@ -6,7 +6,7 @@ import static gnu.project.backend.common.error.ErrorCode.AUTH_TOKEN_EXPIRED;
 import static gnu.project.backend.common.error.ErrorCode.AUTH_TOKEN_INVALID;
 
 import gnu.project.backend.auth.enurmerated.TokenType;
-import gnu.project.backend.common.enurmerated.UserRole;
+import gnu.project.backend.common.enumerated.UserRole;
 import gnu.project.backend.common.exception.AuthException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
