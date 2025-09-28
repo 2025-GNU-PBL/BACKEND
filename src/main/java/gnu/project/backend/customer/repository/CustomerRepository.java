@@ -9,6 +9,6 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
 
     // 고객정보 BY Social ID
     Optional<Customer> findByOauthInfo_SocialId(final String socialId);
-    // 고객정보CHECK BY Social ID
+    // 고객정보 CHECK BY Social ID
     boolean existsByOauthInfo_SocialId(final String socialId);
 }
