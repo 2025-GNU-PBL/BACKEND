@@ -28,16 +28,21 @@ public enum ErrorCode {
 
     //
     OWNER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "OWNER001", "사장을 찾을 수 없습니다."),
-
+    OWNER_PROFILE_IMAGE_NOT_SET(HttpStatus.NOT_FOUND, "OWNER001", "사장의 이미지가 지정되어 있지 않습니다."),
     // Customer EXCEPTION ADD.
-    CUSTOMER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "CUSTOMER001", "고객을 찾을 수 없습니다.");
+    CUSTOMER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "CUSTOMER001", "고객을 찾을 수 없습니다."),
+
+    // Image
+    IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5001", "이미지 파일 업로드에 실패했습니다."),
+    IMAGE_FILE_READ_FAILED(HttpStatus.BAD_REQUEST, "IMAGE4001", "업로드된 이미지 파일의 바이트 읽기에 실패했습니다."),
+    IMAGE_DOWNLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5002", "이미지 파일 다운로드에 실패했습니다."),
+    IMAGE_FILE_INVALID_NAME(HttpStatus.BAD_REQUEST, "IMAGE4002", "업로드할 이미지 파일명이 없습니다."),
+    IMAGE_INVALID_FORMAT(HttpStatus.BAD_REQUEST, "IMAGE4003", "지원하지 않는 이미지 형식입니다.");
 
 
     private final HttpStatus status;
     private final String code;
     private final String message;
-
-
 
 
     ErrorCode(final HttpStatus status, final String code, final String message) {

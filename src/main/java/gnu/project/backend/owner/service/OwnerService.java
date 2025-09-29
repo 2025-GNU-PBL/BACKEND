@@ -3,7 +3,10 @@ package gnu.project.backend.owner.service;
 import static gnu.project.backend.common.error.ErrorCode.OWNER_NOT_FOUND_EXCEPTION;
 
 import gnu.project.backend.auth.entity.Accessor;
+import gnu.project.backend.common.dto.UploadImageDto;
+import gnu.project.backend.common.enumerated.UserRole;
 import gnu.project.backend.common.exception.BusinessException;
+import gnu.project.backend.common.service.ImageService;
 import gnu.project.backend.owner.dto.request.OwnerRequest;
 import gnu.project.backend.owner.dto.response.OwnerResponse;
 import gnu.project.backend.owner.dto.response.OwnerSignInResponse;
@@ -11,9 +14,12 @@ import gnu.project.backend.owner.dto.response.OwnerUpdateResponse;
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -21,10 +27,25 @@ public class OwnerService {
 
     private final OwnerRepository ownerRepository;
 
+    private final ImageService imageService;
+
     @Transactional(readOnly = true)
     public OwnerResponse findOwner(final Accessor accessor) {
         return OwnerResponse.from(findOwnerBySocialId(accessor));
     }
+
+    public UploadImageDto uploadProfileImage(
+        final Accessor accessor,
+        final MultipartFile file
+    ) {
+        findOwnerBySocialId(accessor);
+        return imageService.uploadImageWithUrl(
+            UserRole.OWNER.toString(),
+            accessor.getSocialId(),
+            file
+        );
+    }
+
 
     public OwnerSignInResponse signUp(
         final Accessor accessor,
