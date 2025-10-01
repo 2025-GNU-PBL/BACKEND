@@ -39,4 +39,26 @@ public class Option extends BaseEntity {
 
     @Column(nullable = false)
     private String name;
+
+
+    private Option(
+        final Product product,
+        final String detail,
+        final Integer price,
+        final String name
+    ) {
+        this.product = product;
+        this.detail = detail;
+        this.price = price;
+        this.name = name;
+    }
+
+    public static Option ofCreate(
+        final Product product,
+        final String detail,
+        final Integer price,
+        final String name
+    ) {
+        return new Option(product, detail, price, name);
+    }
 }

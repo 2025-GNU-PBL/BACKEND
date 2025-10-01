@@ -31,9 +31,41 @@ public class Image extends BaseEntity {
     private Product product;
 
     @Column(nullable = false)
-    private boolean isThumbnail;
+    private String url;
 
     @Column(nullable = false)
-    private String url;
+    private String s3Key;
+
+    @Column(nullable = false)
+    private Integer displayOrder = 0;
+
+    private Image(
+        final Product product,
+        final String url,
+        final String s3Key,
+        final Integer displayOrder
+    ) {
+        this.product = product;
+        this.url = url;
+        this.s3Key = s3Key;
+        this.displayOrder = displayOrder;
+    }
+
+    public static Image ofCreate(
+        final Product product,
+        final String url,
+        final String s3Key,
+        final Integer displayOrder
+    ) {
+        return new Image(product, url, s3Key, displayOrder);
+    }
+
+    public void updateDisplayOrder(Integer newOrder) {
+        this.displayOrder = newOrder;
+    }
+
+    public boolean isThumbnail() {
+        return this.displayOrder == 0;
+    }
 
 }
