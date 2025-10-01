@@ -50,4 +50,16 @@ public class Review  extends BaseEntity {
         return review;
     }
 
+
+    public void update(Short star, String title,String comment) {
+        this.star = star;
+        this.title = title;
+        this.comment = comment;
+        this.imageUrl = imageUrl;
+    }
+
+//    public void addImage(String imageUrl){
+//        this.imageUrl = imageUrl;
+//    }
+
 }
