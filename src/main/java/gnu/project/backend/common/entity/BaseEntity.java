@@ -27,5 +27,5 @@ public class BaseEntity {
     private LocalDateTime updatedAt;
 
     @Column
-    private boolean isDeleted = false;
+    private Boolean isDeleted = false;
 }
