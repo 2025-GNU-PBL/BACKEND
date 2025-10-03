@@ -57,11 +57,15 @@ public class Customer extends BaseEntity implements OauthUser {
         final String socialId,
         final SocialProvider provider) {
         final OauthInfo oauthInfo = OauthInfo.of(email, name, socialId, provider);
-        return new Customer(null, null, null,  null, null, UserRole.CUSTOMER, oauthInfo);
+        return new Customer(
+                null,
+                null,
+                null,
+                null,
+                null,
+                UserRole.CUSTOMER,
+                oauthInfo);
     }
 
-//    @Override
-//    public UserRole getUserRole() {
-//        return null;
-//    }
+
 }
