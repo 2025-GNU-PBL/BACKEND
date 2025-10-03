@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 
-public record MakeupCreateRequest(
+public record MakeupUpdateRequest(
 
     @NotBlank(message = "상품명은 필수입니다")
     @Size(max = 100, message = "상품명은 100자 이하여야 합니다")
@@ -38,7 +38,9 @@ public record MakeupCreateRequest(
 
     @Valid
     @Size(max = 10, message = "옵션은 최대 10개까지 추가 가능합니다")
-    List<OptionCreateRequest> options
+    List<OptionCreateRequest> options,
+
+    List<Long> keepImagesId
 ) {
 
 }
