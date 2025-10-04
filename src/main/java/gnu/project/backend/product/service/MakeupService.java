@@ -2,6 +2,7 @@ package gnu.project.backend.product.service;
 
 import static gnu.project.backend.common.error.ErrorCode.MAKEUP_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.common.error.ErrorCode.OWNER_NOT_FOUND_EXCEPTION;
+import static gnu.project.backend.product.constant.MakeupConstant.MAKEUP_DELETE_SUCCESS;
 
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.exception.BusinessException;
@@ -55,6 +56,23 @@ public class MakeupService {
             pageable,
             totalElements
         );
+    }
+
+    public String delete(
+        final Long id,
+        final Accessor accessor
+    ) {
+        final Makeup makeup = makeupRepository.findById(id)
+            .orElseThrow(
+                () -> new BusinessException(MAKEUP_NOT_FOUND_EXCEPTION)
+            );
+
+        if (!makeup.getOwner().getSocialId().equals(accessor.getSocialId())) {
+            throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
+        }
+        makeup.delete();
+        
+        return MAKEUP_DELETE_SUCCESS;
     }
 
     public MakeupResponse update(

@@ -56,4 +56,8 @@ public class Makeup extends Product {
         this.availableTimes = availableTimes;
         this.type = type;
     }
+
+    public void delete() {
+        super.delete();
+    }
 }

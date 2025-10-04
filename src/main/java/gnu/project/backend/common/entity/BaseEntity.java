@@ -28,4 +28,8 @@ public class BaseEntity {
 
     @Column
     private Boolean isDeleted = false;
+
+    public void delete() {
+        isDeleted = true;
+    }
 }
