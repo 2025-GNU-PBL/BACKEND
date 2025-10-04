@@ -4,6 +4,8 @@ import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
 import gnu.project.backend.product.entity.Makeup;
 import gnu.project.backend.product.repository.MakeupRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -53,28 +55,49 @@ public class MakeupDataGenerator implements CommandLineRunner {
         "피부 고민을 커버하면서도 자연스러운 메이크업을 완성해드립니다.",
         "전문가용 화장품을 사용하여 오래 지속되는 메이크업을 제공합니다."
     };
+
     private final MakeupRepository makeupRepository;
     private final OwnerRepository ownerRepository;
     private final Random random = new Random();
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
     @Override
     @Transactional
     public void run(String... args) {
+        long existingCount = makeupRepository.count();
+        if (existingCount >= 10000) {
+            log.info("이미 Makeup 데이터가 {}개 이상 존재하여 생성하지 않습니다.", existingCount);
+            return;
+        }
+
         List<Owner> owners = ownerRepository.findAll();
+        if (owners.isEmpty()) {
+            log.warn("Owner 데이터가 존재하지 않습니다. 먼저 OwnerDataGenerator 실행 필요.");
+            return;
+        }
 
         int batchSize = 1000;
-        int totalCount = 100000;
+        int totalCount = 10000;
+        List<Makeup> batch = new ArrayList<>(batchSize);
 
-        for (int i = 0; i < totalCount / batchSize; i++) {
-            List<Makeup> makeups = new ArrayList<>();
+        for (int i = 0; i < totalCount; i++) {
+            Owner randomOwner = owners.get(random.nextInt(owners.size()));
+            Makeup makeup = createRandomMakeup(randomOwner);
+            batch.add(makeup);
 
-            for (int j = 0; j < batchSize; j++) {
-                Owner randomOwner = owners.get(random.nextInt(owners.size()));
-                Makeup makeup = createRandomMakeup(randomOwner);
-                makeups.add(makeup);
+            if (batch.size() == batchSize) {
+                makeupRepository.saveAll(batch);
+                makeupRepository.flush(); // 쿼리 즉시 실행 및 clear 전에 필요
+                batch.clear();
+                log.info("배치 : " + i);
             }
-
-            makeupRepository.saveAll(makeups);
+        }
+        // 남은 레코드 처리
+        if (!batch.isEmpty()) {
+            makeupRepository.saveAll(batch);
+            makeupRepository.flush();
         }
     }
 
