@@ -44,7 +44,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
                 .select(createLessonResponse())
                 .from(makeup)
                 .leftJoin(makeup.images, image)
-                .where(image.displayOrder.eq(0))
+                .where(image.displayOrder.eq(0).or(image.isNull()))
                 .orderBy(MAKEUP_DEFAULT_ORDER),
             pageSize,
             pageNumber
