@@ -48,8 +48,8 @@ public class MakeupService {
         final Integer pageNumber,
         final Integer pageSize
     ) {
-        long totalElements = makeupRepository.count(); // 전체 데이터 수
-        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+        long totalElements = makeupRepository.count();
+        final Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         return new PageImpl<>(
             makeupRepository.searchMakeup(pageSize, pageNumber),
             pageable,
