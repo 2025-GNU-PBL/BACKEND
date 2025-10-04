@@ -60,9 +60,6 @@ public class MakeupDataGenerator implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        log.info("=== Makeup 데이터 생성 시작 ===");
-
-        // Owner가 없으면 먼저 생성
         List<Owner> owners = ownerRepository.findAll();
 
         int batchSize = 1000;
@@ -78,11 +75,7 @@ public class MakeupDataGenerator implements CommandLineRunner {
             }
 
             makeupRepository.saveAll(makeups);
-            log.info("Progress: {}/{} ({} 개 저장 완료)",
-                (i + 1) * batchSize, totalCount, (i + 1) * batchSize);
         }
-
-        log.info("=== Makeup 데이터 생성 완료: 총 {} 개 ===", totalCount);
     }
 
     private Makeup createRandomMakeup(Owner owner) {
