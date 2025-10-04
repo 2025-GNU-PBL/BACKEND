@@ -1,5 +1,6 @@
 package gnu.project.backend.product.dto.request;
 
+import gnu.project.backend.product.constant.MakeupConstant;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -9,35 +10,35 @@ import java.util.List;
 
 public record MakeupUpdateRequest(
 
-    @NotBlank(message = "상품명은 필수입니다")
-    @Size(max = 100, message = "상품명은 100자 이하여야 합니다")
+    @NotBlank(message = MakeupConstant.NAME_REQUIRED)
+    @Size(max = MakeupConstant.MAX_NAME_LENGTH, message = MakeupConstant.NAME_LENGTH)
     String name,
 
-    @NotNull(message = "가격은 필수입니다")
-    @Min(value = 0, message = "가격은 0 이상이어야 합니다")
+    @NotNull(message = MakeupConstant.PRICE_REQUIRED)
+    @Min(value = MakeupConstant.MIN_PRICE, message = MakeupConstant.PRICE_MIN)
     Integer price,
 
-    @NotBlank(message = "주소는 필수입니다")
-    @Size(max = 500, message = "주소는 500자 이하여야 합니다")
+    @NotBlank(message = MakeupConstant.ADDRESS_REQUIRED)
+    @Size(max = MakeupConstant.MAX_ADDRESS_LENGTH, message = MakeupConstant.ADDRESS_LENGTH)
     String address,
 
-    @NotBlank(message = "상세 설명은 필수입니다")
-    @Size(max = 2000, message = "상세 설명은 2000자 이하여야 합니다")
+    @NotBlank(message = MakeupConstant.DETAIL_REQUIRED)
+    @Size(max = MakeupConstant.MAX_DETAIL_LENGTH, message = MakeupConstant.DETAIL_LENGTH)
     String detail,
 
-    @NotBlank(message = "메이크업 스타일은 필수입니다")
-    @Size(max = 50, message = "스타일은 50자 이하여야 합니다")
+    @NotBlank(message = MakeupConstant.STYLE_REQUIRED)
+    @Size(max = MakeupConstant.MAX_STYLE_LENGTH, message = MakeupConstant.STYLE_LENGTH)
     String style,
 
-    @Size(max = 100, message = "이용 가능 시간은 100자 이하여야 합니다")
+    @Size(max = MakeupConstant.MAX_AVAILABLE_TIMES, message = MakeupConstant.AVAILABLE_TIMES_LENGTH)
     String availableTimes,
 
-    @NotBlank(message = "메이크업 타입은 필수입니다")
-    @Size(max = 50, message = "타입은 50자 이하여야 합니다")
+    @NotBlank(message = MakeupConstant.TYPE_REQUIRED)
+    @Size(max = MakeupConstant.MAX_TYPE_LENGTH, message = MakeupConstant.TYPE_LENGTH)
     String type,
 
     @Valid
-    @Size(max = 10, message = "옵션은 최대 10개까지 추가 가능합니다")
+    @Size(max = MakeupConstant.MAX_OPTION_COUNT, message = MakeupConstant.MAKEUP_OPTION_LIMIT)
     List<OptionCreateRequest> options,
 
     List<Long> keepImagesId
