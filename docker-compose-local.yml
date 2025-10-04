@@ -1,6 +1,23 @@
 version: '3.8'
 
 services:
+  mysql:
+    image: mysql:8.3.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-password
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: user-password
+      TZ: Asia/Seoul
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    #      - mysql-data:/var/lib/mysql
+    networks:
+      - monitoring_net
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
@@ -22,7 +39,7 @@ services:
     image: grafana/grafana-oss:latest
     container_name: grafana
     ports:
-      - "3000:3000"
+      - "3001:3000"
     volumes:
       - grafana_data:/var/lib/grafana
     environment:
@@ -51,6 +68,18 @@ services:
       - '/proc:/host/proc:ro'
       - '/sys:/host/sys:ro'
       - '/:/rootfs:ro'
+    networks:
+      - monitoring_net
+  mysql_exporter:
+    image: prom/mysqld-exporter
+    container_name: mysql_exporter
+    command:
+      - "--config.my-cnf=/config/.my.cnf"
+    volumes:
+      - ./mysql-exporter.cnf:/config/.my.cnf:ro
+    ports:
+      - "9104:9104"
+    restart: unless-stopped
     networks:
       - monitoring_net
 
