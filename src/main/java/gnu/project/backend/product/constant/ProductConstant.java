@@ -3,10 +3,11 @@ package gnu.project.backend.product.constant;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class MakeupConstant {
+public class ProductConstant {
 
     // 공통 메시지
     public static final String MAKEUP_DELETE_SUCCESS = "메이크업 삭제를 성공적으로 삭제하였습니다.";
+    public static final String DRESS_DELETE_SUCCESS = "메이크업 삭제를 성공적으로 삭제하였습니다.";
 
 
     // --- 필수 입력 메시지 ---
