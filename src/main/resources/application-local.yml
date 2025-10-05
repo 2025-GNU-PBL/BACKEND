@@ -3,9 +3,12 @@ spring:
     activate:
       on-profile: local
   jpa:
+    sql:
+      init:
+        mode: always
     hibernate:
       ddl-auto: create-drop
-    defer-datasource-initialization: false
+    defer-datasource-initialization: true
     show-sql: true
   h2:
     console:
@@ -18,4 +21,5 @@ spring:
     url: jdbc:h2:mem:test;MODE=MySQL
     username: sa
     password:
+
 
