@@ -41,7 +41,11 @@ public enum ErrorCode {
     IMAGE_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5001", "이미지 파일 삭제에 실패했습니다."),
 
     // makeup
-    MAKEUP_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "MAKEUP001", "해당 메이크업 상품을 찾을 수 없습니다");
+    MAKEUP_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "MAKEUP001", "해당 메이크업 상품을 찾을 수 없습니다"),
+
+    // dress
+    DRESS_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "DRESS001", "해당 드레스 상품을 찾을 수 없습니다");
+
     private final HttpStatus status;
     private final String code;
     private final String message;
