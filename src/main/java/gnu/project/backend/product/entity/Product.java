@@ -71,7 +71,7 @@ public class Product extends BaseEntity {
     @BatchSize(size = 50)
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options = new ArrayList<>();
-    
+
     @BatchSize(size = 50)
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
@@ -80,6 +80,13 @@ public class Product extends BaseEntity {
         String address, String detail, String name) {
         this.owner = owner;
         this.category = category;
+        this.price = price;
+        this.address = address;
+        this.detail = detail;
+        this.name = name;
+    }
+
+    protected void updateProduct(Integer price, String address, String detail, String name) {
         this.price = price;
         this.address = address;
         this.detail = detail;

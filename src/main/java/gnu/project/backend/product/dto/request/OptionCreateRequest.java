@@ -1,20 +1,22 @@
 package gnu.project.backend.product.dto.request;
 
+import gnu.project.backend.product.constant.MakeupConstant;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record OptionCreateRequest(
-    @NotBlank(message = "옵션명은 필수입니다")
-    @Size(max = 50, message = "옵션명은 50자 이하여야 합니다")
+
+    @NotBlank(message = MakeupConstant.OPTION_NAME_REQUIRED)
+    @Size(max = MakeupConstant.MAX_OPTION_NAME_LENGTH, message = MakeupConstant.OPTION_NAME_LENGTH)
     String name,
 
-    @NotNull(message = "옵션 가격은 필수입니다")
-    @Min(value = 0, message = "옵션 가격은 0 이상이어야 합니다")
+    @NotNull(message = MakeupConstant.OPTION_PRICE_REQUIRED)
+    @Min(value = MakeupConstant.MIN_OPTION_PRICE, message = MakeupConstant.OPTION_PRICE_MIN)
     Integer price,
 
-    @Size(max = 200, message = "옵션 설명은 200자 이하여야 합니다")
+    @Size(max = MakeupConstant.MAX_OPTION_DETAIL_LENGTH, message = MakeupConstant.OPTION_DETAIL_LENGTH)
     String detail
 ) {
 

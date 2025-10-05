@@ -1,0 +1,27 @@
+spring:
+  config:
+    activate:
+      on-profile: perform
+  datasource:
+    hikari:
+      maximum-pool-size: 20       # 커넥션 풀 크기
+      minimum-idle: 5
+      max-lifetime: 600000       # 10분으로 줄임 (ms)
+      idle-timeout: 300000       # 5분
+      connection-timeout: 30000  # 30초
+    url: jdbc:mysql://localhost:3307/mydb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: myuser
+    password: user-password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 1000
+        order_inserts: true
+        order_updates: true
+    hibernate:
+      ddl-auto: update
+    defer-datasource-initialization: true
+    show-sql: false
+
