@@ -41,7 +41,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
     @Override
     public List<MakeupPageResponse> searchMakeup(final int pageSize, final int pageNumber) {
         return pagination(query
-                .select(createLessonResponse())
+                .select(createMakeupResponse())
                 .from(makeup)
                 .leftJoin(makeup.images, image)
                 .where(image.displayOrder.eq(0).or(image.isNull()))
@@ -51,7 +51,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
         ).fetch();
     }
 
-    private ConstructorExpression<MakeupPageResponse> createLessonResponse() {
+    private ConstructorExpression<MakeupPageResponse> createMakeupResponse() {
         return Projections.constructor(
             MakeupPageResponse.class,
             makeup.id,
