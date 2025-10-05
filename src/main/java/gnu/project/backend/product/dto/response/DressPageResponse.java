@@ -7,6 +7,7 @@ import java.util.List;
 public record DressPageResponse(
     Long id,
     String name,
+    Double starCount,
     String address,
     String detail,
     Integer price,
@@ -15,5 +16,6 @@ public record DressPageResponse(
     String Thumbnail,
     List<TagResponse> tags
 ) {
+
 
 }

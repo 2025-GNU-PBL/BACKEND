@@ -71,11 +71,15 @@ public record DressResponse(
     }
 
     public record TagResponse(
+        Long id,
         String tagName
     ) {
 
         public static DressResponse.TagResponse from(Tag tag) {
-            return new DressResponse.TagResponse(tag.getName());
+            return new DressResponse.TagResponse(
+                tag.getId(),
+                tag.getName()
+            );
         }
     }
 }
