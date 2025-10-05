@@ -14,8 +14,8 @@ public class MakeupConstant {
     public static final String PRICE_REQUIRED = "가격은 필수입니다";
     public static final String ADDRESS_REQUIRED = "주소는 필수입니다";
     public static final String DETAIL_REQUIRED = "상세 설명은 필수입니다";
-    public static final String STYLE_REQUIRED = "메이크업 스타일은 필수입니다";
-    public static final String TYPE_REQUIRED = "메이크업 타입은 필수입니다";
+    public static final String STYLE_REQUIRED = "스타일은 필수입니다";
+    public static final String TYPE_REQUIRED = "타입은 필수입니다";
     public static final String OPTION_NAME_REQUIRED = "옵션명은 필수입니다";
     public static final String OPTION_PRICE_REQUIRED = "옵션 가격은 필수입니다";
     public static final String MAKEUP_OPTION_LIMIT = "옵션은 최대 10개까지 추가 가능합니다";
