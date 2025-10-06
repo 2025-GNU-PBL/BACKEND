@@ -94,7 +94,7 @@ public class DressService {
             );
 
         validOwner(accessor, dress);
-
+        
         imageProvider.updateImages(
             dress,
             images,

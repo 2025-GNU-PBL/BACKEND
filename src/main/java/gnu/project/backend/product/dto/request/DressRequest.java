@@ -10,15 +10,12 @@ import static gnu.project.backend.product.constant.ProductConstant.MAX_AVAILABLE
 import static gnu.project.backend.product.constant.ProductConstant.MAX_DETAIL_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.MAX_NAME_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.MAX_OPTION_COUNT;
-import static gnu.project.backend.product.constant.ProductConstant.MAX_STYLE_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.MIN_PRICE;
 import static gnu.project.backend.product.constant.ProductConstant.NAME_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.NAME_REQUIRED;
 import static gnu.project.backend.product.constant.ProductConstant.OPTION_LIMIT;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_MIN;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_REQUIRED;
-import static gnu.project.backend.product.constant.ProductConstant.STYLE_LENGTH;
-import static gnu.project.backend.product.constant.ProductConstant.STYLE_REQUIRED;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -43,10 +40,6 @@ public record DressRequest(
     @NotBlank(message = DETAIL_REQUIRED)
     @Size(max = MAX_DETAIL_LENGTH, message = DETAIL_LENGTH)
     String detail,
-
-    @NotBlank(message = STYLE_REQUIRED)
-    @Size(max = MAX_STYLE_LENGTH, message = STYLE_LENGTH)
-    String style,
 
     @Size(max = MAX_AVAILABLE_TIMES, message = AVAILABLE_TIMES_LENGTH)
     String availableTimes,
