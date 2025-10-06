@@ -148,4 +148,8 @@ public class Product extends BaseEntity {
             .sorted(Comparator.comparing(Image::getDisplayOrder))
             .collect(Collectors.toList());
     }
+
+    public void removeTag(final Tag tag) {
+        this.tags.remove(tag);
+    }
 }

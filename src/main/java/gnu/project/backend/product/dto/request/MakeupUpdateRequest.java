@@ -5,7 +5,6 @@ import static gnu.project.backend.product.constant.ProductConstant.ADDRESS_REQUI
 import static gnu.project.backend.product.constant.ProductConstant.AVAILABLE_TIMES_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.DETAIL_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.DETAIL_REQUIRED;
-import static gnu.project.backend.product.constant.ProductConstant.MAKEUP_OPTION_LIMIT;
 import static gnu.project.backend.product.constant.ProductConstant.MAX_ADDRESS_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.MAX_AVAILABLE_TIMES;
 import static gnu.project.backend.product.constant.ProductConstant.MAX_DETAIL_LENGTH;
@@ -16,6 +15,7 @@ import static gnu.project.backend.product.constant.ProductConstant.MAX_TYPE_LENG
 import static gnu.project.backend.product.constant.ProductConstant.MIN_PRICE;
 import static gnu.project.backend.product.constant.ProductConstant.NAME_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.NAME_REQUIRED;
+import static gnu.project.backend.product.constant.ProductConstant.OPTION_LIMIT;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_MIN;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_REQUIRED;
 import static gnu.project.backend.product.constant.ProductConstant.STYLE_LENGTH;
@@ -60,10 +60,11 @@ public record MakeupUpdateRequest(
     String type,
 
     @Valid
-    @Size(max = MAX_OPTION_COUNT, message = MAKEUP_OPTION_LIMIT)
-    List<OptionCreateRequest> options,
+    @Size(max = MAX_OPTION_COUNT, message = OPTION_LIMIT)
+    List<OptionUpdateRequest> options,
 
-    List<Long> keepImagesId
+    List<Long> keepImagesId,
+    List<TagRequest> tags
 ) {
 
 }

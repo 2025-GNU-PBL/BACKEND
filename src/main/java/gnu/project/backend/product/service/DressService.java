@@ -88,18 +88,26 @@ public class DressService {
         final Accessor accessor,
         final List<Long> keepImagesId
     ) {
-        final Dress dress = dressRepository.findById(id)
+        final Dress dress = dressRepository.findDressWithImagesAndOptionsById(id)
             .orElseThrow(
                 () -> new BusinessException(DRESS_NOT_FOUND_EXCEPTION)
             );
 
         validOwner(accessor, dress);
-        
+
         imageProvider.updateImages(
             dress,
             images,
             keepImagesId,
             dress.getImages()
+        );
+        optionProvider.updateOptions(
+            dress,
+            request.options()
+        );
+        tagProvider.updateTags(
+            dress,
+            request.tags()
         );
         dress.update(
             request.price(),

@@ -5,7 +5,6 @@ import static gnu.project.backend.product.constant.ProductConstant.ADDRESS_REQUI
 import static gnu.project.backend.product.constant.ProductConstant.AVAILABLE_TIMES_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.DETAIL_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.DETAIL_REQUIRED;
-import static gnu.project.backend.product.constant.ProductConstant.MAKEUP_OPTION_LIMIT;
 import static gnu.project.backend.product.constant.ProductConstant.MAX_ADDRESS_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.MAX_AVAILABLE_TIMES;
 import static gnu.project.backend.product.constant.ProductConstant.MAX_DETAIL_LENGTH;
@@ -15,6 +14,7 @@ import static gnu.project.backend.product.constant.ProductConstant.MAX_STYLE_LEN
 import static gnu.project.backend.product.constant.ProductConstant.MIN_PRICE;
 import static gnu.project.backend.product.constant.ProductConstant.NAME_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.NAME_REQUIRED;
+import static gnu.project.backend.product.constant.ProductConstant.OPTION_LIMIT;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_MIN;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_REQUIRED;
 import static gnu.project.backend.product.constant.ProductConstant.STYLE_LENGTH;
@@ -54,7 +54,7 @@ public record DressRequest(
     List<TagRequest> tags,
 
     @Valid
-    @Size(max = MAX_OPTION_COUNT, message = MAKEUP_OPTION_LIMIT)
+    @Size(max = MAX_OPTION_COUNT, message = OPTION_LIMIT)
     List<OptionCreateRequest> options
 ) {
 

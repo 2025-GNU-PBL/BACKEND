@@ -2,6 +2,7 @@ package gnu.project.backend.product.repository.impl;
 
 import static gnu.project.backend.product.entity.QDress.dress;
 import static gnu.project.backend.product.entity.QImage.image;
+import static gnu.project.backend.product.entity.QOption.option;
 import static gnu.project.backend.product.entity.QTag.tag;
 
 import com.querydsl.core.types.ConstructorExpression;
@@ -19,6 +20,7 @@ import gnu.project.backend.product.repository.DressCustomRepository;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
@@ -76,7 +78,6 @@ public class DressRepositoryImpl implements DressCustomRepository {
                 )
             ));
 
-        // 4단계: 태그가 포함된 새로운 DressPageResponse 생성
         return dresses.stream()
             .map(dress -> new DressPageResponse(
                 dress.id(),
@@ -91,6 +92,19 @@ public class DressRepositoryImpl implements DressCustomRepository {
                 tagsMap.getOrDefault(dress.id(), List.of())
             ))
             .toList();
+    }
+
+    @Override
+    public Optional<Dress> findDressWithImagesAndOptionsById(Long id) {
+        return Optional.ofNullable(
+            query
+                .selectFrom(dress)
+                .leftJoin(dress.images, image).fetchJoin()
+                .leftJoin(dress.options, option)
+                .leftJoin(dress.tags, tag)
+                .where(dress.id.eq(id))
+                .fetchOne()
+        );
     }
 
     private ConstructorExpression<DressPageResponse> createDressResponse() {

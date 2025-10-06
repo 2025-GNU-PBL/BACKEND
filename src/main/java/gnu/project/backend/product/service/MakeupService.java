@@ -96,6 +96,12 @@ public class MakeupService {
             keepImagesId,
             makeup.getImages()
         );
+
+        optionProvider.updateOptions(
+            makeup,
+            request.options()
+        );
+        
         makeup.update(
             request.price(),
             request.address(),

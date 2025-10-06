@@ -83,7 +83,7 @@ public class MakeupController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteMakeup(
         @Auth final Accessor accessor,
-        @RequestParam(name = "id") final Long id
+        @PathVariable(name = "id") final Long id
     ) {
         return ResponseEntity.ok(makeupService.delete(id, accessor));
     }

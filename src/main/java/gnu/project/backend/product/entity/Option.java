@@ -61,4 +61,14 @@ public class Option extends BaseEntity {
     ) {
         return new Option(product, detail, price, name);
     }
+
+    public void update(
+        final String name,
+        final String detail,
+        final Integer price
+    ) {
+        this.name = name;
+        this.detail = detail;
+        this.price = price;
+    }
 }

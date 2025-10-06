@@ -83,7 +83,7 @@ public class DressController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDress(
         @Auth final Accessor accessor,
-        @RequestParam(name = "id") final Long id
+        @PathVariable(name = "id") final Long id
     ) {
         return ResponseEntity.ok(dressService.delete(id, accessor));
     }
