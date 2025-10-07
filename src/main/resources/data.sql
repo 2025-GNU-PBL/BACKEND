@@ -106,7 +106,7 @@ VALUES (1, 1, 'https://cdn.example.com/makeup/1_thumb.jpg', 'makeup/1_thumb.jpg'
 
 
 -- OPTION 데이터 삽입 (옵션 가격)
-INSERT INTO option (id, product_id, detail, price, name, created_at, updated_at)
+INSERT INTO options (id, product_id, detail, price, name, created_at, updated_at)
 VALUES (1, 1, '웨딩 본식 메이크업', 200000, '본식', NOW(), NOW()),
        (2, 1, '웨딩 리허설 메이크업', 150000, '리허설', NOW(), NOW()),
        (3, 2, '데일리 메이크업 (주간)', 80000, '주간', NOW(), NOW()),

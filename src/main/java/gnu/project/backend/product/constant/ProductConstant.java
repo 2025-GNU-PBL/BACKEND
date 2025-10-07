@@ -3,10 +3,11 @@ package gnu.project.backend.product.constant;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class MakeupConstant {
+public class ProductConstant {
 
     // 공통 메시지
     public static final String MAKEUP_DELETE_SUCCESS = "메이크업 삭제를 성공적으로 삭제하였습니다.";
+    public static final String DRESS_DELETE_SUCCESS = "메이크업 삭제를 성공적으로 삭제하였습니다.";
 
 
     // --- 필수 입력 메시지 ---
@@ -14,11 +15,11 @@ public class MakeupConstant {
     public static final String PRICE_REQUIRED = "가격은 필수입니다";
     public static final String ADDRESS_REQUIRED = "주소는 필수입니다";
     public static final String DETAIL_REQUIRED = "상세 설명은 필수입니다";
-    public static final String STYLE_REQUIRED = "메이크업 스타일은 필수입니다";
-    public static final String TYPE_REQUIRED = "메이크업 타입은 필수입니다";
+    public static final String STYLE_REQUIRED = "스타일은 필수입니다";
+    public static final String TYPE_REQUIRED = "타입은 필수입니다";
     public static final String OPTION_NAME_REQUIRED = "옵션명은 필수입니다";
     public static final String OPTION_PRICE_REQUIRED = "옵션 가격은 필수입니다";
-    public static final String MAKEUP_OPTION_LIMIT = "옵션은 최대 10개까지 추가 가능합니다";
+    public static final String OPTION_LIMIT = "옵션은 최대 10개까지 추가 가능합니다";
 
     // --- 길이 제한 메시지 ---
     public static final String NAME_LENGTH = "상품명은 100자 이하여야 합니다";

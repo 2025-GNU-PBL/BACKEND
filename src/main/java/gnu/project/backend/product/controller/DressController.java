@@ -2,11 +2,11 @@ package gnu.project.backend.product.controller;
 
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
-import gnu.project.backend.product.dto.request.MakeupRequest;
+import gnu.project.backend.product.dto.request.DressRequest;
 import gnu.project.backend.product.dto.request.MakeupUpdateRequest;
-import gnu.project.backend.product.dto.response.MakeupPageResponse;
-import gnu.project.backend.product.dto.response.MakeupResponse;
-import gnu.project.backend.product.service.MakeupService;
+import gnu.project.backend.product.dto.response.DressPageResponse;
+import gnu.project.backend.product.dto.response.DressResponse;
+import gnu.project.backend.product.service.DressService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -26,28 +26,28 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/makeup")
-public class MakeupController {
+@RequestMapping("/api/v1/dress")
+public class DressController {
 
-    private final MakeupService makeupService;
+    private final DressService dressService;
 
     @PostMapping()
-    public ResponseEntity<MakeupResponse> createMakeup(
-        @Valid @RequestPart("request") final MakeupRequest request,
+    public ResponseEntity<DressResponse> createMakeup(
+        @Valid @RequestPart("request") final DressRequest request,
         @RequestPart(value = "images", required = false) final List<MultipartFile> images,
         @Auth final Accessor accessor
     ) {
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(
-                makeupService.create(
+                dressService.create(
                     request, images, accessor
                 )
             );
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<MakeupResponse> updateMakeup(
+    public ResponseEntity<DressResponse> updateDress(
         @PathVariable(name = "id") final Long id,
         @Valid @RequestPart("request") final MakeupUpdateRequest request,
         @RequestPart(value = "images", required = false) final List<MultipartFile> images,
@@ -56,7 +56,7 @@ public class MakeupController {
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(
-                makeupService.update(
+                dressService.update(
                     id, request, images, accessor, request.keepImagesId()
                 )
             );
@@ -64,28 +64,29 @@ public class MakeupController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<MakeupResponse> readMakeup(
+    public ResponseEntity<DressResponse> readMakeup(
         @PathVariable(name = "id") final Long id
     ) {
-        return ResponseEntity.ok(makeupService.read(id));
+        return ResponseEntity.ok(dressService.read(id));
     }
 
     @GetMapping()
-    public ResponseEntity<Page<MakeupPageResponse>> readMakeups(
+    public ResponseEntity<Page<DressPageResponse>> readMakeups(
         @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
         @RequestParam(name = "pageSize", required = false, defaultValue = "6") final Integer pageSize
     ) {
         return ResponseEntity.ok(
-            makeupService.readMakeups(pageNumber, pageSize)
+            dressService.readDresses(pageNumber, pageSize)
         );
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteMakeup(
+    public ResponseEntity<String> deleteDress(
         @Auth final Accessor accessor,
         @PathVariable(name = "id") final Long id
     ) {
-        return ResponseEntity.ok(makeupService.delete(id, accessor));
+        return ResponseEntity.ok(dressService.delete(id, accessor));
     }
+
 
 }
