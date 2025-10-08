@@ -3,7 +3,7 @@ package gnu.project.backend.product.controller;
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.product.dto.request.DressRequest;
-import gnu.project.backend.product.dto.request.MakeupUpdateRequest;
+import gnu.project.backend.product.dto.request.DressUpdateRequest;
 import gnu.project.backend.product.dto.response.DressPageResponse;
 import gnu.project.backend.product.dto.response.DressResponse;
 import gnu.project.backend.product.service.DressService;
@@ -32,7 +32,7 @@ public class DressController {
     private final DressService dressService;
 
     @PostMapping()
-    public ResponseEntity<DressResponse> createMakeup(
+    public ResponseEntity<DressResponse> createDress(
         @Valid @RequestPart("request") final DressRequest request,
         @RequestPart(value = "images", required = false) final List<MultipartFile> images,
         @Auth final Accessor accessor
@@ -49,7 +49,7 @@ public class DressController {
     @PatchMapping("/{id}")
     public ResponseEntity<DressResponse> updateDress(
         @PathVariable(name = "id") final Long id,
-        @Valid @RequestPart("request") final MakeupUpdateRequest request,
+        @Valid @RequestPart("request") final DressUpdateRequest request,
         @RequestPart(value = "images", required = false) final List<MultipartFile> images,
         @Auth final Accessor accessor
     ) {
@@ -64,14 +64,14 @@ public class DressController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<DressResponse> readMakeup(
+    public ResponseEntity<DressResponse> readDress(
         @PathVariable(name = "id") final Long id
     ) {
         return ResponseEntity.ok(dressService.read(id));
     }
 
     @GetMapping()
-    public ResponseEntity<Page<DressPageResponse>> readMakeups(
+    public ResponseEntity<Page<DressPageResponse>> readDresses(
         @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
         @RequestParam(name = "pageSize", required = false, defaultValue = "6") final Integer pageSize
     ) {

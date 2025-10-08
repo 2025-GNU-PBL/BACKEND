@@ -101,7 +101,7 @@ public class MakeupService {
             makeup,
             request.options()
         );
-        
+
         makeup.update(
             request.price(),
             request.address(),
