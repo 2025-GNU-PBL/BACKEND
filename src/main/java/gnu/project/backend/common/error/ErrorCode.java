@@ -39,7 +39,18 @@ public enum ErrorCode {
     IMAGE_FILE_INVALID_NAME(HttpStatus.BAD_REQUEST, "IMAGE4002", "업로드할 이미지 파일명이 없습니다."),
     IMAGE_INVALID_FORMAT(HttpStatus.BAD_REQUEST, "IMAGE4003", "지원하지 않는 이미지 형식입니다."),
     // makeup
-    MAKEUP_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "MAKEUP001", "해당 메이크업 상품을 찾을 수 없습니다");
+    MAKEUP_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "MAKEUP001", "해당 메이크업 상품을 찾을 수 없습니다"),
+    //Order
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "PAYMENT001", "존재하지 않는 주문입니다."),
+    //Payment
+    PAYMENT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "PAYMENT002", "결제에 대한 접근 권한이 없습니다."),
+    PAYMENT_AMOUNT_MISMATCH(HttpStatus.BAD_REQUEST, "PAYMENT003", "결제 요청 금액이 주문 금액과 일치하지 않습니다."),
+    PAYMENT_CONFIRM_FAILED(HttpStatus.BAD_REQUEST, "PAYMENT004" , "결제 승인 실패."),
+    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND,"PAYMENT005","결제 내역을 찾을 수 없습니다."),
+    PAYMENT_ALREADY_CANCELED(HttpStatus.BAD_REQUEST,"PAYMENT006","이미 취소된 결제입니다."),
+    PAYMENT_CANCEL_FAILED(HttpStatus.BAD_REQUEST,"PAYMENT007","결제 취소 요청에 실패했습니다."),
+    UNAUTHORIZED_WEBHOOK(HttpStatus.BAD_REQUEST,"WEBHOOK001","asd");
+
     private final HttpStatus status;
     private final String code;
     private final String message;

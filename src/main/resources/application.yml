@@ -22,6 +22,13 @@ spring:
     username: sa
     password:
 
+
+payment:
+  toss:
+    base-url:	 https://api.tosspayments.com
+    secret-key : ${TOSS_SECRET_KEY}
+    confirm-url : /v1/payments/confirm
+
 oauth:
   kakao:
     client-id: ${KAKAO_CLIENT_ID}

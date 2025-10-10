@@ -53,4 +53,7 @@ public class Order {
         }
         return order;
     }
+    public void updateStatus(OrderStatus status) {
+        this.status = status;
+    }
 }
