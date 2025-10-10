@@ -10,7 +10,7 @@ import gnu.project.backend.common.exception.BusinessException;
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
 import gnu.project.backend.product.dto.request.DressRequest;
-import gnu.project.backend.product.dto.request.MakeupUpdateRequest;
+import gnu.project.backend.product.dto.request.DressUpdateRequest;
 import gnu.project.backend.product.dto.response.DressPageResponse;
 import gnu.project.backend.product.dto.response.DressResponse;
 import gnu.project.backend.product.entity.Dress;
@@ -83,7 +83,7 @@ public class DressService {
 
     public DressResponse update(
         final Long id,
-        final MakeupUpdateRequest request,
+        final DressUpdateRequest request,
         final List<MultipartFile> images,
         final Accessor accessor,
         final List<Long> keepImagesId
@@ -94,7 +94,7 @@ public class DressService {
             );
 
         validOwner(accessor, dress);
-        
+
         imageProvider.updateImages(
             dress,
             images,
@@ -125,7 +125,7 @@ public class DressService {
         final Accessor accessor
     ) {
         final Owner owner = findOwnerBySocialId(accessor);
-        final Dress savedMakeup = dressRepository.save(
+        final Dress savedDress = dressRepository.save(
             Dress.create(
                 owner,
                 request.price(),
@@ -136,10 +136,10 @@ public class DressService {
             )
         );
 
-        imageProvider.uploadAndSaveImages(savedMakeup, images, new AtomicInteger(0));
-        optionProvider.createOptions(savedMakeup, request.options());
-        tagProvider.createTag(savedMakeup, request.tags());
-        return DressResponse.from(savedMakeup);
+        imageProvider.uploadAndSaveImages(savedDress, images, new AtomicInteger(0));
+        optionProvider.createOptions(savedDress, request.options());
+        tagProvider.createTag(savedDress, request.tags());
+        return DressResponse.from(savedDress);
     }
 
 

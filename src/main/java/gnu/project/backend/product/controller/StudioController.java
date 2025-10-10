@@ -2,11 +2,11 @@ package gnu.project.backend.product.controller;
 
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
-import gnu.project.backend.product.dto.request.DressRequest;
-import gnu.project.backend.product.dto.request.DressUpdateRequest;
-import gnu.project.backend.product.dto.response.DressPageResponse;
-import gnu.project.backend.product.dto.response.DressResponse;
-import gnu.project.backend.product.service.DressService;
+import gnu.project.backend.product.dto.request.StudioRequest;
+import gnu.project.backend.product.dto.request.StudioUpdateRequest;
+import gnu.project.backend.product.dto.response.StudioPageResponse;
+import gnu.project.backend.product.dto.response.StudioResponse;
+import gnu.project.backend.product.service.StudioService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -26,37 +26,37 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/dress")
-public class DressController {
+@RequestMapping("/api/v1/studio")
+public class StudioController {
 
-    private final DressService dressService;
+    private final StudioService studioService;
 
     @PostMapping()
-    public ResponseEntity<DressResponse> createDress(
-        @Valid @RequestPart("request") final DressRequest request,
+    public ResponseEntity<StudioResponse> createStudio(
+        @Valid @RequestPart("request") final StudioRequest request,
         @RequestPart(value = "images", required = false) final List<MultipartFile> images,
         @Auth final Accessor accessor
     ) {
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(
-                dressService.create(
+                studioService.create(
                     request, images, accessor
                 )
             );
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<DressResponse> updateDress(
+    public ResponseEntity<StudioResponse> updateStudio(
         @PathVariable(name = "id") final Long id,
-        @Valid @RequestPart("request") final DressUpdateRequest request,
+        @Valid @RequestPart("request") final StudioUpdateRequest request,
         @RequestPart(value = "images", required = false) final List<MultipartFile> images,
         @Auth final Accessor accessor
     ) {
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(
-                dressService.update(
+                studioService.update(
                     id, request, images, accessor, request.keepImagesId()
                 )
             );
@@ -64,28 +64,28 @@ public class DressController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<DressResponse> readDress(
+    public ResponseEntity<StudioResponse> readStudio(
         @PathVariable(name = "id") final Long id
     ) {
-        return ResponseEntity.ok(dressService.read(id));
+        return ResponseEntity.ok(studioService.read(id));
     }
 
     @GetMapping()
-    public ResponseEntity<Page<DressPageResponse>> readDresses(
+    public ResponseEntity<Page<StudioPageResponse>> readStudios(
         @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
         @RequestParam(name = "pageSize", required = false, defaultValue = "6") final Integer pageSize
     ) {
         return ResponseEntity.ok(
-            dressService.readDresses(pageNumber, pageSize)
+            studioService.readStudios(pageNumber, pageSize)
         );
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteDress(
+    public ResponseEntity<String> deleteStudio(
         @Auth final Accessor accessor,
         @PathVariable(name = "id") final Long id
     ) {
-        return ResponseEntity.ok(dressService.delete(id, accessor));
+        return ResponseEntity.ok(studioService.delete(id, accessor));
     }
 
 
