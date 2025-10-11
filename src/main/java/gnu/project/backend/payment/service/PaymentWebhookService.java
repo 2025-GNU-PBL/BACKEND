@@ -1,6 +1,7 @@
 package gnu.project.backend.payment.service;
 
 
+import gnu.project.backend.common.enumerated.PaymentStatus;
 import gnu.project.backend.common.exception.BusinessException;
 import gnu.project.backend.payment.entity.Payment;
 import gnu.project.backend.payment.repository.PaymentRepository;
@@ -37,11 +38,11 @@ public class PaymentWebhookService {
 
         switch (status) {
             case "DONE":
-                payment.setStatus("DONE");
+                payment.setStatus(PaymentStatus.DONE);
                 payment.setApprovedAt(LocalDateTime.now());
                 break;
             case "CANCELED":
-                payment.setStatus("CANCELED");
+                payment.setStatus(PaymentStatus.CANCELED);
                 payment.setCanceledAt(LocalDateTime.now());
                 payment.setCancelReason((String) payload.get("cancelReason"));
                 break;

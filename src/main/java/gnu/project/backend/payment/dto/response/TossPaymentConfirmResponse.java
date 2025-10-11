@@ -2,6 +2,7 @@ package gnu.project.backend.payment.dto.response;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import gnu.project.backend.common.enumerated.PaymentStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 public class TossPaymentConfirmResponse {
     private String paymentKey;
     private String orderId;
-    private String status;
+    private PaymentStatus status;
     private String method;
     private Long totalAmount;
     private Receipt receipt;

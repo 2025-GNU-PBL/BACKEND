@@ -15,11 +15,9 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     Optional<Payment> findByPaymentKey(String paymentKey);
 
-    List<Payment> findByOrder_Customer_SocialId(String socialId);
+    List<Payment> findByOrder_Customer_OauthInfo_SocialId(String socialId);
 
-//    @Query("SELECT new gnu.project.backend.payment.dto.response.PaymentSettlementResponse(p.order.product.name, SUM(p.amount), SUM(CASE WHEN p.status='CANCELED' THEN 0 ELSE p.amount END), COUNT(p)) " +
-//            "FROM Payment p WHERE p.order.product.owner.id = :ownerId GROUP BY p.order.product.name")
-//    List<PaymentSettlementResponse> findSettlementByOwner(Long ownerId);
+
 
 
 
