@@ -2,20 +2,22 @@ package gnu.project.backend.product.service;
 
 import static gnu.project.backend.common.error.ErrorCode.MAKEUP_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.common.error.ErrorCode.OWNER_NOT_FOUND_EXCEPTION;
-import static gnu.project.backend.product.constant.ProductConstant.MAKEUP_DELETE_SUCCESS;
+import static gnu.project.backend.common.error.ErrorCode.STUDIO_NOT_FOUND_EXCEPTION;
+import static gnu.project.backend.product.constant.ProductConstant.DRESS_DELETE_SUCCESS;
 
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.exception.BusinessException;
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
-import gnu.project.backend.product.dto.request.MakeupRequest;
-import gnu.project.backend.product.dto.request.MakeupUpdateRequest;
-import gnu.project.backend.product.dto.response.MakeupPageResponse;
-import gnu.project.backend.product.dto.response.MakeupResponse;
-import gnu.project.backend.product.entity.Makeup;
+import gnu.project.backend.product.dto.request.StudioRequest;
+import gnu.project.backend.product.dto.request.StudioUpdateRequest;
+import gnu.project.backend.product.dto.response.StudioPageResponse;
+import gnu.project.backend.product.dto.response.StudioResponse;
+import gnu.project.backend.product.entity.Studio;
 import gnu.project.backend.product.provider.ImageProvider;
 import gnu.project.backend.product.provider.OptionProvider;
-import gnu.project.backend.product.repository.MakeupRepository;
+import gnu.project.backend.product.provider.TagProvider;
+import gnu.project.backend.product.repository.StudioRepository;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
@@ -29,30 +31,36 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
-public class MakeupService {
+public class StudioService {
 
-    private final MakeupRepository makeupRepository;
+    private final StudioRepository studioRepository;
     private final OwnerRepository ownerRepository;
     private final ImageProvider imageProvider;
     private final OptionProvider optionProvider;
+    private final TagProvider tagProvider;
 
-    @Transactional(readOnly = true)
-    public MakeupResponse read(
-        final Long id
-    ) {
-        return makeupRepository.findByMakeupId(id);
+    private static void validOwner(Accessor accessor, Studio studio) {
+        if (!studio.getOwner().getSocialId().equals(accessor.getSocialId())) {
+            throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
+        }
     }
 
     @Transactional(readOnly = true)
-    public Page<MakeupPageResponse> readMakeups(
+    public StudioResponse read(
+        final Long id
+    ) {
+        return studioRepository.findByStudioId(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<StudioPageResponse> readStudios(
         final Integer pageNumber,
         final Integer pageSize
     ) {
-        long totalElements = makeupRepository.count();
+        long totalElements = studioRepository.count();
         final Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         return new PageImpl<>(
-            makeupRepository.searchMakeup(pageSize, pageNumber),
+            studioRepository.searchStudio(pageSize, pageNumber),
             pageable,
             totalElements
         );
@@ -62,80 +70,76 @@ public class MakeupService {
         final Long id,
         final Accessor accessor
     ) {
-        final Makeup makeup = makeupRepository.findById(id)
+        final Studio studio = studioRepository.findById(id)
             .orElseThrow(
                 () -> new BusinessException(MAKEUP_NOT_FOUND_EXCEPTION)
             );
 
-        if (!makeup.getOwner().getSocialId().equals(accessor.getSocialId())) {
-            throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
-        }
-        makeup.delete();
+        validOwner(accessor, studio);
+        studio.delete();
 
-        return MAKEUP_DELETE_SUCCESS;
+        return DRESS_DELETE_SUCCESS;
     }
 
-    public MakeupResponse update(
+    public StudioResponse update(
         final Long id,
-        final MakeupUpdateRequest request,
+        final StudioUpdateRequest request,
         final List<MultipartFile> images,
         final Accessor accessor,
         final List<Long> keepImagesId
     ) {
-        final Makeup makeup = makeupRepository.findById(id)
+        final Studio studio = studioRepository.findStudioWithImagesAndOptionsById(id)
             .orElseThrow(
-                () -> new BusinessException(MAKEUP_NOT_FOUND_EXCEPTION)
+                () -> new BusinessException(STUDIO_NOT_FOUND_EXCEPTION)
             );
 
-        if (!makeup.getOwner().getSocialId().equals(accessor.getSocialId())) {
-            throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
-        }
+        validOwner(accessor, studio);
+
         imageProvider.updateImages(
-            makeup,
+            studio,
             images,
             keepImagesId,
-            makeup.getImages()
+            studio.getImages()
         );
-
         optionProvider.updateOptions(
-            makeup,
+            studio,
             request.options()
         );
-
-        makeup.update(
+        tagProvider.updateTags(
+            studio,
+            request.tags()
+        );
+        studio.update(
             request.price(),
             request.address(),
             request.detail(),
             request.name(),
-            request.style(),
-            request.availableTimes(),
-            request.type()
+            request.availableTimes()
         );
-        return MakeupResponse.from(makeup);
+        return StudioResponse.from(studio);
     }
 
-    public MakeupResponse create(
-        final MakeupRequest request,
+    public StudioResponse create(
+        final StudioRequest request,
         final List<MultipartFile> images,
         final Accessor accessor
     ) {
         final Owner owner = findOwnerBySocialId(accessor);
-        final Makeup savedMakeup = makeupRepository.save(
-            Makeup.create(
+        final Studio savedStudio = studioRepository.save(
+            Studio.create(
                 owner,
                 request.price(),
                 request.address(),
                 request.detail(),
                 request.name(),
-                request.style(),
-                request.availableTimes(),
-                request.type()
+                request.availableTimes()
             )
         );
 
-        imageProvider.uploadAndSaveImages(savedMakeup, images, new AtomicInteger(0));
-        optionProvider.createOptions(savedMakeup, request.options());
-        return MakeupResponse.from(savedMakeup);
+        imageProvider.uploadAndSaveImages(savedStudio, images, new AtomicInteger(0));
+        optionProvider.createOptions(savedStudio, request.options());
+        tagProvider.createTag(savedStudio, request.tags());
+        return StudioResponse.from(savedStudio);
     }
 
 

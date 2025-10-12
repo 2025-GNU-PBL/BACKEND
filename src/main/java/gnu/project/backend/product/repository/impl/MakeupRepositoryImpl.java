@@ -15,9 +15,7 @@ import gnu.project.backend.product.repository.MakeupCustomRepository;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
-@Repository
 @RequiredArgsConstructor
 public class MakeupRepositoryImpl implements MakeupCustomRepository {
 
