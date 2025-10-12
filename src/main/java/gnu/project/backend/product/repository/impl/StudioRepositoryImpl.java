@@ -1,6 +1,5 @@
 package gnu.project.backend.product.repository.impl;
 
-import static gnu.project.backend.product.entity.QDress.dress;
 import static gnu.project.backend.product.entity.QImage.image;
 import static gnu.project.backend.product.entity.QOption.option;
 import static gnu.project.backend.product.entity.QStudio.studio;
@@ -29,8 +28,8 @@ import lombok.RequiredArgsConstructor;
 public class StudioRepositoryImpl implements StudioCustomRepository {
 
     private static final OrderSpecifier<?>[] STUDIO_DEFAULT_ORDER = {
-        dress.id.desc(),
-        dress.createdAt.desc()
+        studio.id.desc(),
+        studio.createdAt.desc()
     };
     private final JPAQueryFactory query;
 
