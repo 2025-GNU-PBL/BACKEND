@@ -60,13 +60,14 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # 대상 디렉토리 생성 및 이동 (EC2 인스턴스의 배포 디렉토리)
+            # 대상 디렉토리 생성 및 이동
             cd /home/ubuntu/yeon || { mkdir -p /home/ubuntu/yeon && cd /home/ubuntu/yeon; }
             
-            # 기존 파일들 삭제
-            [ -f docker-compose-prod.yml ] && rm docker-compose-prod.yml
-            [ -f prometheus.yml ] && rm prometheus.yml
-            [ -f mysql-exporter.cnf ] && rm mysql-exporter.cnf
+            # 기존 컨테이너 중지 (마운트 해제를 위해)
+            docker compose -f docker-compose-prod.yml down 2>/dev/null || true
+            
+            # 기존 파일/디렉토리 강제 삭제
+            rm -rf docker-compose-prod.yml prometheus.yml mysql-exporter.cnf
             
             # 필요한 파일들을 sparse-checkout으로 가져오기
             git clone --no-checkout https://github.com/${{ github.repository }}.git temp-repo
@@ -97,9 +98,7 @@ jobs:
             GF_SECURITY_ADMIN_USER=${{ secrets.GF_SECURITY_ADMIN_USER }}
             GF_SECURITY_ADMIN_PASSWORD=${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
             EOF
-            # -f 옵션으로 사용할 compose 파일 명시
-            [ -d prometheus.yml ] && rm -rf prometheus.yml
-            [ -d mysql-exporter.cnf ] && rm -rf mysql-exporter.cnf
             
+            # Docker Compose 실행
             docker compose -f docker-compose-prod.yml pull
             docker compose -f docker-compose-prod.yml up -d --remove-orphans
