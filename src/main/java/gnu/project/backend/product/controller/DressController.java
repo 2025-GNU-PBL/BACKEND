@@ -7,6 +7,9 @@ import gnu.project.backend.product.dto.request.DressUpdateRequest;
 import gnu.project.backend.product.dto.response.DressPageResponse;
 import gnu.project.backend.product.dto.response.DressResponse;
 import gnu.project.backend.product.service.DressService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,15 +30,21 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/dress")
+@Tag(name = "Dress API", description = "드레스 상품 관련 API")
 public class DressController {
 
     private final DressService dressService;
 
     @PostMapping()
+    @Operation(
+        summary = "드레스 상품 등록",
+        description = "드레스 상품을 등록합니다. 이미지 파일 업로드가 가능합니다."
+    )
     public ResponseEntity<DressResponse> createDress(
         @Valid @RequestPart("request") final DressRequest request,
+        @Parameter(description = "업로드할 이미지 파일들 (선택)")
         @RequestPart(value = "images", required = false) final List<MultipartFile> images,
-        @Auth final Accessor accessor
+        @Parameter(hidden = true) @Auth final Accessor accessor
     ) {
         return ResponseEntity
             .status(HttpStatus.CREATED)
@@ -47,11 +56,16 @@ public class DressController {
     }
 
     @PatchMapping("/{id}")
+    @Operation(
+        summary = "드레스 상품 수정",
+        description = "기존 드레스 상품 정보를 수정합니다. 기존 이미지를 유지할 수 있으며, 새로운 이미지를 추가할 수 있습니다."
+    )
     public ResponseEntity<DressResponse> updateDress(
-        @PathVariable(name = "id") final Long id,
+        @Parameter(description = "수정할 드레스 ID") @PathVariable(name = "id") final Long id,
         @Valid @RequestPart("request") final DressUpdateRequest request,
+        @Parameter(description = "업로드할 이미지 파일들 (선택)")
         @RequestPart(value = "images", required = false) final List<MultipartFile> images,
-        @Auth final Accessor accessor
+        @Parameter(hidden = true) @Auth final Accessor accessor
     ) {
         return ResponseEntity
             .status(HttpStatus.CREATED)
@@ -64,15 +78,25 @@ public class DressController {
 
 
     @GetMapping("/{id}")
+    @Operation(
+        summary = "드레스 상품 단건 조회",
+        description = "특정 드레스 상품의 상세 정보를 조회합니다."
+    )
     public ResponseEntity<DressResponse> readDress(
-        @PathVariable(name = "id") final Long id
+        @Parameter(description = "조회할 드레스 ID") @PathVariable(name = "id") final Long id
     ) {
         return ResponseEntity.ok(dressService.read(id));
     }
 
     @GetMapping()
+    @Operation(
+        summary = "드레스 상품 목록 조회",
+        description = "드레스 상품 목록을 페이지네이션하여 조회합니다."
+    )
     public ResponseEntity<Page<DressPageResponse>> readDresses(
+        @Parameter(description = "페이지 번호 (기본값: 1)")
         @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
+        @Parameter(description = "페이지 사이즈 (기본값: 6)")
         @RequestParam(name = "pageSize", required = false, defaultValue = "6") final Integer pageSize
     ) {
         return ResponseEntity.ok(
@@ -81,9 +105,13 @@ public class DressController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(
+        summary = "드레스 상품 삭제",
+        description = "드레스 상품을 삭제합니다."
+    )
     public ResponseEntity<String> deleteDress(
-        @Auth final Accessor accessor,
-        @PathVariable(name = "id") final Long id
+        @Parameter(hidden = true) @Auth final Accessor accessor,
+        @Parameter(description = "삭제할 드레스 ID") @PathVariable(name = "id") final Long id
     ) {
         return ResponseEntity.ok(dressService.delete(id, accessor));
     }

@@ -15,6 +15,7 @@ import gnu.project.backend.product.dto.response.MakeupResponse;
 import gnu.project.backend.product.entity.Makeup;
 import gnu.project.backend.product.provider.ImageProvider;
 import gnu.project.backend.product.provider.OptionProvider;
+import gnu.project.backend.product.provider.TagProvider;
 import gnu.project.backend.product.repository.MakeupRepository;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,6 +37,7 @@ public class MakeupService {
     private final OwnerRepository ownerRepository;
     private final ImageProvider imageProvider;
     private final OptionProvider optionProvider;
+    private final TagProvider tagProvider;
 
     @Transactional(readOnly = true)
     public MakeupResponse read(
@@ -101,6 +103,10 @@ public class MakeupService {
             makeup,
             request.options()
         );
+        tagProvider.updateTags(
+            makeup,
+            request.tags()
+        );
 
         makeup.update(
             request.price(),
@@ -135,6 +141,7 @@ public class MakeupService {
 
         imageProvider.uploadAndSaveImages(savedMakeup, images, new AtomicInteger(0));
         optionProvider.createOptions(savedMakeup, request.options());
+        tagProvider.createTag(savedMakeup, request.tags());
         return MakeupResponse.from(savedMakeup);
     }
 

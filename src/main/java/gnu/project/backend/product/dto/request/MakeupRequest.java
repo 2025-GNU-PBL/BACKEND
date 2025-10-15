@@ -58,6 +58,7 @@ public record MakeupRequest(
     @NotBlank(message = TYPE_REQUIRED)
     @Size(max = MAX_TYPE_LENGTH, message = TYPE_LENGTH)
     String type,
+    List<TagRequest> tags,
 
     @Valid
     @Size(max = MAX_OPTION_COUNT, message = OPTION_LIMIT)
