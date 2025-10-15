@@ -23,7 +23,7 @@ services:
       DB_URL: ${DB_URL}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-  prometheus:
+prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
     ports:
@@ -31,6 +31,9 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
     restart: unless-stopped
     healthcheck:
       test: [ "CMD", "wget", "--spider", "-q", "http://localhost:9090/-/healthy" ]
@@ -39,7 +42,6 @@ services:
       retries: 3
     networks:
       - monitoring_net
-
   grafana:
     image: grafana/grafana-oss:latest
     container_name: grafana
