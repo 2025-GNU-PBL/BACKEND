@@ -94,5 +94,5 @@ jobs:
             NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }} 
             EOF
             # -f 옵션으로 사용할 compose 파일 명시
-            docker compose -f docker-compose-prov.yml pull
-            docker compose -f docker-compose-prov.yml up -d --remove-orphans
+            docker compose -f docker-compose-prod.yml pull
+            docker compose -f docker-compose-prod.yml up -d --remove-orphans
