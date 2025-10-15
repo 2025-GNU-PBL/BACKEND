@@ -63,16 +63,18 @@ jobs:
             # 대상 디렉토리 생성 및 이동 (EC2 인스턴스의 배포 디렉토리)
             cd /home/ubuntu/yeon || { mkdir -p /home/ubuntu/yeon && cd /home/ubuntu/yeon; }
             
-            # 이미 docker-compose-prod.yml 파일이 있다면 삭제 (최신 파일을 받기 위함)
+            # 기존 파일들 삭제
             [ -f docker-compose-prod.yml ] && rm docker-compose-prod.yml
+            [ -f prometheus.yml ] && rm prometheus.yml
+            [ -f mysql-exporter.cnf ] && rm mysql-exporter.cnf
             
-            # sparse-checkout 방식으로 docker-compose-prod.yml 파일만 클론하여 가져오기
+            # 필요한 파일들을 sparse-checkout으로 가져오기
             git clone --no-checkout https://github.com/${{ github.repository }}.git temp-repo
             cd temp-repo
             git sparse-checkout init --cone
-            git sparse-checkout set docker-compose-prod.yml
+            git sparse-checkout set docker-compose-prod.yml prometheus.yml mysql-exporter.cnf
             git checkout
-            mv docker-compose-prod.yml ../
+            mv docker-compose-prod.yml prometheus.yml mysql-exporter.cnf ../
             cd ..
             rm -rf temp-repo
             
@@ -96,5 +98,8 @@ jobs:
             GF_SECURITY_ADMIN_PASSWORD=${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
             EOF
             # -f 옵션으로 사용할 compose 파일 명시
+            [ -d prometheus.yml ] && rm -rf prometheus.yml
+            [ -d mysql-exporter.cnf ] && rm -rf mysql-exporter.cnf
+            
             docker compose -f docker-compose-prod.yml pull
             docker compose -f docker-compose-prod.yml up -d --remove-orphans
