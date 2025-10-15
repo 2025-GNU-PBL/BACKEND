@@ -63,16 +63,16 @@ jobs:
             # 대상 디렉토리 생성 및 이동 (EC2 인스턴스의 배포 디렉토리)
             cd /home/ubuntu/yeon || { mkdir -p /home/ubuntu/yeon && cd /home/ubuntu/yeon; }
             
-            # 이미 docker-compose.yml 파일이 있다면 삭제 (최신 파일을 받기 위함)
-            [ -f docker-compose.yml ] && rm docker-compose.yml
+            # 이미 docker-compose-prod.yml 파일이 있다면 삭제 (최신 파일을 받기 위함)
+            [ -f docker-compose-prod.yml ] && rm docker-compose-prod.yml
             
-            # sparse-checkout 방식으로 docker-compose.yml 파일만 클론하여 가져오기
+            # sparse-checkout 방식으로 docker-compose-prod.yml 파일만 클론하여 가져오기
             git clone --no-checkout https://github.com/${{ github.repository }}.git temp-repo
             cd temp-repo
             git sparse-checkout init --cone
-            git sparse-checkout set docker-compose.yml
+            git sparse-checkout set docker-compose-prod.yml
             git checkout
-            mv docker-compose.yml ../
+            mv docker-compose-prod.yml ../
             cd ..
             rm -rf temp-repo
             
@@ -93,5 +93,6 @@ jobs:
             NAVER_REDIRECT_URI: ${{ secrets.NAVER_REDIRECT_URI }}
             NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }} 
             EOF
-            docker compose pull
-            docker compose up -d --remove-orphans
+            # -f 옵션으로 사용할 compose 파일 명시
+            docker compose -f docker-compose-prov.yml pull
+            docker compose -f docker-compose-prov.yml up -d --remove-orphans
