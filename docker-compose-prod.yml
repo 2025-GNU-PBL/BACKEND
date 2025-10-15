@@ -23,7 +23,7 @@ services:
       DB_URL: ${DB_URL}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-prometheus:
+  prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
     ports:
