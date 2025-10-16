@@ -23,6 +23,8 @@ services:
       DB_URL: ${DB_URL}
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - monitoring_net
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
