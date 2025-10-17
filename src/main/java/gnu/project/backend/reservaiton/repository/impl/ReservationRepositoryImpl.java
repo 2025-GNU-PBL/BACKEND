@@ -28,7 +28,7 @@ public class ReservationRepositoryImpl implements ReservationCustomRepository {
         return Optional.ofNullable(
             query
                 .selectFrom(reservation)
-                .leftJoin(owner)
+                .leftJoin(reservation.owner, owner)
                 .fetchJoin()
                 .where(reservation.id.eq(id))
                 .fetchFirst()
@@ -39,7 +39,7 @@ public class ReservationRepositoryImpl implements ReservationCustomRepository {
     public List<Reservation> findReservationsByOwnerId(final Long id) {
         return query
             .selectFrom(reservation)
-            .leftJoin(owner)
+            .leftJoin(reservation.owner, owner)
             .fetchJoin()
             .where(reservation.owner.id.eq(id))
             .orderBy(RESERVATION_DEFAULT_ORDER)
@@ -50,7 +50,7 @@ public class ReservationRepositoryImpl implements ReservationCustomRepository {
     public List<Reservation> findReservationsByCustomerId(final Long id) {
         return query
             .selectFrom(reservation)
-            .leftJoin(customer)
+            .leftJoin(reservation.customer, customer)
             .fetchJoin()
             .where(reservation.customer.id.eq(id))
             .orderBy(RESERVATION_DEFAULT_ORDER)

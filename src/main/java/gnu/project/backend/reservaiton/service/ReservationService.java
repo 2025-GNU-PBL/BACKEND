@@ -109,8 +109,8 @@ public class ReservationService {
             .orElseThrow(() -> new BusinessException(OWNER_NOT_FOUND_EXCEPTION));
 
         List<Reservation> reservations = reservationRepository
-            .findReservationsByCustomerId(owner.getId());
-        
+            .findReservationsByOwnerId(owner.getId());
+
         return reservations.stream()
             .map(ReservationResponseDto::from)
             .toList();

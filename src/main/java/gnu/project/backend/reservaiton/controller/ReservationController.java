@@ -13,11 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/reservation")
 @RequiredArgsConstructor
 public class ReservationController implements ReservationDocs {
 
@@ -26,17 +27,17 @@ public class ReservationController implements ReservationDocs {
     @PostMapping()
     public ResponseEntity<ReservationResponseDto> enrollReservation(
         @Auth final Accessor accessor,
-        final ReservationRequestDto requestDto
+        @RequestBody final ReservationRequestDto request
     ) {
-        return ResponseEntity.ok(reservationService.createReservation(accessor, requestDto));
+        return ResponseEntity.ok(reservationService.createReservation(accessor, request));
     }
 
     @PatchMapping()
     public ResponseEntity<ReservationResponseDto> changeReservationStatus(
         @Auth final Accessor accessor,
-        final ReservationStatusChangeRequestDto requestDto
+        @RequestBody final ReservationStatusChangeRequestDto request
     ) {
-        return ResponseEntity.ok(reservationService.changeStatus(accessor, requestDto));
+        return ResponseEntity.ok(reservationService.changeStatus(accessor, request));
     }
 
     @GetMapping()
