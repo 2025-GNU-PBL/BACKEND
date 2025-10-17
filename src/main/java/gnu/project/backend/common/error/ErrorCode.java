@@ -50,7 +50,10 @@ public enum ErrorCode {
     STUDIO_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "STUDIO001", "해당 스튜디오 상품을 찾을 수 없습니다"),
 
     // product
-    PRODUCT_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "PRODUCTO001", "해당 상품을 찾을 수 없습니다");
+    PRODUCT_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "PRODUCT001", "해당 상품을 찾을 수 없습니다"),
+
+    // reservation
+    RESERVATION_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "RESERVATION001", "해당 예약을 찾을 수 없습니다");
 
     private final HttpStatus status;
     private final String code;

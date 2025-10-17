@@ -75,4 +75,8 @@ public class Reservation {
         reservation.content = content;
         return reservation;
     }
+
+    public void changeStatus(final Status status) {
+        this.status = status;
+    }
 }
