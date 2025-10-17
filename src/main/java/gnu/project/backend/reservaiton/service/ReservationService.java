@@ -36,8 +36,8 @@ public class ReservationService {
         final Accessor accessor,
         final ReservationRequestDto requestDto
     ) {
-        final Customer customer = customerRepository.
-            findByOauthInfo_SocialId(accessor.getSocialId())
+        final Customer customer = customerRepository
+            .findByOauthInfo_SocialId(accessor.getSocialId())
             .orElseThrow(() -> new BusinessException(
                 CUSTOMER_NOT_FOUND_EXCEPTION)
             );
@@ -64,11 +64,12 @@ public class ReservationService {
     ) {
         final Reservation reservation = reservationRepository.findByIdWithOwner(requestDto.id())
             .orElseThrow(() -> new BusinessException(STUDIO_NOT_FOUND_EXCEPTION));
-
+        //TODO : 사장만 해당 상태를 변경할 수 있나? 고객의 단순 변심으로는 변경이 안되나?
         if (reservation.getOwner().getSocialId().equals(accessor.getSocialId())) {
             throw new BusinessException(IS_NOT_VALID_SOCIAL);
         }
-        
+        //TODO : APPROVE 일시 이벤트 기반으로 Schedule을 생성해줘야함
+//        if (requestDto.status() == Status.APPROVE)
         reservation.changeStatus(requestDto.status());
 
         return ReservationResponseDto.from(reservation);
