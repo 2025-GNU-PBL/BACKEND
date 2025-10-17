@@ -1,4 +1,4 @@
-package gnu.project.backend.reservaiton.controller;
+package gnu.project.backend.reservaiton.controller.docs;
 
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.reservaiton.dto.request.ReservationRequestDto;
@@ -8,12 +8,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+@Tag(name = "Reservation API", description = "예약 관련 API")
 public interface ReservationDocs {
 
     @Operation(

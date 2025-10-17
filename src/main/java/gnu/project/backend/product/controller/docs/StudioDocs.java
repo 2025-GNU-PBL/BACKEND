@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-@Tag(name = "Studio API", description = "스튜디오 상품 관련 CRUD API")
+@Tag(name = "Studio API", description = "스튜디오 상품 관련 API")
 public interface StudioDocs {
 
     @Operation(

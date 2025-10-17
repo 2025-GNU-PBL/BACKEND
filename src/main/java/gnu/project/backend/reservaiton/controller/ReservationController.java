@@ -2,6 +2,7 @@ package gnu.project.backend.reservaiton.controller;
 
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
+import gnu.project.backend.reservaiton.controller.docs.ReservationDocs;
 import gnu.project.backend.reservaiton.dto.request.ReservationRequestDto;
 import gnu.project.backend.reservaiton.dto.request.ReservationStatusChangeRequestDto;
 import gnu.project.backend.reservaiton.dto.response.ReservationResponseDto;
