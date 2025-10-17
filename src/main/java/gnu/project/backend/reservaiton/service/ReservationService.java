@@ -2,6 +2,7 @@ package gnu.project.backend.reservaiton.service;
 
 import static gnu.project.backend.common.error.ErrorCode.CUSTOMER_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.common.error.ErrorCode.IS_NOT_VALID_SOCIAL;
+import static gnu.project.backend.common.error.ErrorCode.OWNER_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.common.error.ErrorCode.PRODUCT_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.common.error.ErrorCode.STUDIO_NOT_FOUND_EXCEPTION;
 
@@ -18,6 +19,7 @@ import gnu.project.backend.reservaiton.dto.request.ReservationStatusChangeReques
 import gnu.project.backend.reservaiton.dto.response.ReservationResponseDto;
 import gnu.project.backend.reservaiton.entity.Reservation;
 import gnu.project.backend.reservaiton.repository.ReservationRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,7 +64,8 @@ public class ReservationService {
         final Accessor accessor,
         final ReservationStatusChangeRequestDto requestDto
     ) {
-        final Reservation reservation = reservationRepository.findByIdWithOwner(requestDto.id())
+        final Reservation reservation = reservationRepository.findReservationByIdWithOwner(
+                requestDto.id())
             .orElseThrow(() -> new BusinessException(STUDIO_NOT_FOUND_EXCEPTION));
         //TODO : 사장만 해당 상태를 변경할 수 있나? 고객의 단순 변심으로는 변경이 안되나?
         if (reservation.getOwner().getSocialId().equals(accessor.getSocialId())) {
@@ -73,5 +76,43 @@ public class ReservationService {
         reservation.changeStatus(requestDto.status());
 
         return ReservationResponseDto.from(reservation);
+    }
+
+    public List<ReservationResponseDto> findReservations(final Accessor accessor) {
+        switch (accessor.getUserRole()) {
+            case CUSTOMER -> {
+                return findCustomerReservations(accessor);
+            }
+            case OWNER -> {
+                return findOwnerReservations(accessor);
+            }
+        }
+        return List.of();
+    }
+
+    private List<ReservationResponseDto> findCustomerReservations(final Accessor accessor) {
+        final Customer customer = customerRepository.
+            findByOauthInfo_SocialId(accessor.getSocialId())
+            .orElseThrow(() -> new BusinessException(CUSTOMER_NOT_FOUND_EXCEPTION));
+
+        List<Reservation> reservations = reservationRepository
+            .findReservationsByCustomerId(customer.getId());
+
+        return reservations.stream()
+            .map(ReservationResponseDto::from)
+            .toList();
+    }
+
+    private List<ReservationResponseDto> findOwnerReservations(final Accessor accessor) {
+        final Owner owner = ownerRepository.
+            findByOauthInfo_SocialId(accessor.getSocialId())
+            .orElseThrow(() -> new BusinessException(OWNER_NOT_FOUND_EXCEPTION));
+
+        List<Reservation> reservations = reservationRepository
+            .findReservationsByCustomerId(owner.getId());
+        
+        return reservations.stream()
+            .map(ReservationResponseDto::from)
+            .toList();
     }
 }

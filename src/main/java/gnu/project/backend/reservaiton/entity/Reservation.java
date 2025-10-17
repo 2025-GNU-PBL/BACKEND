@@ -1,5 +1,6 @@
 package gnu.project.backend.reservaiton.entity;
 
+import gnu.project.backend.common.entity.BaseEntity;
 import gnu.project.backend.customer.entity.Customer;
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.product.entity.Product;
@@ -25,7 +26,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "reservation")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Reservation {
+public class Reservation extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
