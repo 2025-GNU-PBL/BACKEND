@@ -1,0 +1,32 @@
+package gnu.project.backend.reservaiton.dto.response;
+
+import gnu.project.backend.reservaiton.entity.Reservation;
+import gnu.project.backend.reservaiton.enumerated.Status;
+import java.time.LocalDateTime;
+
+public record ReservationResponseDto(
+    Long id,
+    Long ownerId,
+    Long customerId,
+    Long productId,
+    Status status,
+    LocalDateTime reservationTime,
+    String title,
+    String content
+) {
+
+    public static ReservationResponseDto from(
+        final Reservation reservation
+    ) {
+        return new ReservationResponseDto(
+            reservation.getId(),
+            reservation.getOwner() != null ? reservation.getOwner().getId() : null,
+            reservation.getCustomer() != null ? reservation.getCustomer().getId() : null,
+            reservation.getProduct() != null ? reservation.getProduct().getId() : null,
+            reservation.getStatus(),
+            reservation.getReservationTime(),
+            reservation.getTitle(),
+            reservation.getContent()
+        );
+    }
+}
