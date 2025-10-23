@@ -61,25 +61,20 @@ jobs:
           password: ${{ secrets.EC2_PASSWORD }}
           port: ${{ secrets.EC2_PORT }}
           script: |
-            # 대상 디렉토리 생성 및 이동
             cd ~/yeon || { mkdir -p ~/yeon && cd ~/yeon; }
             
-            # 기존 컨테이너 중지 (마운트 해제를 위해)
+            # 기존 컨테이너 중지
             docker compose -f docker-compose-prod.yml down 2>/dev/null || true
             
-            # 기존 파일/디렉토리 강제 삭제
+            # 기존 파일 삭제
             rm -rf docker-compose-prod.yml prometheus.yml mysql-exporter.cnf
             
-            # 필요한 파일들을 sparse-checkout으로 가져오기
-            git clone --no-checkout https://github.com/${{ github.repository }}.git temp-repo
-            cd temp-repo
-            git sparse-checkout init --cone
-            git sparse-checkout set docker-compose-prod.yml prometheus.yml mysql-exporter.cnf
-            git checkout main
-            mv docker-compose-prod.yml prometheus.yml mysql-exporter.cnf ../
-            cd ..
-            rm -rf temp-repo
+            # GitHub에서 직접 다운로드
+            curl -O https://raw.githubusercontent.com/${{ github.repository }}/main/docker-compose-prod.yml
+            curl -O https://raw.githubusercontent.com/${{ github.repository }}/main/prometheus.yml
+            curl -O https://raw.githubusercontent.com/${{ github.repository }}/main/mysql-exporter.cnf
             
+                      
             # .env 파일 생성
             cat <<EOF > .env
             S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }}
