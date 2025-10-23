@@ -75,7 +75,7 @@ jobs:
             cd temp-repo
             git sparse-checkout init --cone
             git sparse-checkout set docker-compose-prod.yml prometheus.yml mysql-exporter.cnf
-            git checkout
+            git checkout main
             mv docker-compose-prod.yml prometheus.yml mysql-exporter.cnf ../
             cd ..
             rm -rf temp-repo
