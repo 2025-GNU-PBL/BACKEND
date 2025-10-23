@@ -62,7 +62,7 @@ jobs:
           port: ${{ secrets.EC2_PORT }}
           script: |
             # 대상 디렉토리 생성 및 이동
-            cd /home/mint/yeon || { mkdir -p /home/mint/yeon && cd /home/mint/yeon; }
+            cd /home/corner/yeon || { mkdir -p /home/corner/yeon && cd /home/corner/yeon; }
             
             # 기존 컨테이너 중지 (마운트 해제를 위해)
             docker compose -f docker-compose-prod.yml down 2>/dev/null || true
