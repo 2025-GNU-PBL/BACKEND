@@ -1,8 +1,9 @@
 package gnu.project.backend.product.provider;
 
+import static gnu.project.backend.common.error.ErrorCode.FILE_READ_FAILED;
+import static gnu.project.backend.common.error.ErrorCode.FILE_UPLOAD_FAILED;
 import static gnu.project.backend.common.error.ErrorCode.IMAGE_UPLOAD_FAILED;
 
-import gnu.project.backend.common.error.ErrorCode;
 import gnu.project.backend.common.exception.BusinessException;
 import gnu.project.backend.common.service.FileService;
 import gnu.project.backend.product.entity.Image;
@@ -15,12 +16,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class FileProvider {
@@ -28,7 +31,9 @@ public class FileProvider {
     private final FileService fileService;
     private final ImageRepository imageRepository;
     private final ScheduleFileRepository scheduleFileRepository;
-    private final Executor uploadExecutor = Executors.newFixedThreadPool(10);
+
+    @Qualifier("fileUploadExecutor")
+    private final Executor uploadExecutor;
     private final String schedulePath = "SCHEDULE";
 
     public void uploadAndSaveImages(
@@ -90,7 +95,14 @@ public class FileProvider {
             .filter(image -> keepImageIds == null || !keepImageIds.contains(image.getId()))
             .toList();
 
-        imagesToDelete.forEach(image -> fileService.delete(image.getS3Key()));
+        imagesToDelete.forEach(image -> {
+            try {
+                fileService.delete(image.getS3Key());
+            } catch (Exception e) {
+                log.warn("Failed to delete S3 object. s3Key={}", image.getS3Key(), e);
+            }
+        });
+
         imageRepository.deleteAll(imagesToDelete);
         product.getImages().removeAll(imagesToDelete);
 
@@ -120,9 +132,11 @@ public class FileProvider {
                             file
                         );
                         return ScheduleFile.ofCreate(schedule, key, file);
-                    }, uploadExecutor);
+                    }, uploadExecutor).exceptionally(ex -> {
+                        throw new BusinessException(FILE_UPLOAD_FAILED);
+                    });
                 } catch (IOException e) {
-                    throw new BusinessException(ErrorCode.IMAGE_FILE_READ_FAILED);
+                    throw new BusinessException(FILE_READ_FAILED);
                 }
             })
             .toList();

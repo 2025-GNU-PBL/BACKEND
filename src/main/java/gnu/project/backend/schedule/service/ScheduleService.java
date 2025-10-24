@@ -62,7 +62,8 @@ public class ScheduleService {
             null,
             customer,
             request.title(),
-            request.content()
+            request.content(),
+            request.scheduleDate()
         );
 
         final Schedule savedSchedule = scheduleRepository.save(schedule);
@@ -87,7 +88,8 @@ public class ScheduleService {
             owner,
             null,
             request.title(),
-            request.content()
+            request.content(),
+            request.scheduleDate()
         );
 
         final Schedule savedSchedule = scheduleRepository.save(schedule);

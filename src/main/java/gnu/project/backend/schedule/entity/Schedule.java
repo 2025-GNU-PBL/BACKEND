@@ -57,13 +57,15 @@ public class Schedule extends BaseEntity {
         final Owner owner,
         final Customer customer,
         final String title,
-        final String content
+        final String content,
+        final LocalDate scheduleDate
     ) {
         Schedule schedule = new Schedule();
         schedule.owner = owner;
         schedule.customer = customer;
         schedule.title = title;
         schedule.content = content;
+        schedule.scheduleDate = scheduleDate;
         return schedule;
     }
 
