@@ -1,6 +1,7 @@
 package gnu.project.backend.schedule.entity;
 
 
+import gnu.project.backend.common.entity.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -14,13 +15,14 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Getter
 @Table(name = "schedule_file")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ScheduleFile {
+public class ScheduleFile extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,12 +32,25 @@ public class ScheduleFile {
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
-    @Column()
+
+    @Column(nullable = false)
     private String fileName;
 
-    @Column()
+    @Column(nullable = false)
     private String filePath;
 
-    @Column()
-    private String fileSize;
+    @Column(nullable = false)
+    private Long fileSize;
+
+    public static ScheduleFile ofCreate(
+        final Schedule schedule,
+        final String key,
+        final MultipartFile file
+    ) {
+        ScheduleFile scheduleFile = new ScheduleFile();
+        scheduleFile.schedule = schedule;
+        scheduleFile.filePath = key;
+        scheduleFile.fileName = file.getName();
+        return scheduleFile;
+    }
 }

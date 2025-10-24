@@ -13,9 +13,9 @@ import gnu.project.backend.product.dto.request.MakeupUpdateRequest;
 import gnu.project.backend.product.dto.response.MakeupPageResponse;
 import gnu.project.backend.product.dto.response.MakeupResponse;
 import gnu.project.backend.product.entity.Makeup;
+import gnu.project.backend.product.provider.FileProvider;
 import gnu.project.backend.product.provider.OptionProvider;
 import gnu.project.backend.product.provider.TagProvider;
-import gnu.project.backend.product.provider.fileProvider;
 import gnu.project.backend.product.repository.MakeupRepository;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,7 +35,7 @@ public class MakeupService {
 
     private final MakeupRepository makeupRepository;
     private final OwnerRepository ownerRepository;
-    private final fileProvider fileProvider;
+    private final FileProvider fileProvider;
     private final OptionProvider optionProvider;
     private final TagProvider tagProvider;
 

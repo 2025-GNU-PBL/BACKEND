@@ -14,9 +14,9 @@ import gnu.project.backend.product.dto.request.DressUpdateRequest;
 import gnu.project.backend.product.dto.response.DressPageResponse;
 import gnu.project.backend.product.dto.response.DressResponse;
 import gnu.project.backend.product.entity.Dress;
+import gnu.project.backend.product.provider.FileProvider;
 import gnu.project.backend.product.provider.OptionProvider;
 import gnu.project.backend.product.provider.TagProvider;
-import gnu.project.backend.product.provider.fileProvider;
 import gnu.project.backend.product.repository.DressRepository;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,7 +35,7 @@ public class DressService {
 
     private final DressRepository dressRepository;
     private final OwnerRepository ownerRepository;
-    private final fileProvider fileProvider;
+    private final FileProvider fileProvider;
     private final OptionProvider optionProvider;
     private final TagProvider tagProvider;
 

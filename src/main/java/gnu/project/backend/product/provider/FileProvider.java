@@ -2,11 +2,15 @@ package gnu.project.backend.product.provider;
 
 import static gnu.project.backend.common.error.ErrorCode.IMAGE_UPLOAD_FAILED;
 
+import gnu.project.backend.common.error.ErrorCode;
 import gnu.project.backend.common.exception.BusinessException;
 import gnu.project.backend.common.service.FileService;
 import gnu.project.backend.product.entity.Image;
 import gnu.project.backend.product.entity.Product;
 import gnu.project.backend.product.repository.ImageRepository;
+import gnu.project.backend.schedule.entity.Schedule;
+import gnu.project.backend.schedule.entity.ScheduleFile;
+import gnu.project.backend.schedule.repository.ScheduleFileRepository;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -18,11 +22,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Component
 @RequiredArgsConstructor
-public class fileProvider {
+public class FileProvider {
 
     private final FileService fileService;
     private final ImageRepository imageRepository;
-    private final Executor imageUploadExecutor = Executors.newFixedThreadPool(10);
+    private final ScheduleFileRepository scheduleFileRepository;
+    private final Executor uploadExecutor = Executors.newFixedThreadPool(10);
 
 
     public void uploadAndSaveImages(
@@ -34,6 +39,7 @@ public class fileProvider {
         }
         uploadImages(product, images, sequence);
     }
+
 
     private void uploadImages(Product product, List<MultipartFile> images, AtomicInteger sequence) {
         final List<CompletableFuture<Image>> futures = images.stream()
@@ -51,7 +57,7 @@ public class fileProvider {
                             key,
                             sequence.getAndIncrement()
                         );
-                    }, imageUploadExecutor)
+                    }, uploadExecutor)
                     .exceptionally(ex -> {
                         throw new BusinessException(IMAGE_UPLOAD_FAILED);
                     })
@@ -96,5 +102,33 @@ public class fileProvider {
 
             uploadAndSaveImages(product, newImages, sequence);
         }
+    }
+
+    public void uploadAndSaveFiles(final Schedule schedule, final List<MultipartFile> files) {
+        if (files == null || files.isEmpty()) {
+            return;
+        }
+        final List<CompletableFuture<ScheduleFile>> futures = files.stream()
+            .map(file -> CompletableFuture.supplyAsync(() -> {
+                        String key = fileService.uploadDocument("schedule", file);
+                        return ScheduleFile.ofCreate(schedule, key, file);
+                    }, uploadExecutor
+                ).exceptionally(ex -> {
+                        throw new BusinessException(ErrorCode.IMAGE_FILE_READ_FAILED);
+                    }
+                )
+            )
+            .toList();
+
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(
+            futures.toArray(new CompletableFuture[0])
+        );
+
+        final List<ScheduleFile> scheduleFiles = allOf.thenApply(v ->
+            futures.stream().map(CompletableFuture::join).toList()
+        ).join();
+
+        scheduleFileRepository.saveAll(scheduleFiles);
+        scheduleFiles.forEach(schedule::addFiles);
     }
 }

@@ -113,6 +113,26 @@ public class FileService {
         }
     }
 
+    public String uploadDocument(
+        final String folder,
+        final MultipartFile file
+    ) {
+        validateImageFile(file);
+        final String key = generateKey(
+            folder,
+            UUID.randomUUID().toString(),
+            file.getOriginalFilename()
+        );
+        try {
+            final byte[] data = file.getBytes();
+            final String contentType = file.getContentType();
+            uploadFile(key, data, contentType);
+            return key;
+        } catch (IOException e) {
+            throw new BusinessException(IMAGE_FILE_READ_FAILED);
+        }
+    }
+
 
     public DownloadImageDto downloadFile(String key) {
         try {

@@ -14,9 +14,9 @@ import gnu.project.backend.product.dto.request.StudioUpdateRequest;
 import gnu.project.backend.product.dto.response.StudioPageResponse;
 import gnu.project.backend.product.dto.response.StudioResponse;
 import gnu.project.backend.product.entity.Studio;
+import gnu.project.backend.product.provider.FileProvider;
 import gnu.project.backend.product.provider.OptionProvider;
 import gnu.project.backend.product.provider.TagProvider;
-import gnu.project.backend.product.provider.fileProvider;
 import gnu.project.backend.product.repository.StudioRepository;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,7 +35,7 @@ public class StudioService {
 
     private final StudioRepository studioRepository;
     private final OwnerRepository ownerRepository;
-    private final fileProvider fileProvider;
+    private final FileProvider fileProvider;
     private final OptionProvider optionProvider;
     private final TagProvider tagProvider;
 

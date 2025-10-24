@@ -60,4 +60,8 @@ public class Schedule extends BaseEntity {
         return schedule;
     }
 
+    public void addFiles(final ScheduleFile file) {
+        this.files.add(file);
+    }
+
 }
