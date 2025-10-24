@@ -4,6 +4,7 @@ import gnu.project.backend.common.entity.BaseEntity;
 import gnu.project.backend.customer.entity.Customer;
 import gnu.project.backend.owner.entity.Owner;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -39,9 +41,14 @@ public class Schedule extends BaseEntity {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private String content;
+
+    @Column(nullable = false)
+    private LocalDate scheduleDate;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ScheduleFile> files = new ArrayList<>();

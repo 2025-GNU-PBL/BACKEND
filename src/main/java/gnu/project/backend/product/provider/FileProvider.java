@@ -112,7 +112,7 @@ public class FileProvider {
         final List<CompletableFuture<ScheduleFile>> futures = files.stream()
             .map(file -> {
                 try {
-                    byte[] fileBytes = file.getBytes(); // 단일 스레드에서 한 번만 읽기
+                    byte[] fileBytes = file.getBytes();
                     return CompletableFuture.supplyAsync(() -> {
                         String key = fileService.uploadDocument(
                             schedulePath,

@@ -119,7 +119,7 @@ public class FileService {
         final byte[] fileByte,
         final MultipartFile file
     ) {
-        validateImageFile(file);
+        validateFile(file);
         final String key = generateKey(
             folder,
             UUID.randomUUID().toString(),
@@ -164,7 +164,7 @@ public class FileService {
         }
 
         String ext = extractExtension(originalFilename);
-        if (!FileExtension.isSupported(ext)) {
+        if (!ImageExtension.isSupported(ext)) {
             throw new BusinessException(IMAGE_INVALID_FORMAT);
         }
     }
