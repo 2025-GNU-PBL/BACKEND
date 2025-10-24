@@ -13,9 +13,9 @@ import gnu.project.backend.product.dto.request.MakeupUpdateRequest;
 import gnu.project.backend.product.dto.response.MakeupPageResponse;
 import gnu.project.backend.product.dto.response.MakeupResponse;
 import gnu.project.backend.product.entity.Makeup;
-import gnu.project.backend.product.provider.ImageProvider;
 import gnu.project.backend.product.provider.OptionProvider;
 import gnu.project.backend.product.provider.TagProvider;
+import gnu.project.backend.product.provider.fileProvider;
 import gnu.project.backend.product.repository.MakeupRepository;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,7 +35,7 @@ public class MakeupService {
 
     private final MakeupRepository makeupRepository;
     private final OwnerRepository ownerRepository;
-    private final ImageProvider imageProvider;
+    private final fileProvider fileProvider;
     private final OptionProvider optionProvider;
     private final TagProvider tagProvider;
 
@@ -92,7 +92,7 @@ public class MakeupService {
         if (!makeup.getOwner().getSocialId().equals(accessor.getSocialId())) {
             throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
         }
-        imageProvider.updateImages(
+        fileProvider.updateImages(
             makeup,
             images,
             keepImagesId,
@@ -139,7 +139,7 @@ public class MakeupService {
             )
         );
 
-        imageProvider.uploadAndSaveImages(savedMakeup, images, new AtomicInteger(0));
+        fileProvider.uploadAndSaveImages(savedMakeup, images, new AtomicInteger(0));
         optionProvider.createOptions(savedMakeup, request.options());
         tagProvider.createTag(savedMakeup, request.tags());
         return MakeupResponse.from(savedMakeup);

@@ -10,6 +10,7 @@ import gnu.project.backend.customer.entity.Customer;
 import gnu.project.backend.customer.repository.CustomerRepository;
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
+import gnu.project.backend.product.provider.fileProvider;
 import gnu.project.backend.schedule.dto.request.ScheduleRequestDto;
 import gnu.project.backend.schedule.dto.response.ScheduleResponseDto;
 import gnu.project.backend.schedule.entity.Schedule;
@@ -26,6 +27,7 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final CustomerRepository customerRepository;
     private final OwnerRepository ownerRepository;
+    private final fileProvider fileProvider;
 
     public ScheduleResponseDto upload(
         final ScheduleRequestDto request,

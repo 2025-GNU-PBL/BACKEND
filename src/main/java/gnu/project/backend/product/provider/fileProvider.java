@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Component
 @RequiredArgsConstructor
-public class ImageProvider {
+public class fileProvider {
 
     private final FileService fileService;
     private final ImageRepository imageRepository;
