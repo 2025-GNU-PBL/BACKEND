@@ -32,7 +32,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ImageService {
+public class FileService {
 
 
     private final S3Client s3Client;

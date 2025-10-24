@@ -3,6 +3,7 @@ package gnu.project.backend.schedule.entity;
 import gnu.project.backend.common.entity.BaseEntity;
 import gnu.project.backend.customer.entity.Customer;
 import gnu.project.backend.owner.entity.Owner;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +11,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,15 +32,32 @@ public class Schedule extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn()
+    @JoinColumn(name = "owner_id")
     private Owner owner;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn()
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
     private String title;
 
     private String content;
+
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ScheduleFile> files = new ArrayList<>();
+
+    public static Schedule ofCreate(
+        final Owner owner,
+        final Customer customer,
+        final String title,
+        final String content
+    ) {
+        Schedule schedule = new Schedule();
+        schedule.owner = owner;
+        schedule.customer = customer;
+        schedule.title = title;
+        schedule.content = content;
+        return schedule;
+    }
 
 }

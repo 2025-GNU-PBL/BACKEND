@@ -3,7 +3,7 @@ package gnu.project.backend.product.provider;
 import static gnu.project.backend.common.error.ErrorCode.IMAGE_UPLOAD_FAILED;
 
 import gnu.project.backend.common.exception.BusinessException;
-import gnu.project.backend.common.service.ImageService;
+import gnu.project.backend.common.service.FileService;
 import gnu.project.backend.product.entity.Image;
 import gnu.project.backend.product.entity.Product;
 import gnu.project.backend.product.repository.ImageRepository;
@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ImageProvider {
 
-    private final ImageService imageService;
+    private final FileService fileService;
     private final ImageRepository imageRepository;
     private final Executor imageUploadExecutor = Executors.newFixedThreadPool(10);
 
@@ -38,12 +38,12 @@ public class ImageProvider {
     private void uploadImages(Product product, List<MultipartFile> images, AtomicInteger sequence) {
         final List<CompletableFuture<Image>> futures = images.stream()
             .map(image -> CompletableFuture.supplyAsync(() -> {
-                        String key = imageService.uploadImage(
+                        String key = fileService.uploadImage(
                             product.getCategory().toString(),
                             product.getOwner().getSocialId(),
                             image
                         );
-                        String url = imageService.generateImageUrl(key);
+                        String url = fileService.generateImageUrl(key);
 
                         return Image.ofCreate(
                             product,
@@ -83,7 +83,7 @@ public class ImageProvider {
             .filter(image -> keepImageIds == null || !keepImageIds.contains(image.getId()))
             .toList();
 
-        imagesToDelete.forEach(image -> imageService.delete(image.getS3Key()));
+        imagesToDelete.forEach(image -> fileService.delete(image.getS3Key()));
         imageRepository.deleteAll(imagesToDelete);
         product.getImages().removeAll(imagesToDelete);
 
