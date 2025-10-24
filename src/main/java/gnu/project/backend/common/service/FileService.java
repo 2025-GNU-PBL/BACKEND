@@ -9,9 +9,10 @@ import static gnu.project.backend.common.error.ErrorCode.IMAGE_FILE_READ_FAILED;
 import static gnu.project.backend.common.error.ErrorCode.IMAGE_INVALID_FORMAT;
 import static gnu.project.backend.common.error.ErrorCode.IMAGE_UPLOAD_FAILED;
 
-import com.monari.monariback.common.enumerated.ImageExtension;
 import gnu.project.backend.common.dto.DownloadImageDto;
 import gnu.project.backend.common.dto.UploadImageDto;
+import gnu.project.backend.common.enumerated.FileExtension;
+import gnu.project.backend.common.enumerated.ImageExtension;
 import gnu.project.backend.common.exception.BusinessException;
 import java.io.IOException;
 import java.util.UUID;
@@ -115,6 +116,7 @@ public class FileService {
 
     public String uploadDocument(
         final String folder,
+        final byte[] fileByte,
         final MultipartFile file
     ) {
         validateImageFile(file);
@@ -123,14 +125,9 @@ public class FileService {
             UUID.randomUUID().toString(),
             file.getOriginalFilename()
         );
-        try {
-            final byte[] data = file.getBytes();
-            final String contentType = file.getContentType();
-            uploadFile(key, data, contentType);
-            return key;
-        } catch (IOException e) {
-            throw new BusinessException(IMAGE_FILE_READ_FAILED);
-        }
+        final String contentType = file.getContentType();
+        uploadFile(key, fileByte, contentType);
+        return key;
     }
 
 
@@ -167,10 +164,23 @@ public class FileService {
         }
 
         String ext = extractExtension(originalFilename);
-        if (!ImageExtension.isSupported(ext)) {
+        if (!FileExtension.isSupported(ext)) {
             throw new BusinessException(IMAGE_INVALID_FORMAT);
         }
     }
+
+    private void validateFile(MultipartFile file) {
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename.isBlank()) {
+            throw new BusinessException(IMAGE_FILE_INVALID_NAME);
+        }
+
+        String ext = extractExtension(originalFilename);
+        if (!FileExtension.isSupported(ext)) {
+            throw new BusinessException(IMAGE_INVALID_FORMAT);
+        }
+    }
+
 
     private MediaType deriveMediaTypeFromKey(String key) {
         String ext = extractExtension(key);

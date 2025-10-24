@@ -5,20 +5,15 @@ import java.util.Optional;
 import lombok.Getter;
 import org.springframework.http.MediaType;
 
-public enum ImageExtension {
-    PNG("png", MediaType.IMAGE_PNG),
-    JPG("jpg", MediaType.IMAGE_JPEG),
-    JPEG("jpeg", MediaType.IMAGE_JPEG),
-    GIF("gif", MediaType.IMAGE_GIF),
-    BMP("bmp", MediaType.parseMediaType("image/bmp")),
-    WEBP("webp", MediaType.parseMediaType("image/webp"));
+public enum FileExtension {
+    PDF("pdf", MediaType.APPLICATION_PDF);
 
     private final String extension;
 
     @Getter
     private final MediaType mediaType;
 
-    ImageExtension(String extension, MediaType mediaType) {
+    FileExtension(String extension, MediaType mediaType) {
         this.extension = extension;
         this.mediaType = mediaType;
     }
@@ -33,11 +28,11 @@ public enum ImageExtension {
 
     public static MediaType mediaTypeFor(String ext) {
         return from(ext)
-            .map(ImageExtension::getMediaType)
+            .map(FileExtension::getMediaType)
             .orElse(MediaType.APPLICATION_OCTET_STREAM);
     }
 
-    private static Optional<ImageExtension> from(String ext) {
+    private static Optional<FileExtension> from(String ext) {
         if (ext == null) {
             return Optional.empty();
         }
@@ -45,4 +40,5 @@ public enum ImageExtension {
             .filter(e -> e.extension.equalsIgnoreCase(ext))
             .findFirst();
     }
+
 }

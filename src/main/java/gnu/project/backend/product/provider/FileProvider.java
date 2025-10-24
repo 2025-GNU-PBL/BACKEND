@@ -11,6 +11,7 @@ import gnu.project.backend.product.repository.ImageRepository;
 import gnu.project.backend.schedule.entity.Schedule;
 import gnu.project.backend.schedule.entity.ScheduleFile;
 import gnu.project.backend.schedule.repository.ScheduleFileRepository;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -28,7 +29,7 @@ public class FileProvider {
     private final ImageRepository imageRepository;
     private final ScheduleFileRepository scheduleFileRepository;
     private final Executor uploadExecutor = Executors.newFixedThreadPool(10);
-
+    private final String schedulePath = "SCHEDULE";
 
     public void uploadAndSaveImages(
         final Product product,
@@ -109,15 +110,21 @@ public class FileProvider {
             return;
         }
         final List<CompletableFuture<ScheduleFile>> futures = files.stream()
-            .map(file -> CompletableFuture.supplyAsync(() -> {
-                        String key = fileService.uploadDocument("schedule", file);
+            .map(file -> {
+                try {
+                    byte[] fileBytes = file.getBytes(); // 단일 스레드에서 한 번만 읽기
+                    return CompletableFuture.supplyAsync(() -> {
+                        String key = fileService.uploadDocument(
+                            schedulePath,
+                            fileBytes,
+                            file
+                        );
                         return ScheduleFile.ofCreate(schedule, key, file);
-                    }, uploadExecutor
-                ).exceptionally(ex -> {
-                        throw new BusinessException(ErrorCode.IMAGE_FILE_READ_FAILED);
-                    }
-                )
-            )
+                    }, uploadExecutor);
+                } catch (IOException e) {
+                    throw new BusinessException(ErrorCode.IMAGE_FILE_READ_FAILED);
+                }
+            })
             .toList();
 
         CompletableFuture<Void> allOf = CompletableFuture.allOf(

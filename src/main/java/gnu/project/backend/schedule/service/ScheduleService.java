@@ -15,9 +15,11 @@ import gnu.project.backend.schedule.dto.request.ScheduleRequestDto;
 import gnu.project.backend.schedule.dto.response.ScheduleResponseDto;
 import gnu.project.backend.schedule.entity.Schedule;
 import gnu.project.backend.schedule.repository.ScheduleRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -31,14 +33,15 @@ public class ScheduleService {
 
     public ScheduleResponseDto upload(
         final ScheduleRequestDto request,
-        final Accessor accessor
+        final Accessor accessor,
+        final List<MultipartFile> files
     ) {
         switch (accessor.getUserRole()) {
             case OWNER -> {
-                return uploadOwnerSchedule(request, accessor);
+                return uploadOwnerSchedule(request, accessor, files);
             }
             case CUSTOMER -> {
-                return uploadCustomerSchedule(request, accessor);
+                return uploadCustomerSchedule(request, accessor, files);
             }
             default -> throw new BusinessException(IS_NOT_VALID_SOCIAL);
         }
@@ -46,7 +49,9 @@ public class ScheduleService {
 
     private ScheduleResponseDto uploadCustomerSchedule(
         final ScheduleRequestDto request,
-        final Accessor accessor
+        final Accessor accessor,
+        final List<MultipartFile> files
+
     ) {
         final Customer customer = customerRepository.findByOauthInfo_SocialId(
             accessor.getSocialId()
@@ -62,8 +67,8 @@ public class ScheduleService {
 
         final Schedule savedSchedule = scheduleRepository.save(schedule);
 
-        if (!request.files().isEmpty()) {
-            fileProvider.uploadAndSaveFiles(savedSchedule, request.files());
+        if (files.isEmpty()) {
+            fileProvider.uploadAndSaveFiles(savedSchedule, files);
         }
 
         return ScheduleResponseDto.toResponse(savedSchedule);
@@ -71,8 +76,8 @@ public class ScheduleService {
 
     private ScheduleResponseDto uploadOwnerSchedule(
         final ScheduleRequestDto request,
-        final Accessor accessor
-    ) {
+        final Accessor accessor,
+        List<MultipartFile> files) {
         final Owner owner = ownerRepository.findByOauthInfo_SocialId(
             accessor.getSocialId()
         ).orElseThrow(() -> new BusinessException(
@@ -87,8 +92,8 @@ public class ScheduleService {
 
         final Schedule savedSchedule = scheduleRepository.save(schedule);
 
-        if (!request.files().isEmpty()) {
-            fileProvider.uploadAndSaveFiles(savedSchedule, request.files());
+        if (!files.isEmpty()) {
+            fileProvider.uploadAndSaveFiles(savedSchedule, files);
         }
         return ScheduleResponseDto.toResponse(savedSchedule);
     }

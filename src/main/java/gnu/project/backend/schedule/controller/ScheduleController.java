@@ -4,13 +4,15 @@ import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.schedule.dto.request.ScheduleRequestDto;
 import gnu.project.backend.schedule.service.ScheduleService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("api/v1/schedule")
@@ -21,11 +23,12 @@ public class ScheduleController {
 
     @PostMapping()
     public ResponseEntity<?> uploadSchedule(
-        @RequestBody final ScheduleRequestDto request,
+        @RequestPart(name = "request") final ScheduleRequestDto request,
+        @RequestPart(name = "file") final List<MultipartFile> file,
         @Auth final Accessor accessor
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-            scheduleService.upload(request, accessor)
+            scheduleService.upload(request, accessor, file)
         );
     }
 
