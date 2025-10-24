@@ -38,8 +38,11 @@ public enum ErrorCode {
     IMAGE_DOWNLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5002", "이미지 파일 다운로드에 실패했습니다."),
     IMAGE_FILE_INVALID_NAME(HttpStatus.BAD_REQUEST, "IMAGE4002", "업로드할 이미지 파일명이 없습니다."),
     IMAGE_INVALID_FORMAT(HttpStatus.BAD_REQUEST, "IMAGE4003", "지원하지 않는 이미지 형식입니다."),
+    IMAGE_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5001", "이미지 파일 삭제에 실패했습니다."),
+
     // makeup
     MAKEUP_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "MAKEUP001", "해당 메이크업 상품을 찾을 수 없습니다"),
+
     //Order
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "PAYMENT001", "존재하지 않는 주문입니다."),
     // 결제 승인 관련
@@ -58,7 +61,21 @@ public enum ErrorCode {
 
     // 환불 관련
     PAYMENT_REFUND_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "REFUND001", "환불이 허용되지 않은 상태입니다."),
-    PAYMENT_REFUND_FAILED(HttpStatus.BAD_REQUEST, "REFUND002", "환불 요청에 실패했습니다.");
+    PAYMENT_REFUND_FAILED(HttpStatus.BAD_REQUEST, "REFUND002", "환불 요청에 실패했습니다."),
+
+
+
+    // dress
+    DRESS_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "DRESS001", "해당 드레스 상품을 찾을 수 없습니다"),
+
+    // studio
+    STUDIO_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "STUDIO001", "해당 스튜디오 상품을 찾을 수 없습니다"),
+
+    // product
+    PRODUCT_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "PRODUCT001", "해당 상품을 찾을 수 없습니다"),
+
+    // reservation
+    RESERVATION_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "RESERVATION001", "해당 예약을 찾을 수 없습니다");
 
 
     private final HttpStatus status;

@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table
+@Table(name = "options")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -60,5 +60,15 @@ public class Option extends BaseEntity {
         final String name
     ) {
         return new Option(product, detail, price, name);
+    }
+
+    public void update(
+        final String name,
+        final String detail,
+        final Integer price
+    ) {
+        this.name = name;
+        this.detail = detail;
+        this.price = price;
     }
 }
