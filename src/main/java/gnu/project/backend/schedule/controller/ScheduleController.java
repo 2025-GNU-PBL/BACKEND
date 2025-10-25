@@ -2,6 +2,7 @@ package gnu.project.backend.schedule.controller;
 
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
+import gnu.project.backend.schedule.controller.docs.ScheduleDocs;
 import gnu.project.backend.schedule.dto.request.ScheduleRequestDto;
 import gnu.project.backend.schedule.dto.request.ScheduleUpdateRequestDto;
 import gnu.project.backend.schedule.dto.response.ScheduleDateResponseDto;
@@ -28,10 +29,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("api/v1/schedule")
 @RequiredArgsConstructor
-public class ScheduleController {
+public class ScheduleController implements ScheduleDocs {
 
     private final ScheduleService scheduleService;
 
+
+    @Override
     @PostMapping()
     public ResponseEntity<ScheduleResponseDto> uploadSchedule(
         @RequestPart(name = "request") final ScheduleRequestDto request,
@@ -43,6 +46,7 @@ public class ScheduleController {
         );
     }
 
+    @Override
     @GetMapping("/{id}")
     public ResponseEntity<ScheduleResponseDto> getSchedule(
         @PathVariable(name = "id") final Long id,
@@ -56,6 +60,7 @@ public class ScheduleController {
         );
     }
 
+    @Override
     @GetMapping()
     public ResponseEntity<List<ScheduleDateResponseDto>> getSchedules(
         @RequestParam @NotNull @Min(2000) final Integer year,
@@ -67,6 +72,8 @@ public class ScheduleController {
         );
     }
 
+
+    @Override
     @PatchMapping("/{id}")
     public ResponseEntity<ScheduleResponseDto> updateSchedule(
         @PathVariable final Long id,
@@ -79,10 +86,12 @@ public class ScheduleController {
         );
     }
 
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSchedule(
-        @PathVariable final Long id,
-        @Auth final Accessor accessor
+        @Auth final Accessor accessor,
+        @PathVariable final Long id
+
     ) {
         scheduleService.deleteSchedule(id, accessor);
         return ResponseEntity.noContent().build();
