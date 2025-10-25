@@ -41,12 +41,12 @@ public enum ErrorCode {
     IMAGE_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5001", "이미지 파일 삭제에 실패했습니다."),
 
     // File
-    FILE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5001", "파일 업로드에 실패했습니다."),
-    FILE_READ_FAILED(HttpStatus.BAD_REQUEST, "IMAGE4001", "업로드된 파일의 바이트 읽기에 실패했습니다."),
-    FILE_DOWNLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5002", "파일 다운로드에 실패했습니다."),
-    FILE_INVALID_NAME(HttpStatus.BAD_REQUEST, "IMAGE4002", "이미지 파일명이 없습니다."),
-    FILE_INVALID_FORMAT(HttpStatus.BAD_REQUEST, "IMAGE4003", "지원하지 않는 파일 형식입니다."),
-    FILE_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5001", "파일 삭제에 실패했습니다."),
+    FILE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FILE001", "파일 업로드에 실패했습니다."),
+    FILE_READ_FAILED(HttpStatus.BAD_REQUEST, "FILE002", "업로드된 파일의 바이트 읽기에 실패했습니다."),
+    FILE_DOWNLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FILE003", "파일 다운로드에 실패했습니다."),
+    FILE_INVALID_NAME(HttpStatus.BAD_REQUEST, "FILE004", "이미지 파일명이 없습니다."),
+    FILE_INVALID_FORMAT(HttpStatus.BAD_REQUEST, "FILE005", "지원하지 않는 파일 형식입니다."),
+    FILE_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FILE006", "파일 삭제에 실패했습니다."),
 
     // makeup
     MAKEUP_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "MAKEUP001", "해당 메이크업 상품을 찾을 수 없습니다"),

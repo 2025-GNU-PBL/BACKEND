@@ -2,12 +2,14 @@ package gnu.project.backend.schedule.dto.response;
 
 import gnu.project.backend.schedule.entity.Schedule;
 import gnu.project.backend.schedule.entity.ScheduleFile;
+import java.time.LocalDate;
 import java.util.List;
 
 public record ScheduleResponseDto(
     Long id,
     String title,
     String content,
+    LocalDate scheduleDate,
     List<ScheduleFileResponse> scheduleFiles
 
 ) {
@@ -18,6 +20,7 @@ public record ScheduleResponseDto(
             schedule.getId(),
             schedule.getTitle(),
             schedule.getContent(),
+            schedule.getScheduleDate(),
             schedule.getFiles().stream().
                 map(ScheduleResponseDto.ScheduleFileResponse::from)
                 .toList()
