@@ -22,9 +22,6 @@ public class Customer extends BaseEntity implements OauthUser {
     @Column(name = "id")
     private Long id;
 
-    @Embedded
-    private OauthInfo oauthInfo;
-
     @Column(name = "age")
     private Short age;
 
@@ -34,28 +31,87 @@ public class Customer extends BaseEntity implements OauthUser {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "bank_account")
-    private String bankAccount;
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
 
-    @Column(nullable = false)
+
+    @Column
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-//    @Embedded
-//    private OauthInfo oauthInfo;
+    @Embedded
+    private OauthInfo oauthInfo;
 
-    public static Customer signIn(
+
+//    public static Customer signIn(
+//            final String email,
+//            final String name,
+//            final String socialId,
+//            final SocialProvider provider) {
+//        final OauthInfo oauthInfo = OauthInfo.of(email, name, socialId, provider);
+//
+//        return Customer.builder()
+//                .oauthInfo(oauthInfo)
+//                .userRole(UserRole.CUSTOMER)
+//                .build();
+//    }
+
+    public static Customer createFromOAuth(
             final String email,
             final String name,
             final String socialId,
-            final SocialProvider provider) {
+            final SocialProvider provider
+    ) {
         final OauthInfo oauthInfo = OauthInfo.of(email, name, socialId, provider);
 
-        return Customer.builder()
-                .oauthInfo(oauthInfo)
-                .userRole(UserRole.CUSTOMER)
-                .build();
+        return new Customer(
+                null,
+                null,
+                null,
+                null,
+                false,
+                UserRole.CUSTOMER,
+                oauthInfo
+
+        );
     }
+
+    public void signUp(
+            final Short age,
+            final String phoneNumber,
+            final String address
+    ) {
+        this.age = age;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+    }
+
+    public void updateProfile(
+            final Short age,
+            final String phoneNumber,
+            final String address
+    ) {
+        this.age = age;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+    }
+
+    public void withdraw() {
+        this.isDeleted = true;
+        this.phoneNumber = null;
+        this.address = null;
+        this.age = null;
+    }
+
+    public void reactivate() {
+        this.isDeleted = false;
+    }
+
+    public boolean isActive() {
+        return this.isDeleted == null || !this.isDeleted;
+    }
+
+
 
 
 }
