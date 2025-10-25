@@ -66,6 +66,7 @@ public class FileProvider {
                         );
                     }, uploadExecutor)
                     .exceptionally(ex -> {
+                        log.error("File upload failed", ex);
                         throw new BusinessException(IMAGE_UPLOAD_FAILED);
                     })
             )
@@ -134,9 +135,11 @@ public class FileProvider {
                         );
                         return ScheduleFile.ofCreate(schedule, key, file);
                     }, uploadExecutor).exceptionally(ex -> {
+                        log.error("File upload failed", ex);
                         throw new BusinessException(FILE_UPLOAD_FAILED);
                     });
                 } catch (IOException e) {
+                    log.error("File read failed", e);
                     throw new BusinessException(FILE_READ_FAILED);
                 }
             })
