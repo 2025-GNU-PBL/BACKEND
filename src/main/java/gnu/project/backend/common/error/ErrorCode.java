@@ -32,7 +32,7 @@ public enum ErrorCode {
     OWNER_PROFILE_IMAGE_NOT_SET(HttpStatus.NOT_FOUND, "OWNER001", "사장의 이미지가 지정되어 있지 않습니다."),
     // Customer EXCEPTION ADD.
     CUSTOMER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "CUSTOMER001", "고객을 찾을 수 없습니다."),
-
+    CUSTOMER_DELETED_EXCEPTION(HttpStatus.BAD_REQUEST, "CUSTOMER002", "탈퇴한 회원입니다."),
     // Image
     IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5001", "이미지 파일 업로드에 실패했습니다."),
     IMAGE_FILE_READ_FAILED(HttpStatus.BAD_REQUEST, "IMAGE4001", "업로드된 이미지 파일의 바이트 읽기에 실패했습니다."),
@@ -52,6 +52,28 @@ public enum ErrorCode {
     // makeup
     MAKEUP_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "MAKEUP001", "해당 메이크업 상품을 찾을 수 없습니다"),
 
+    //Order
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "PAYMENT001", "존재하지 않는 주문입니다."),
+    // 결제 승인 관련
+    PAYMENT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "PAYMENT002", "결제에 대한 접근 권한이 없습니다."),
+    PAYMENT_AMOUNT_MISMATCH(HttpStatus.BAD_REQUEST, "PAYMENT003", "결제 요청 금액이 주문 금액과 일치하지 않습니다."),
+    PAYMENT_CONFIRM_FAILED(HttpStatus.BAD_REQUEST, "PAYMENT004", "결제 승인 실패."),
+
+    // 결제 조회/취소 관련
+    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "PAYMENT005", "결제 내역을 찾을 수 없습니다."),
+    PAYMENT_ALREADY_CANCELED(HttpStatus.BAD_REQUEST, "PAYMENT006", "이미 취소된 결제입니다."),
+    PAYMENT_CANCEL_FAILED(HttpStatus.BAD_REQUEST, "PAYMENT007", "결제 취소 요청에 실패했습니다."),
+    PAYMENT_GATEWAY_ERROR(HttpStatus.BAD_REQUEST,"PAYMENT008","결제 취소 실패." ),
+
+    // 웹훅 관련
+    UNAUTHORIZED_WEBHOOK(HttpStatus.BAD_REQUEST, "WEBHOOK001", "웹훅 요청이 잘못되었습니다."),
+
+    // 환불 관련
+    PAYMENT_REFUND_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "REFUND001", "환불이 허용되지 않은 상태입니다."),
+    PAYMENT_REFUND_FAILED(HttpStatus.BAD_REQUEST, "REFUND002", "환불 요청에 실패했습니다."),
+
+
+
     // dress
     DRESS_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "DRESS001", "해당 드레스 상품을 찾을 수 없습니다"),
 
@@ -68,6 +90,7 @@ public enum ErrorCode {
     SCHEDULE_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "SCHEDULE001", "해당 스케줄을 찾을 수 없습니다"),
 
     ;
+
 
     private final HttpStatus status;
     private final String code;
