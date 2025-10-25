@@ -12,6 +12,7 @@ import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
 import gnu.project.backend.product.provider.FileProvider;
 import gnu.project.backend.schedule.dto.request.ScheduleRequestDto;
+import gnu.project.backend.schedule.dto.response.ScheduleDateResponseDto;
 import gnu.project.backend.schedule.dto.response.ScheduleResponseDto;
 import gnu.project.backend.schedule.entity.Schedule;
 import gnu.project.backend.schedule.repository.ScheduleRepository;
@@ -54,11 +55,7 @@ public class ScheduleService {
         final List<MultipartFile> files
 
     ) {
-        final Customer customer = customerRepository.findByOauthInfo_SocialId(
-            accessor.getSocialId()
-        ).orElseThrow(() -> new BusinessException(
-            CUSTOMER_NOT_FOUND_EXCEPTION)
-        );
+        final Customer customer = findCustomer(accessor);
         final Schedule schedule = Schedule.ofCreate(
             null,
             customer,
@@ -80,11 +77,7 @@ public class ScheduleService {
         final ScheduleRequestDto request,
         final Accessor accessor,
         List<MultipartFile> files) {
-        final Owner owner = ownerRepository.findByOauthInfo_SocialId(
-            accessor.getSocialId()
-        ).orElseThrow(() -> new BusinessException(
-            OWNER_NOT_FOUND_EXCEPTION)
-        );
+        final Owner owner = findOwner(accessor);
         final Schedule schedule = Schedule.ofCreate(
             owner,
             null,
@@ -100,4 +93,64 @@ public class ScheduleService {
         }
         return ScheduleResponseDto.toResponse(savedSchedule);
     }
+
+    private Owner findOwner(Accessor accessor) {
+        return ownerRepository.findByOauthInfo_SocialId(
+            accessor.getSocialId()
+        ).orElseThrow(() -> new BusinessException(
+            OWNER_NOT_FOUND_EXCEPTION)
+        );
+    }
+
+    public List<ScheduleDateResponseDto> getSchedules(
+        final Integer year,
+        final Integer month,
+        final Accessor accessor
+    ) {
+        switch (accessor.getUserRole()) {
+            case OWNER -> {
+                return getOwnerSchedules(year, month, accessor);
+            }
+            case CUSTOMER -> {
+                return getCustomerSchedules(year, month, accessor);
+            }
+        }
+        return List.of();
+    }
+
+    private List<ScheduleDateResponseDto> getCustomerSchedules(
+        final Integer year,
+        final Integer month,
+        final Accessor accessor) {
+        final Customer customer = findCustomer(accessor);
+        List<Schedule> schedules = scheduleRepository.findSchedulesById(
+            customer.getId(),
+            year,
+            month,
+            customer.getUserRole()
+        );
+        return schedules.stream().map(ScheduleDateResponseDto::toResponse).toList();
+    }
+
+    private List<ScheduleDateResponseDto> getOwnerSchedules(
+        final Integer year,
+        final Integer month,
+        final Accessor accessor
+    ) {
+        final Owner owner = findOwner(accessor);
+        List<Schedule> schedules = scheduleRepository.findSchedulesById(
+            owner.getId(),
+            year,
+            month,
+            owner.getUserRole()
+        );
+        return schedules.stream().map(ScheduleDateResponseDto::toResponse).toList();
+    }
+
+    private Customer findCustomer(Accessor accessor) {
+        return customerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
+            .orElseThrow(() -> new BusinessException(CUSTOMER_NOT_FOUND_EXCEPTION));
+    }
+
+
 }
