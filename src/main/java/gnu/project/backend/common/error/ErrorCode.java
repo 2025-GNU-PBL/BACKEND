@@ -25,6 +25,7 @@ public enum ErrorCode {
     OAUTH_TOKEN_REQUEST_FAILED(HttpStatus.BAD_REQUEST, "AUTH4006", "소셜 로그인 중 액세스 토큰 요청에 실패했습니다."),
     OAUTH_USERINFO_RESPONSE_EMPTY(HttpStatus.BAD_REQUEST, "AUTH4007",
         "소셜 로그인 중 사용자 정보 응답이 비어 있습니다."),
+    ROLE_IS_NOT_VALID(HttpStatus.BAD_REQUEST, "AUTH4008", "해당 역할은 유효하지 않습니다"),
 
     // owner
     OWNER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "OWNER001", "사장을 찾을 수 없습니다."),
@@ -44,7 +45,7 @@ public enum ErrorCode {
     FILE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FILE001", "파일 업로드에 실패했습니다."),
     FILE_READ_FAILED(HttpStatus.BAD_REQUEST, "FILE002", "업로드된 파일의 바이트 읽기에 실패했습니다."),
     FILE_DOWNLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FILE003", "파일 다운로드에 실패했습니다."),
-    FILE_INVALID_NAME(HttpStatus.BAD_REQUEST, "FILE004", "이미지 파일명이 없습니다."),
+    FILE_INVALID_NAME(HttpStatus.BAD_REQUEST, "FILE004", "파일명이 없습니다."),
     FILE_INVALID_FORMAT(HttpStatus.BAD_REQUEST, "FILE005", "지원하지 않는 파일 형식입니다."),
     FILE_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FILE006", "파일 삭제에 실패했습니다."),
 

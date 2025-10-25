@@ -6,6 +6,9 @@ import gnu.project.backend.schedule.dto.request.ScheduleRequestDto;
 import gnu.project.backend.schedule.dto.response.ScheduleDateResponseDto;
 import gnu.project.backend.schedule.dto.response.ScheduleResponseDto;
 import gnu.project.backend.schedule.service.ScheduleService;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,8 +41,8 @@ public class ScheduleController {
 
     @GetMapping()
     public ResponseEntity<List<ScheduleDateResponseDto>> getSchedules(
-        @RequestParam final Integer year,
-        @RequestParam final Integer month,
+        @RequestParam @NotNull @Min(2000) final Integer year,
+        @RequestParam @NotNull @Min(1) @Max(12) final Integer month,
         @Auth final Accessor accessor
     ) {
         return ResponseEntity.ok(

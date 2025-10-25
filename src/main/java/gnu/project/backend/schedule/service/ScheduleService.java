@@ -3,6 +3,7 @@ package gnu.project.backend.schedule.service;
 import static gnu.project.backend.common.error.ErrorCode.CUSTOMER_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.common.error.ErrorCode.IS_NOT_VALID_SOCIAL;
 import static gnu.project.backend.common.error.ErrorCode.OWNER_NOT_FOUND_EXCEPTION;
+import static gnu.project.backend.common.error.ErrorCode.ROLE_IS_NOT_VALID;
 
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.exception.BusinessException;
@@ -18,10 +19,12 @@ import gnu.project.backend.schedule.entity.Schedule;
 import gnu.project.backend.schedule.repository.ScheduleRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -65,7 +68,7 @@ public class ScheduleService {
         );
 
         final Schedule savedSchedule = scheduleRepository.save(schedule);
-        
+
         if (files != null && !files.isEmpty()) {
             fileProvider.uploadAndSaveFiles(savedSchedule, files);
         }
@@ -114,8 +117,10 @@ public class ScheduleService {
             case CUSTOMER -> {
                 return getCustomerSchedules(year, month, accessor);
             }
+            default -> {
+                throw new BusinessException(ROLE_IS_NOT_VALID);
+            }
         }
-        return List.of();
     }
 
     private List<ScheduleDateResponseDto> getCustomerSchedules(
