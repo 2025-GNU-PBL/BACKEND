@@ -50,7 +50,7 @@ public class ScheduleFile extends BaseEntity {
         ScheduleFile scheduleFile = new ScheduleFile();
         scheduleFile.schedule = schedule;
         scheduleFile.filePath = key;
-        scheduleFile.fileName = file.getName();
+        scheduleFile.fileName = file.getOriginalFilename();
         scheduleFile.fileSize = file.getSize();
         return scheduleFile;
     }

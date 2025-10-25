@@ -34,6 +34,7 @@ public class FileProvider {
 
     @Qualifier("fileUploadExecutor")
     private final Executor uploadExecutor;
+    // TODO : 향후 enum 으로 관리
     private final String schedulePath = "SCHEDULE";
 
     public void uploadAndSaveImages(

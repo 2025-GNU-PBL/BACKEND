@@ -31,6 +31,7 @@ public class ScheduleService {
     private final OwnerRepository ownerRepository;
     private final FileProvider fileProvider;
 
+    // TODO : 삭제,수정 로직 구현
     public ScheduleResponseDto upload(
         final ScheduleRequestDto request,
         final Accessor accessor,
@@ -68,7 +69,7 @@ public class ScheduleService {
 
         final Schedule savedSchedule = scheduleRepository.save(schedule);
 
-        if (files.isEmpty()) {
+        if (!files.isEmpty()) {
             fileProvider.uploadAndSaveFiles(savedSchedule, files);
         }
 
