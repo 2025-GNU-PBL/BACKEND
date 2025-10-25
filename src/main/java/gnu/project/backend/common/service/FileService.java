@@ -9,9 +9,10 @@ import static gnu.project.backend.common.error.ErrorCode.IMAGE_FILE_READ_FAILED;
 import static gnu.project.backend.common.error.ErrorCode.IMAGE_INVALID_FORMAT;
 import static gnu.project.backend.common.error.ErrorCode.IMAGE_UPLOAD_FAILED;
 
-import com.monari.monariback.common.enumerated.ImageExtension;
 import gnu.project.backend.common.dto.DownloadImageDto;
 import gnu.project.backend.common.dto.UploadImageDto;
+import gnu.project.backend.common.enumerated.FileExtension;
+import gnu.project.backend.common.enumerated.ImageExtension;
 import gnu.project.backend.common.exception.BusinessException;
 import java.io.IOException;
 import java.util.UUID;
@@ -32,7 +33,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ImageService {
+public class FileService {
 
 
     private final S3Client s3Client;
@@ -113,6 +114,22 @@ public class ImageService {
         }
     }
 
+    public String uploadDocument(
+        final String folder,
+        final byte[] fileByte,
+        final MultipartFile file
+    ) {
+        validateFile(file);
+        final String key = generateKey(
+            folder,
+            UUID.randomUUID().toString(),
+            file.getOriginalFilename()
+        );
+        final String contentType = file.getContentType();
+        uploadFile(key, fileByte, contentType);
+        return key;
+    }
+
 
     public DownloadImageDto downloadFile(String key) {
         try {
@@ -151,6 +168,19 @@ public class ImageService {
             throw new BusinessException(IMAGE_INVALID_FORMAT);
         }
     }
+
+    private void validateFile(MultipartFile file) {
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename.isBlank()) {
+            throw new BusinessException(IMAGE_FILE_INVALID_NAME);
+        }
+
+        String ext = extractExtension(originalFilename);
+        if (!FileExtension.isSupported(ext)) {
+            throw new BusinessException(IMAGE_INVALID_FORMAT);
+        }
+    }
+
 
     private MediaType deriveMediaTypeFromKey(String key) {
         String ext = extractExtension(key);
