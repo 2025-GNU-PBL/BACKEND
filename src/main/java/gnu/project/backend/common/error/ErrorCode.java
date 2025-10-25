@@ -62,7 +62,12 @@ public enum ErrorCode {
     PRODUCT_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "PRODUCT001", "해당 상품을 찾을 수 없습니다"),
 
     // reservation
-    RESERVATION_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "RESERVATION001", "해당 예약을 찾을 수 없습니다");
+    RESERVATION_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "RESERVATION001", "해당 예약을 찾을 수 없습니다"),
+
+    // schedule
+    SCHEDULE_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "SCHEDULE001", "해당 스케줄을 찾을 수 없습니다"),
+
+    ;
 
     private final HttpStatus status;
     private final String code;

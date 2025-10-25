@@ -1,6 +1,7 @@
 package gnu.project.backend.schedule.repository.impl;
 
 import static gnu.project.backend.schedule.entity.QSchedule.schedule;
+import static gnu.project.backend.schedule.entity.QScheduleFile.scheduleFile;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -9,6 +10,7 @@ import gnu.project.backend.schedule.entity.Schedule;
 import gnu.project.backend.schedule.repository.ScheduleCustomRepository;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +23,16 @@ public class ScheduleRepositoryImpl implements ScheduleCustomRepository {
         schedule.id.asc()
     };
     private final JPAQueryFactory query;
+
+    @Override
+    public Optional<Schedule> findScheduleById(final Long id) {
+        return Optional.ofNullable(query.selectFrom(schedule)
+            .leftJoin(schedule.files, scheduleFile)
+            .fetchJoin()
+            .where(schedule.id.eq(id))
+            .fetchFirst()
+        );
+    }
 
     @Override
     public List<Schedule> findSchedulesById(

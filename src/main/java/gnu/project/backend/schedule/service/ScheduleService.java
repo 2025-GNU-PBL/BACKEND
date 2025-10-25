@@ -4,6 +4,7 @@ import static gnu.project.backend.common.error.ErrorCode.CUSTOMER_NOT_FOUND_EXCE
 import static gnu.project.backend.common.error.ErrorCode.IS_NOT_VALID_SOCIAL;
 import static gnu.project.backend.common.error.ErrorCode.OWNER_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.common.error.ErrorCode.ROLE_IS_NOT_VALID;
+import static gnu.project.backend.common.error.ErrorCode.SCHEDULE_NOT_FOUND_EXCEPTION;
 
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.exception.BusinessException;
@@ -158,4 +159,25 @@ public class ScheduleService {
     }
 
 
+    public ScheduleResponseDto getSchedule(final Long id, final Accessor accessor) {
+        final Schedule schedule = scheduleRepository.findScheduleById(id)
+            .orElseThrow(() -> new BusinessException(SCHEDULE_NOT_FOUND_EXCEPTION));
+
+        switch (accessor.getUserRole()) {
+            case CUSTOMER -> {
+                if (schedule.getCustomer() == null ||
+                    !accessor.getSocialId().equals(schedule.getCustomer().getSocialId())) {
+                    throw new BusinessException(IS_NOT_VALID_SOCIAL);
+                }
+            }
+            case OWNER -> {
+                if (schedule.getOwner() == null ||
+                    !accessor.getSocialId().equals(schedule.getOwner().getSocialId())) {
+                    throw new BusinessException(IS_NOT_VALID_SOCIAL);
+                }
+            }
+            default -> throw new BusinessException(IS_NOT_VALID_SOCIAL);
+        }
+        return ScheduleResponseDto.toResponse(schedule);
+    }
 }
