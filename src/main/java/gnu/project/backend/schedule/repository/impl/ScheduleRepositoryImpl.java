@@ -17,8 +17,8 @@ import org.springframework.stereotype.Repository;
 public class ScheduleRepositoryImpl implements ScheduleCustomRepository {
 
     private static final OrderSpecifier<?>[] SCHEDULE_DEFAULT_ORDER = {
-        schedule.createdAt.desc(),
-        schedule.id.desc()
+        schedule.scheduleDate.asc(),
+        schedule.id.asc()
     };
     private final JPAQueryFactory query;
 

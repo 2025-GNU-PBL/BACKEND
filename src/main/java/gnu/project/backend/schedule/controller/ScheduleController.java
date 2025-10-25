@@ -28,7 +28,7 @@ public class ScheduleController {
     @PostMapping()
     public ResponseEntity<ScheduleResponseDto> uploadSchedule(
         @RequestPart(name = "request") final ScheduleRequestDto request,
-        @RequestPart(name = "file") final List<MultipartFile> file,
+        @RequestPart(name = "file", required = false) final List<MultipartFile> file,
         @Auth final Accessor accessor
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(

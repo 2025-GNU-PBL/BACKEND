@@ -65,8 +65,8 @@ public class ScheduleService {
         );
 
         final Schedule savedSchedule = scheduleRepository.save(schedule);
-
-        if (!files.isEmpty()) {
+        
+        if (files != null && !files.isEmpty()) {
             fileProvider.uploadAndSaveFiles(savedSchedule, files);
         }
 
@@ -88,7 +88,7 @@ public class ScheduleService {
 
         final Schedule savedSchedule = scheduleRepository.save(schedule);
 
-        if (!files.isEmpty()) {
+        if (files != null && !files.isEmpty()) {
             fileProvider.uploadAndSaveFiles(savedSchedule, files);
         }
         return ScheduleResponseDto.toResponse(savedSchedule);
