@@ -3,6 +3,7 @@ package gnu.project.backend.schedule.controller;
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.schedule.dto.request.ScheduleRequestDto;
+import gnu.project.backend.schedule.dto.request.ScheduleUpdateRequestDto;
 import gnu.project.backend.schedule.dto.response.ScheduleDateResponseDto;
 import gnu.project.backend.schedule.dto.response.ScheduleResponseDto;
 import gnu.project.backend.schedule.service.ScheduleService;
@@ -13,7 +14,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,5 +65,26 @@ public class ScheduleController {
         return ResponseEntity.ok(
             scheduleService.getSchedules(year, month, accessor)
         );
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ScheduleResponseDto> updateSchedule(
+        @PathVariable final Long id,
+        @RequestPart("request") final ScheduleUpdateRequestDto request,
+        @RequestPart(value = "file", required = false) final List<MultipartFile> files,
+        @Auth final Accessor accessor
+    ) {
+        return ResponseEntity.ok(
+            scheduleService.updateSchedule(id, request, accessor, files)
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSchedule(
+        @PathVariable final Long id,
+        @Auth final Accessor accessor
+    ) {
+        scheduleService.deleteSchedule(id, accessor);
+        return ResponseEntity.noContent().build();
     }
 }

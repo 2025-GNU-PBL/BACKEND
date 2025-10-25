@@ -156,4 +156,37 @@ public class FileProvider {
         scheduleFileRepository.saveAll(scheduleFiles);
         scheduleFiles.forEach(schedule::addFiles);
     }
+
+
+    public void deleteFile(final List<ScheduleFile> files) {
+        files.forEach(file -> {
+            try {
+                fileService.delete(file.getFilePath());
+            } catch (Exception e) {
+                log.warn("Failed to delete S3 file: {}", file.getFilePath(), e);
+            }
+        });
+        scheduleFileRepository.deleteAll(files);
+    }
+
+    public void updateScheduleFiles(
+        final Schedule schedule,
+        final List<MultipartFile> files,
+        final List<Long> keepFileIds
+    ) {
+        final List<ScheduleFile> existingFiles = schedule.getFiles();
+
+        final List<ScheduleFile> filesToDelete = existingFiles.stream()
+            .filter(file -> keepFileIds == null || !keepFileIds.contains(file.getId()))
+            .toList();
+
+        if (!filesToDelete.isEmpty()) {
+            deleteFile(filesToDelete);
+            existingFiles.removeAll(filesToDelete);
+        }
+
+        if (files != null && !files.isEmpty()) {
+            uploadAndSaveFiles(schedule, files);
+        }
+    }
 }

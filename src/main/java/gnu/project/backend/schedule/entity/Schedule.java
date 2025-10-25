@@ -73,4 +73,13 @@ public class Schedule extends BaseEntity {
         this.files.add(file);
     }
 
+    public void updateContent(
+        final String title,
+        final String content,
+        final LocalDate scheduleDate
+    ) {
+        this.title = title;
+        this.content = content;
+        this.scheduleDate = scheduleDate;
+    }
 }

@@ -14,9 +14,11 @@ import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
 import gnu.project.backend.product.provider.FileProvider;
 import gnu.project.backend.schedule.dto.request.ScheduleRequestDto;
+import gnu.project.backend.schedule.dto.request.ScheduleUpdateRequestDto;
 import gnu.project.backend.schedule.dto.response.ScheduleDateResponseDto;
 import gnu.project.backend.schedule.dto.response.ScheduleResponseDto;
 import gnu.project.backend.schedule.entity.Schedule;
+import gnu.project.backend.schedule.entity.ScheduleFile;
 import gnu.project.backend.schedule.repository.ScheduleRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -124,6 +126,43 @@ public class ScheduleService {
         }
     }
 
+    public ScheduleResponseDto updateSchedule(
+        final Long id,
+        final ScheduleUpdateRequestDto request,
+        final Accessor accessor,
+        final List<MultipartFile> files
+    ) {
+        final Schedule schedule = scheduleRepository.findScheduleById(id)
+            .orElseThrow(() -> new BusinessException(SCHEDULE_NOT_FOUND_EXCEPTION));
+
+        validateScheduleAccess(schedule, accessor);
+        schedule.updateContent(request.title(), request.content(), request.scheduleDate());
+
+        if (files != null && !files.isEmpty()) {
+            fileProvider.updateScheduleFiles(
+                schedule,
+                files,
+                request.keepFileIds()
+            );
+        }
+
+        return ScheduleResponseDto.toResponse(schedule);
+    }
+
+    public void deleteSchedule(final Long scheduleId, final Accessor accessor) {
+        final Schedule schedule = scheduleRepository.findById(scheduleId)
+            .orElseThrow(() -> new BusinessException(SCHEDULE_NOT_FOUND_EXCEPTION));
+
+        validateScheduleAccess(schedule, accessor);
+
+        final List<ScheduleFile> files = schedule.getFiles();
+        if (!files.isEmpty()) {
+            fileProvider.deleteFile(files);
+        }
+
+        scheduleRepository.delete(schedule);
+    }
+
     private List<ScheduleDateResponseDto> getCustomerSchedules(
         final Integer year,
         final Integer month,
@@ -162,7 +201,11 @@ public class ScheduleService {
     public ScheduleResponseDto getSchedule(final Long id, final Accessor accessor) {
         final Schedule schedule = scheduleRepository.findScheduleById(id)
             .orElseThrow(() -> new BusinessException(SCHEDULE_NOT_FOUND_EXCEPTION));
+        validateScheduleAccess(schedule, accessor);
+        return ScheduleResponseDto.toResponse(schedule);
+    }
 
+    private void validateScheduleAccess(final Schedule schedule, final Accessor accessor) {
         switch (accessor.getUserRole()) {
             case CUSTOMER -> {
                 if (schedule.getCustomer() == null ||
@@ -176,8 +219,8 @@ public class ScheduleService {
                     throw new BusinessException(IS_NOT_VALID_SOCIAL);
                 }
             }
-            default -> throw new BusinessException(IS_NOT_VALID_SOCIAL);
+            default -> throw new BusinessException(ROLE_IS_NOT_VALID);
         }
-        return ScheduleResponseDto.toResponse(schedule);
     }
 }
+
