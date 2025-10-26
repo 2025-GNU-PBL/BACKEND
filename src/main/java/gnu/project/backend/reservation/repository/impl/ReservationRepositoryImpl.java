@@ -2,6 +2,7 @@ package gnu.project.backend.reservation.repository.impl;
 
 import static gnu.project.backend.customer.entity.QCustomer.customer;
 import static gnu.project.backend.owner.entity.QOwner.owner;
+import static gnu.project.backend.product.entity.QProduct.product;
 import static gnu.project.backend.reservation.entity.QReservation.reservation;
 
 import com.querydsl.core.types.OrderSpecifier;
@@ -22,6 +23,19 @@ public class ReservationRepositoryImpl implements ReservationCustomRepository {
         reservation.id.desc()
     };
     private final JPAQueryFactory query;
+
+    @Override
+    public Optional<Reservation> findByIdWithAllRelations(final Long id) {
+        return Optional.ofNullable(
+            query
+                .selectFrom(reservation)
+                .leftJoin(reservation.owner, owner).fetchJoin()
+                .leftJoin(reservation.customer, customer).fetchJoin()
+                .leftJoin(reservation.product, product).fetchJoin()
+                .where(reservation.id.eq(id))
+                .fetchFirst()
+        );
+    }
 
     @Override
     public Optional<Reservation> findReservationByIdWithOwner(final Long id) {

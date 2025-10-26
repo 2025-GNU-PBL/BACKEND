@@ -6,6 +6,8 @@ import java.util.Optional;
 
 public interface ReservationCustomRepository {
 
+    Optional<Reservation> findByIdWithAllRelations(final Long id);
+
     Optional<Reservation> findReservationByIdWithOwner(final Long id);
 
     List<Reservation> findReservationsByOwnerId(final Long id);

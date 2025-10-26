@@ -18,12 +18,17 @@ import gnu.project.backend.reservation.dto.request.ReservationRequestDto;
 import gnu.project.backend.reservation.dto.request.ReservationStatusChangeRequestDto;
 import gnu.project.backend.reservation.dto.response.ReservationResponseDto;
 import gnu.project.backend.reservation.entity.Reservation;
+import gnu.project.backend.reservation.enumerated.Status;
+import gnu.project.backend.reservation.event.ReservationApprovedEvent;
 import gnu.project.backend.reservation.repository.ReservationRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -33,6 +38,7 @@ public class ReservationService {
     private final OwnerRepository ownerRepository;
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public ReservationResponseDto createReservation(
         final Accessor accessor,
@@ -71,9 +77,18 @@ public class ReservationService {
         if (reservation.getOwner().getSocialId().equals(accessor.getSocialId())) {
             throw new BusinessException(IS_NOT_VALID_SOCIAL);
         }
-        //TODO : APPROVE 일시 이벤트 기반으로 Schedule을 생성해줘야함
-//        if (requestDto.status() == Status.APPROVE)
         reservation.changeStatus(requestDto.status());
+        if (reservation.getStatus() == Status.APPROVE) {
+            eventPublisher.publishEvent(
+                new ReservationApprovedEvent(
+                    reservation.getId(),
+                    reservation.getReservationTime(),
+                    reservation.getTitle(),
+                    reservation.getContent()
+                )
+            );
+            log.info("예약 승인 이벤트 발행 완료 - Reservation ID: {}", reservation.getId());
+        }
 
         return ReservationResponseDto.from(reservation);
     }

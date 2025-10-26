@@ -1,12 +1,12 @@
 package gnu.project.backend.reservation.dto.request;
 
 import gnu.project.backend.reservation.enumerated.Status;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record ReservationRequestDto(
     Long productId,
     Status status,
-    LocalDateTime reservationTime,
+    LocalDate reservationTime,
     String title,
     String content
 ) {

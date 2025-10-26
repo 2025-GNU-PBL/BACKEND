@@ -3,6 +3,7 @@ package gnu.project.backend.schedule.service;
 import static gnu.project.backend.common.error.ErrorCode.CUSTOMER_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.common.error.ErrorCode.IS_NOT_VALID_SOCIAL;
 import static gnu.project.backend.common.error.ErrorCode.OWNER_NOT_FOUND_EXCEPTION;
+import static gnu.project.backend.common.error.ErrorCode.RESERVATION_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.common.error.ErrorCode.ROLE_IS_NOT_VALID;
 import static gnu.project.backend.common.error.ErrorCode.SCHEDULE_NOT_FOUND_EXCEPTION;
 
@@ -12,7 +13,11 @@ import gnu.project.backend.customer.entity.Customer;
 import gnu.project.backend.customer.repository.CustomerRepository;
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
+import gnu.project.backend.product.entity.Product;
 import gnu.project.backend.product.provider.FileProvider;
+import gnu.project.backend.reservation.entity.Reservation;
+import gnu.project.backend.reservation.repository.ReservationRepository;
+import gnu.project.backend.schedule.dto.request.ScheduleEventRequestDto;
 import gnu.project.backend.schedule.dto.request.ScheduleRequestDto;
 import gnu.project.backend.schedule.dto.request.ScheduleUpdateRequestDto;
 import gnu.project.backend.schedule.dto.response.ScheduleDateResponseDto;
@@ -36,6 +41,7 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final CustomerRepository customerRepository;
     private final OwnerRepository ownerRepository;
+    private final ReservationRepository reservationRepository;
     private final FileProvider fileProvider;
 
     // TODO : 삭제,수정 로직 구현
@@ -221,6 +227,34 @@ public class ScheduleService {
             }
             default -> throw new BusinessException(ROLE_IS_NOT_VALID);
         }
+    }
+
+    public void createScheduleFromReservation(
+        final ScheduleEventRequestDto scheduleRequestDto
+    ) {
+
+        if (scheduleRepository.existsByReservationId(scheduleRequestDto.reservationId())) {
+            log.warn("이미 스케줄이 생성된 예약입니다 - Reservation ID: {}", scheduleRequestDto.reservationId());
+            return;
+        }
+
+        final Reservation reservation = reservationRepository
+            .findByIdWithAllRelations(scheduleRequestDto.reservationId())
+            .orElseThrow(() -> new BusinessException(RESERVATION_NOT_FOUND_EXCEPTION));
+
+        final Owner owner = reservation.getOwner();
+        final Customer customer = reservation.getCustomer();
+        final Product product = reservation.getProduct();
+        final Schedule schedule = Schedule.fromReservation(
+            owner,
+            customer,
+            product,
+            scheduleRequestDto.reservationId(),
+            scheduleRequestDto.title(),
+            scheduleRequestDto.content(),
+            scheduleRequestDto.scheduleTime()
+        );
+        scheduleRepository.save(schedule);
     }
 }
 

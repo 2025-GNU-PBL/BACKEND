@@ -2,7 +2,7 @@ package gnu.project.backend.reservation.dto.response;
 
 import gnu.project.backend.reservation.entity.Reservation;
 import gnu.project.backend.reservation.enumerated.Status;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record ReservationResponseDto(
     Long id,
@@ -10,7 +10,7 @@ public record ReservationResponseDto(
     Long customerId,
     Long productId,
     Status status,
-    LocalDateTime reservationTime,
+    LocalDate reservationTime,
     String title,
     String content
 ) {

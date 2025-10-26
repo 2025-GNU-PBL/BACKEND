@@ -16,7 +16,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,7 +49,7 @@ public class Reservation extends BaseEntity {
     private Status status;
 
     @Column
-    private LocalDateTime reservationTime;
+    private LocalDate reservationTime;
 
     @Column
     private String title;
@@ -62,7 +62,7 @@ public class Reservation extends BaseEntity {
         final Customer customer,
         final Product product,
         final Status status,
-        final LocalDateTime reservationTime,
+        final LocalDate reservationTime,
         final String title,
         final String content
     ) {
