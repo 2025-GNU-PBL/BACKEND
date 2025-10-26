@@ -4,6 +4,7 @@ package gnu.project.backend.owner.controller;
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.dto.UploadImageDto;
+import gnu.project.backend.owner.controller.docs.OwnerDocs;
 import gnu.project.backend.owner.dto.request.OwnerRequest;
 import gnu.project.backend.owner.dto.response.OwnerResponse;
 import gnu.project.backend.owner.dto.response.OwnerSignInResponse;
@@ -23,11 +24,11 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/owner")
-public class OwnerController {
+public class OwnerController implements OwnerDocs {
 
     private final OwnerService ownerService;
 
-
+    @Override
     @PostMapping()
     public ResponseEntity<OwnerSignInResponse> signIn(
         @Auth final Accessor accessor,
@@ -36,6 +37,7 @@ public class OwnerController {
         return ResponseEntity.ok(ownerService.signUp(accessor, signInRequest));
     }
 
+    @Override
     @PostMapping("/profile/image")
     public ResponseEntity<UploadImageDto> uploadImage(
         @Auth final Accessor accessor,
@@ -49,7 +51,7 @@ public class OwnerController {
         );
     }
 
-
+    @Override
     @PatchMapping()
     public ResponseEntity<OwnerUpdateResponse> update(
         @Auth final Accessor accessor,
@@ -58,6 +60,7 @@ public class OwnerController {
         return ResponseEntity.ok(ownerService.update(accessor, updateRequest));
     }
 
+    @Override
     @GetMapping()
     public ResponseEntity<OwnerResponse> find(
         @Auth final Accessor accessor

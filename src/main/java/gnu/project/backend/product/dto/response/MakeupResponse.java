@@ -39,6 +39,7 @@ public record MakeupResponse(
     }
 
     public record ImageResponse(
+        Long id,
         String url,
         String s3Key,
         Integer displayOrder
@@ -46,6 +47,7 @@ public record MakeupResponse(
 
         public static ImageResponse from(Image image) {
             return new ImageResponse(
+                image.getId(),
                 image.getUrl(),
                 image.getS3Key(),
                 image.getDisplayOrder()

@@ -35,6 +35,7 @@ public class Owner extends BaseEntity implements OauthUser {
 
     @Column
     private String bzName;
+    
     @Column
     private Short age;
 
