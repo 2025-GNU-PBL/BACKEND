@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
@@ -18,7 +17,6 @@ public class ReservationEventListener {
 
     @Async
     @EventListener
-    @Transactional
     public void handleReservationApproved(final ReservationApprovedEvent event) {
         final ScheduleEventRequestDto scheduleRequestDto = new ScheduleEventRequestDto(
             event.reservationId(),

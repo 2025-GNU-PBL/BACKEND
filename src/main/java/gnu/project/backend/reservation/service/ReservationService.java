@@ -75,7 +75,7 @@ public class ReservationService {
             .orElseThrow(() -> new BusinessException(STUDIO_NOT_FOUND_EXCEPTION));
         //TODO : 사장만 해당 상태를 변경할 수 있나? 고객의 단순 변심으로는 변경이 안되나?
         //TODO : 보상트랜잭션 구현
-        if (reservation.getOwner().getSocialId().equals(accessor.getSocialId())) {
+        if (!reservation.getOwner().getSocialId().equals(accessor.getSocialId())) {
             throw new BusinessException(IS_NOT_VALID_SOCIAL);
         }
         reservation.changeStatus(requestDto.status());

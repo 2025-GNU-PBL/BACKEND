@@ -232,6 +232,10 @@ public class ScheduleService {
     public void createScheduleFromReservation(
         final ScheduleEventRequestDto scheduleRequestDto
     ) {
+        if (scheduleRequestDto.reservationId() == null) {
+            log.warn("예약 ID가 null입니다. 스케줄 생성을 건너뜁니다.");
+            return;
+        }
 
         if (scheduleRepository.existsByReservationId(scheduleRequestDto.reservationId())) {
             log.warn("이미 스케줄이 생성된 예약입니다 - Reservation ID: {}", scheduleRequestDto.reservationId());
