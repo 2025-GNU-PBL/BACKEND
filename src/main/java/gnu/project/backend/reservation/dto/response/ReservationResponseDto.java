@@ -1,7 +1,7 @@
-package gnu.project.backend.reservaiton.dto.response;
+package gnu.project.backend.reservation.dto.response;
 
-import gnu.project.backend.reservaiton.entity.Reservation;
-import gnu.project.backend.reservaiton.enumerated.Status;
+import gnu.project.backend.reservation.entity.Reservation;
+import gnu.project.backend.reservation.enumerated.Status;
 import java.time.LocalDateTime;
 
 public record ReservationResponseDto(

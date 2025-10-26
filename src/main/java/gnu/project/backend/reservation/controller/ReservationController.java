@@ -1,12 +1,12 @@
-package gnu.project.backend.reservaiton.controller;
+package gnu.project.backend.reservation.controller;
 
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
-import gnu.project.backend.reservaiton.controller.docs.ReservationDocs;
-import gnu.project.backend.reservaiton.dto.request.ReservationRequestDto;
-import gnu.project.backend.reservaiton.dto.request.ReservationStatusChangeRequestDto;
-import gnu.project.backend.reservaiton.dto.response.ReservationResponseDto;
-import gnu.project.backend.reservaiton.service.ReservationService;
+import gnu.project.backend.reservation.controller.docs.ReservationDocs;
+import gnu.project.backend.reservation.dto.request.ReservationRequestDto;
+import gnu.project.backend.reservation.dto.request.ReservationStatusChangeRequestDto;
+import gnu.project.backend.reservation.dto.response.ReservationResponseDto;
+import gnu.project.backend.reservation.service.ReservationService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

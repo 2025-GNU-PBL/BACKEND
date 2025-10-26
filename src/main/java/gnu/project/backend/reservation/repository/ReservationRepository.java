@@ -1,6 +1,6 @@
-package gnu.project.backend.reservaiton.repository;
+package gnu.project.backend.reservation.repository;
 
-import gnu.project.backend.reservaiton.entity.Reservation;
+import gnu.project.backend.reservation.entity.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

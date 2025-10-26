@@ -1,6 +1,6 @@
-package gnu.project.backend.reservaiton.repository;
+package gnu.project.backend.reservation.repository;
 
-import gnu.project.backend.reservaiton.entity.Reservation;
+import gnu.project.backend.reservation.entity.Reservation;
 import java.util.List;
 import java.util.Optional;
 

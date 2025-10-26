@@ -1,4 +1,4 @@
-package gnu.project.backend.reservaiton.service;
+package gnu.project.backend.reservation.service;
 
 import static gnu.project.backend.common.error.ErrorCode.CUSTOMER_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.common.error.ErrorCode.IS_NOT_VALID_SOCIAL;
@@ -14,11 +14,11 @@ import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
 import gnu.project.backend.product.entity.Product;
 import gnu.project.backend.product.repository.ProductRepository;
-import gnu.project.backend.reservaiton.dto.request.ReservationRequestDto;
-import gnu.project.backend.reservaiton.dto.request.ReservationStatusChangeRequestDto;
-import gnu.project.backend.reservaiton.dto.response.ReservationResponseDto;
-import gnu.project.backend.reservaiton.entity.Reservation;
-import gnu.project.backend.reservaiton.repository.ReservationRepository;
+import gnu.project.backend.reservation.dto.request.ReservationRequestDto;
+import gnu.project.backend.reservation.dto.request.ReservationStatusChangeRequestDto;
+import gnu.project.backend.reservation.dto.response.ReservationResponseDto;
+import gnu.project.backend.reservation.entity.Reservation;
+import gnu.project.backend.reservation.repository.ReservationRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

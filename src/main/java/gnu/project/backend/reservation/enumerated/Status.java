@@ -1,4 +1,4 @@
-package gnu.project.backend.reservaiton.enumerated;
+package gnu.project.backend.reservation.enumerated;
 
 public enum Status {
     APPROVE,
