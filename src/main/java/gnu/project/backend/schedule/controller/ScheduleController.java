@@ -8,6 +8,7 @@ import gnu.project.backend.schedule.dto.request.ScheduleUpdateRequestDto;
 import gnu.project.backend.schedule.dto.response.ScheduleDateResponseDto;
 import gnu.project.backend.schedule.dto.response.ScheduleResponseDto;
 import gnu.project.backend.schedule.service.ScheduleService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -37,7 +38,7 @@ public class ScheduleController implements ScheduleDocs {
     @Override
     @PostMapping()
     public ResponseEntity<ScheduleResponseDto> uploadSchedule(
-        @RequestPart(name = "request") final ScheduleRequestDto request,
+        @RequestPart(name = "request") @Valid final ScheduleRequestDto request,
         @RequestPart(name = "file", required = false) final List<MultipartFile> file,
         @Auth final Accessor accessor
     ) {
@@ -77,7 +78,7 @@ public class ScheduleController implements ScheduleDocs {
     @PatchMapping("/{id}")
     public ResponseEntity<ScheduleResponseDto> updateSchedule(
         @PathVariable final Long id,
-        @RequestPart("request") final ScheduleUpdateRequestDto request,
+        @RequestPart("request") @Valid final ScheduleUpdateRequestDto request,
         @RequestPart(value = "file", required = false) final List<MultipartFile> files,
         @Auth final Accessor accessor
     ) {

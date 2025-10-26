@@ -1,9 +1,9 @@
-package gnu.project.backend.reservaiton.controller.docs;
+package gnu.project.backend.reservation.controller.docs;
 
 import gnu.project.backend.auth.entity.Accessor;
-import gnu.project.backend.reservaiton.dto.request.ReservationRequestDto;
-import gnu.project.backend.reservaiton.dto.request.ReservationStatusChangeRequestDto;
-import gnu.project.backend.reservaiton.dto.response.ReservationResponseDto;
+import gnu.project.backend.reservation.dto.request.ReservationRequestDto;
+import gnu.project.backend.reservation.dto.request.ReservationStatusChangeRequestDto;
+import gnu.project.backend.reservation.dto.response.ReservationResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

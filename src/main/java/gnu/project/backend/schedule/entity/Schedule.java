@@ -3,6 +3,7 @@ package gnu.project.backend.schedule.entity;
 import gnu.project.backend.common.entity.BaseEntity;
 import gnu.project.backend.customer.entity.Customer;
 import gnu.project.backend.owner.entity.Owner;
+import gnu.project.backend.product.entity.Product;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,6 +42,13 @@ public class Schedule extends BaseEntity {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    @Column(name = "reservation_id")
+    private Long reservationId;
+
     @Column(nullable = false)
     private String title;
 
@@ -63,9 +71,31 @@ public class Schedule extends BaseEntity {
         Schedule schedule = new Schedule();
         schedule.owner = owner;
         schedule.customer = customer;
+        schedule.reservationId = null;
+        schedule.product = null;
         schedule.title = title;
         schedule.content = content;
         schedule.scheduleDate = scheduleDate;
+        return schedule;
+    }
+
+    public static Schedule fromReservation(
+        final Owner owner,
+        final Customer customer,
+        final Product product,
+        final Long reservationId,
+        final String title,
+        final String content,
+        final LocalDate reservationTime
+    ) {
+        Schedule schedule = new Schedule();
+        schedule.owner = owner;
+        schedule.customer = customer;
+        schedule.product = product;
+        schedule.reservationId = reservationId;
+        schedule.title = title;
+        schedule.content = content;
+        schedule.scheduleDate = reservationTime;
         return schedule;
     }
 

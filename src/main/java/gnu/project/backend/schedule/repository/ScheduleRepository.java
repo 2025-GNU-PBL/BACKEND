@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
 public interface ScheduleRepository extends JpaRepository<Schedule, Long>,
     ScheduleCustomRepository {
 
+    boolean existsByReservationId(final Long id);
 
 }
