@@ -1,16 +1,16 @@
 package gnu.project.backend.schedule.dto.request;
 
 import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.util.List;
 
 public record ScheduleUpdateRequestDto(
-    @NotNull
+    @NotBlank
     String title,
-    @NotNull
+    @NotBlank
     String content,
-    @NotNull
+    @NotBlank
     @FutureOrPresent
     LocalDate scheduleDate,
     List<Long> keepFileIds
