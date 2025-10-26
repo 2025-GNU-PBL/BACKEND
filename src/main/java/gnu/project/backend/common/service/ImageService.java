@@ -8,9 +8,9 @@ import static gnu.project.backend.common.error.ErrorCode.IMAGE_FILE_READ_FAILED;
 import static gnu.project.backend.common.error.ErrorCode.IMAGE_INVALID_FORMAT;
 import static gnu.project.backend.common.error.ErrorCode.IMAGE_UPLOAD_FAILED;
 
-import com.monari.monariback.common.enumerated.ImageExtension;
 import gnu.project.backend.common.dto.DownloadImageDto;
 import gnu.project.backend.common.dto.UploadImageDto;
+import gnu.project.backend.common.enumerated.ImageExtension;
 import gnu.project.backend.common.exception.BusinessException;
 import java.io.IOException;
 import java.util.UUID;
