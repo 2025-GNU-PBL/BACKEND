@@ -31,7 +31,7 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final CustomerRepository customerRepository;
-    private  final ProductRepository productRepository;
+    //private  final ProductRepository productRepository;
     private final ImageRepository imageRepository;
     private final Executor imageUploadExecutor = Executors.newFixedThreadPool(10);
 
