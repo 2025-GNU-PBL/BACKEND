@@ -6,7 +6,7 @@ import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.dto.UploadImageDto;
 import gnu.project.backend.common.enumerated.UserRole;
 import gnu.project.backend.common.exception.BusinessException;
-import gnu.project.backend.common.service.ImageService;
+import gnu.project.backend.common.service.FileService;
 import gnu.project.backend.owner.dto.request.OwnerRequest;
 import gnu.project.backend.owner.dto.response.OwnerResponse;
 import gnu.project.backend.owner.dto.response.OwnerSignInResponse;
@@ -27,7 +27,7 @@ public class OwnerService {
 
     private final OwnerRepository ownerRepository;
 
-    private final ImageService imageService;
+    private final FileService fileService;
 
     @Transactional(readOnly = true)
     public OwnerResponse findOwner(final Accessor accessor) {
@@ -39,7 +39,7 @@ public class OwnerService {
         final MultipartFile file
     ) {
         findOwnerBySocialId(accessor);
-        return imageService.uploadImageWithUrl(
+        return fileService.uploadImageWithUrl(
             UserRole.OWNER.toString(),
             accessor.getSocialId(),
             file

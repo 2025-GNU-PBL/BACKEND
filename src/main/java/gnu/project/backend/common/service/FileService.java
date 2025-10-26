@@ -2,6 +2,7 @@ package gnu.project.backend.common.service;
 
 import static gnu.project.backend.common.constant.S3GenerateKeyConstant.FILENAME_SEPARATOR;
 import static gnu.project.backend.common.constant.S3GenerateKeyConstant.FOLDER_SEPARATOR;
+import static gnu.project.backend.common.error.ErrorCode.IMAGE_DELETE_FAILED;
 import static gnu.project.backend.common.error.ErrorCode.IMAGE_DOWNLOAD_FAILED;
 import static gnu.project.backend.common.error.ErrorCode.IMAGE_FILE_INVALID_NAME;
 import static gnu.project.backend.common.error.ErrorCode.IMAGE_FILE_READ_FAILED;
@@ -10,6 +11,7 @@ import static gnu.project.backend.common.error.ErrorCode.IMAGE_UPLOAD_FAILED;
 
 import gnu.project.backend.common.dto.DownloadImageDto;
 import gnu.project.backend.common.dto.UploadImageDto;
+import gnu.project.backend.common.enumerated.FileExtension;
 import gnu.project.backend.common.enumerated.ImageExtension;
 import gnu.project.backend.common.exception.BusinessException;
 import java.io.IOException;
@@ -27,17 +29,15 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ImageService {
+public class FileService {
 
 
     private final S3Client s3Client;
 
-    private final S3Presigner s3Presigner;
 
     @Value("${aws.s3.bucket}")
     private String bucketName;
@@ -56,6 +56,17 @@ public class ImageService {
         } catch (SdkException e) {
             log.error(e.getMessage());
             throw new BusinessException(IMAGE_UPLOAD_FAILED);
+        }
+    }
+
+    public void delete(final String s3Key) {
+        try {
+            s3Client.deleteObject(builder -> builder
+                .bucket(bucketName)
+                .key(s3Key)
+            );
+        } catch (SdkException e) {
+            throw new BusinessException(IMAGE_DELETE_FAILED);
         }
     }
 
@@ -103,6 +114,22 @@ public class ImageService {
         }
     }
 
+    public String uploadDocument(
+        final String folder,
+        final byte[] fileByte,
+        final MultipartFile file
+    ) {
+        validateFile(file);
+        final String key = generateKey(
+            folder,
+            UUID.randomUUID().toString(),
+            file.getOriginalFilename()
+        );
+        final String contentType = file.getContentType();
+        uploadFile(key, fileByte, contentType);
+        return key;
+    }
+
 
     public DownloadImageDto downloadFile(String key) {
         try {
@@ -141,6 +168,19 @@ public class ImageService {
             throw new BusinessException(IMAGE_INVALID_FORMAT);
         }
     }
+
+    private void validateFile(MultipartFile file) {
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename.isBlank()) {
+            throw new BusinessException(IMAGE_FILE_INVALID_NAME);
+        }
+
+        String ext = extractExtension(originalFilename);
+        if (!FileExtension.isSupported(ext)) {
+            throw new BusinessException(IMAGE_INVALID_FORMAT);
+        }
+    }
+
 
     private MediaType deriveMediaTypeFromKey(String key) {
         String ext = extractExtension(key);

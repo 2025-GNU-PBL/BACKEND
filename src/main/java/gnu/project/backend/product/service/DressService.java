@@ -14,7 +14,7 @@ import gnu.project.backend.product.dto.request.DressUpdateRequest;
 import gnu.project.backend.product.dto.response.DressPageResponse;
 import gnu.project.backend.product.dto.response.DressResponse;
 import gnu.project.backend.product.entity.Dress;
-import gnu.project.backend.product.provider.ImageProvider;
+import gnu.project.backend.product.provider.FileProvider;
 import gnu.project.backend.product.provider.OptionProvider;
 import gnu.project.backend.product.provider.TagProvider;
 import gnu.project.backend.product.repository.DressRepository;
@@ -35,7 +35,7 @@ public class DressService {
 
     private final DressRepository dressRepository;
     private final OwnerRepository ownerRepository;
-    private final ImageProvider imageProvider;
+    private final FileProvider fileProvider;
     private final OptionProvider optionProvider;
     private final TagProvider tagProvider;
 
@@ -95,7 +95,7 @@ public class DressService {
 
         validOwner(accessor, dress);
 
-        imageProvider.updateImages(
+        fileProvider.updateImages(
             dress,
             images,
             keepImagesId,
@@ -136,7 +136,7 @@ public class DressService {
             )
         );
 
-        imageProvider.uploadAndSaveImages(savedDress, images, new AtomicInteger(0));
+        fileProvider.uploadAndSaveImages(savedDress, images, new AtomicInteger(0));
         optionProvider.createOptions(savedDress, request.options());
         tagProvider.createTag(savedDress, request.tags());
         return DressResponse.from(savedDress);
