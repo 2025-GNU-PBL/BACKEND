@@ -68,18 +68,29 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @BatchSize(size = 50)
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options = new ArrayList<>();
-    
-    @BatchSize(size = 50)
+
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
+
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Tag> tags = new ArrayList<>();
 
     protected Product(Owner owner, Category category, Integer price,
         String address, String detail, String name) {
         this.owner = owner;
         this.category = category;
+        this.price = price;
+        this.address = address;
+        this.detail = detail;
+        this.name = name;
+    }
+
+    protected void updateProduct(Integer price, String address, String detail, String name) {
         this.price = price;
         this.address = address;
         this.detail = detail;
@@ -95,12 +106,21 @@ public class Product extends BaseEntity {
         reorderImages();
     }
 
+    public void addTag(final Tag tag) {
+        this.tags.add(tag);
+    }
+
+    public void addAllTag(final List<Tag> tags) {
+        this.tags.addAll(tags);
+    }
+
+
     public void addOption(final Option option) {
         this.options.add(option);
     }
 
-    public void addAllOption(final List<Option> option) {
-        this.options.addAll(option);
+    public void addAllOption(final List<Option> options) {
+        this.options.addAll(options);
     }
 
 
@@ -127,5 +147,9 @@ public class Product extends BaseEntity {
             .filter(image -> !image.isThumbnail())
             .sorted(Comparator.comparing(Image::getDisplayOrder))
             .collect(Collectors.toList());
+    }
+
+    public void removeTag(final Tag tag) {
+        this.tags.remove(tag);
     }
 }

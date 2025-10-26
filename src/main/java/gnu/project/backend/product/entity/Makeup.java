@@ -41,4 +41,23 @@ public class Makeup extends Product {
         String detail, String name, String style, String availableTimes, String type) {
         return new Makeup(owner, price, address, detail, name, style, availableTimes, type);
     }
+
+    public void update(
+        final Integer price,
+        final String address,
+        final String detail,
+        final String name,
+        final String style,
+        final String availableTimes,
+        final String type
+    ) {
+        super.updateProduct(price, address, detail, name);
+        this.style = style;
+        this.availableTimes = availableTimes;
+        this.type = type;
+    }
+
+    public void delete() {
+        super.delete();
+    }
 }
