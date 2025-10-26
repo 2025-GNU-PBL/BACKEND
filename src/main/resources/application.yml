@@ -10,7 +10,7 @@ spring:
 
 
 jwt:
-  secret-key: ${secret-key}
+  secret-key: ${JWT_SECRET_KEY}
   accessToken-expiration-millis: 1800000
 
 aws:
