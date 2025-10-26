@@ -8,11 +8,6 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
-payment:
-  toss:
-    base-url: https://api.tosspayments.com
-    secret-key: test_sk_oEjb0gm23P4PwD2Xg99k3pGwBJn5
-    confirm-url: /v1/payments/confirm
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}

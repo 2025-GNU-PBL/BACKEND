@@ -42,7 +42,8 @@ public enum ErrorCode {
 
     // makeup
     MAKEUP_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "MAKEUP001", "해당 메이크업 상품을 찾을 수 없습니다"),
-
+    // WeddingHall
+    WEDDING_HALL_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "WEDDING_HALL001", "해당 웨딩홀 상품을 찾을 수 없습니다."),
     //Order
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "PAYMENT001", "존재하지 않는 주문입니다."),
     // 결제 승인 관련
