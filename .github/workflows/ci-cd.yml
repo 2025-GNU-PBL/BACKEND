@@ -1,0 +1,100 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        env:
+          SPRING_PROFILES_ACTIVE: prod
+          S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+          S3_REGION: ${{ secrets.S3_REGION }}
+          S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
+          S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          DB_URL: ${{ secrets.DB_URL }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
+          KAKAO_REDIRECT_URI: ${{ secrets.KAKAO_REDIRECT_URI }}
+          NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
+          NAVER_REDIRECT_URI: ${{ secrets.NAVER_REDIRECT_URI }}
+          NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
+        run: ./gradlew clean build
+
+      - name: Build Docker image
+        run: docker build -t jongminhong844/yeon:latest .
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Docker image
+        run: docker push jongminhong844/yeon:latest
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          password: ${{ secrets.EC2_PASSWORD }}
+          port: ${{ secrets.EC2_PORT }}
+          script: |
+            cd ~/yeon || { mkdir -p ~/yeon && cd ~/yeon; }
+            
+            # 기존 컨테이너 중지
+            docker compose -f docker-compose-prod.yml down 2>/dev/null || true
+            
+            # 기존 파일 삭제
+            rm -rf docker-compose-prod.yml prometheus.yml mysql-exporter.cnf
+            
+            # GitHub에서 직접 다운로드
+            curl -O https://raw.githubusercontent.com/${{ github.repository }}/main/docker-compose-prod.yml
+            curl -O https://raw.githubusercontent.com/${{ github.repository }}/main/prometheus.yml
+            curl -O https://raw.githubusercontent.com/${{ github.repository }}/main/mysql-exporter.cnf
+            
+                      
+            # .env 파일 생성
+            cat <<EOF > .env
+            S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }}
+            S3_REGION=${{ secrets.S3_REGION }}
+            S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }}
+            S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }}
+            JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+            DB_URL=${{ secrets.DB_URL }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            DB_USERNAME=${{ secrets.DB_USERNAME }}
+            KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
+            KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }}
+            NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}
+            KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}
+            NAVER_REDIRECT_URI=${{ secrets.NAVER_REDIRECT_URI }}
+            NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}
+            GF_SECURITY_ADMIN_USER=${{ secrets.GF_SECURITY_ADMIN_USER }}
+            GF_SECURITY_ADMIN_PASSWORD=${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
+            EOF
+            
+            # Docker Compose 실행
+            docker compose -f docker-compose-prod.yml pull
+            docker compose -f docker-compose-prod.yml up -d --remove-orphans
