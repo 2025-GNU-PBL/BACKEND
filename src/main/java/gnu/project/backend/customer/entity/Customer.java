@@ -6,23 +6,13 @@ import gnu.project.backend.auth.entity.OauthUser;
 import gnu.project.backend.auth.enurmerated.SocialProvider;
 import gnu.project.backend.common.entity.BaseEntity;
 import gnu.project.backend.common.enumerated.UserRole;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "Customer")
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Customer extends BaseEntity implements OauthUser {
@@ -31,6 +21,9 @@ public class Customer extends BaseEntity implements OauthUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @Embedded
+    private OauthInfo oauthInfo;
 
     @Column(name = "age")
     private Short age;
@@ -48,23 +41,20 @@ public class Customer extends BaseEntity implements OauthUser {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @Embedded
-    private OauthInfo oauthInfo;
+//    @Embedded
+//    private OauthInfo oauthInfo;
 
     public static Customer signIn(
-        final String email,
-        final String name,
-        final String socialId,
-        final SocialProvider provider) {
+            final String email,
+            final String name,
+            final String socialId,
+            final SocialProvider provider) {
         final OauthInfo oauthInfo = OauthInfo.of(email, name, socialId, provider);
-        return new Customer(
-                null,
-                null,
-                null,
-                null,
-                null,
-                UserRole.CUSTOMER,
-                oauthInfo);
+
+        return Customer.builder()
+                .oauthInfo(oauthInfo)
+                .userRole(UserRole.CUSTOMER)
+                .build();
     }
 
 

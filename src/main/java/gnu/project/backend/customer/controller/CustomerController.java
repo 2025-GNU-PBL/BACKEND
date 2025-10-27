@@ -20,5 +20,10 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.read(accessor));
     }
 
+    @GetMapping("/me/test-auth")
+    public ResponseEntity<String> testAuthentication(@Auth Accessor accessor) {
+        String message = "인증 성공! 현재 로그인된 사용자의 socialId는 " + accessor.getSocialId() + " 입니다.";
+        return ResponseEntity.ok(message);
+    }
 
 }
