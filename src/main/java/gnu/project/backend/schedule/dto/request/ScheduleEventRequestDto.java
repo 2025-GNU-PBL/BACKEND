@@ -4,14 +4,16 @@ import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
-public record ScheduleRequestDto(
+public record ScheduleEventRequestDto(
+    @NotNull
+    Long reservationId,
+    @NotNull
+    @FutureOrPresent
+    LocalDate scheduleTime,
     @NotNull
     String title,
     @NotNull
-    String content,
-    @NotNull
-    @FutureOrPresent
-    LocalDate scheduleDate
+    String content
 ) {
 
 }

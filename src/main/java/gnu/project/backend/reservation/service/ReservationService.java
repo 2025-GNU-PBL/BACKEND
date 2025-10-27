@@ -1,4 +1,4 @@
-package gnu.project.backend.reservaiton.service;
+package gnu.project.backend.reservation.service;
 
 import static gnu.project.backend.common.error.ErrorCode.CUSTOMER_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.common.error.ErrorCode.IS_NOT_VALID_SOCIAL;
@@ -14,16 +14,21 @@ import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
 import gnu.project.backend.product.entity.Product;
 import gnu.project.backend.product.repository.ProductRepository;
-import gnu.project.backend.reservaiton.dto.request.ReservationRequestDto;
-import gnu.project.backend.reservaiton.dto.request.ReservationStatusChangeRequestDto;
-import gnu.project.backend.reservaiton.dto.response.ReservationResponseDto;
-import gnu.project.backend.reservaiton.entity.Reservation;
-import gnu.project.backend.reservaiton.repository.ReservationRepository;
+import gnu.project.backend.reservation.dto.request.ReservationRequestDto;
+import gnu.project.backend.reservation.dto.request.ReservationStatusChangeRequestDto;
+import gnu.project.backend.reservation.dto.response.ReservationResponseDto;
+import gnu.project.backend.reservation.entity.Reservation;
+import gnu.project.backend.reservation.enumerated.Status;
+import gnu.project.backend.reservation.event.ReservationApprovedEvent;
+import gnu.project.backend.reservation.repository.ReservationRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -33,6 +38,7 @@ public class ReservationService {
     private final OwnerRepository ownerRepository;
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public ReservationResponseDto createReservation(
         final Accessor accessor,
@@ -68,12 +74,22 @@ public class ReservationService {
                 requestDto.id())
             .orElseThrow(() -> new BusinessException(STUDIO_NOT_FOUND_EXCEPTION));
         //TODO : 사장만 해당 상태를 변경할 수 있나? 고객의 단순 변심으로는 변경이 안되나?
-        if (reservation.getOwner().getSocialId().equals(accessor.getSocialId())) {
+        //TODO : 보상트랜잭션 구현
+        if (!reservation.getOwner().getSocialId().equals(accessor.getSocialId())) {
             throw new BusinessException(IS_NOT_VALID_SOCIAL);
         }
-        //TODO : APPROVE 일시 이벤트 기반으로 Schedule을 생성해줘야함
-//        if (requestDto.status() == Status.APPROVE)
         reservation.changeStatus(requestDto.status());
+        if (reservation.getStatus() == Status.APPROVE) {
+            eventPublisher.publishEvent(
+                new ReservationApprovedEvent(
+                    reservation.getId(),
+                    reservation.getReservationTime(),
+                    reservation.getTitle(),
+                    reservation.getContent()
+                )
+            );
+            log.info("예약 승인 이벤트 발행 완료 - Reservation ID: {}", reservation.getId());
+        }
 
         return ReservationResponseDto.from(reservation);
     }
