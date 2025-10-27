@@ -14,7 +14,7 @@ import gnu.project.backend.product.dto.response.WeddingHallPageResponse;
 import gnu.project.backend.product.dto.response.WeddingHallResponse;
 import gnu.project.backend.product.entity.WeddingHall;
 import gnu.project.backend.product.enurmerated.Region;
-import gnu.project.backend.product.provider.ImageProvider;
+import gnu.project.backend.product.provider.FileProvider;
 import gnu.project.backend.product.provider.OptionProvider;
 import gnu.project.backend.product.provider.TagProvider;
 import gnu.project.backend.product.repository.WeddingHallRepository;
@@ -37,7 +37,7 @@ public class WeddingHallService {
     private final WeddingHallRepository weddingHallRepository;
     private final OwnerRepository ownerRepository;
 
-    private final ImageProvider imageProvider;
+    private final FileProvider fileProvider;
     private final OptionProvider optionProvider;
     private final TagProvider tagProvider;
 
@@ -142,7 +142,7 @@ public class WeddingHallService {
         final WeddingHall saved = weddingHallRepository.save(hall);
 
 
-        imageProvider.uploadAndSaveImages(saved, images, new AtomicInteger(0));
+        fileProvider.uploadAndSaveImages(saved, images, new AtomicInteger(0));
         optionProvider.createOptions(saved, request.options());
         tagProvider.createTag(saved, request.tags());
 
@@ -168,7 +168,7 @@ public class WeddingHallService {
         validateOwner(accessor, hall);
 
 
-        imageProvider.updateImages(
+        fileProvider.updateImages(
                 hall,
                 newImages,
                 keepImagesId,
