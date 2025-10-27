@@ -39,8 +39,15 @@ public class Review  extends BaseEntity {
     @Column
     private String imageUrl;
 
-    public static Review createReview(Customer customer, Product product, Short star, String comment, String imageUrl, String title) {
-        Review review = new Review();
+    public static Review create(
+            final Customer customer,
+            final Product product,
+            final Short star,
+            final String title,
+            final String comment,
+            final String imageUrl
+    ) {
+        final Review review = new Review();
         review.customer = customer;
         review.product = product;
         review.star = star;
@@ -51,15 +58,16 @@ public class Review  extends BaseEntity {
     }
 
 
-    public void update(Short star, String title,String comment) {
+    public void update(
+            final Short star,
+            final String title,
+            final String comment,
+            final String imageUrl
+    ) {
         this.star = star;
         this.title = title;
         this.comment = comment;
         this.imageUrl = imageUrl;
     }
-
-//    public void addImage(String imageUrl){
-//        this.imageUrl = imageUrl;
-//    }
 
 }
