@@ -9,12 +9,11 @@ spring:
       max-request-size: 10MB
 
 
-
 payment:
   toss:
-    base-url:	https://api.tosspayments.com
-    secret-key : ${TOSS_SECRET_KEY}
-    confirm-url : /v1/payments/confirm
+    base-url: https://api.tosspayments.com
+    secret-key: ${TOSS_SECRET_KEY}
+    confirm-url: /v1/payments/confirm
 
 oauth:
   kakao:
