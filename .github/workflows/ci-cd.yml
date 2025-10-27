@@ -69,8 +69,7 @@ jobs:
             docker compose -f docker-compose-prod.yml down 2>/dev/null || true
             
             # 기존 파일 삭제
-            rm -rf docker-compose-prod.yml prometheus.yml mysql-exporter.cnf
-            
+            rm -rf docker-compose-prod.yml prometheus.yml mysql-exporter.cnf init-letsencrypt.sh            
             # GitHub에서 직접 다운로드
             curl -O https://raw.githubusercontent.com/${{ github.repository }}/main/docker-compose-prod.yml
             curl -O https://raw.githubusercontent.com/${{ github.repository }}/main/prometheus.yml
@@ -100,11 +99,14 @@ jobs:
             TOSS_SECRET_KEY=${{ secrets.TOSS_SECRET_KEY }}
             EOF
             
-            # Docker Compose 실행
+            echo "--- Starting core services (excluding nginx and certbot) ---"
             docker compose -f docker-compose-prod.yml pull
-            docker compose -f docker-compose-prod.yml up -d --remove-orphans
-
+            docker compose -f docker-compose-prod.yml up -d --remove-orphans --no-deps app prometheus grafana node_exporter mysql_exporter
+            
             echo "--- Executing Certbot Certificate Issuance ---"
             chmod +x init-letsencrypt.sh
             ./init-letsencrypt.sh
             echo "--- Certbot Process Complete ---"
+            
+            echo "--- Restarting all services to load new certificates ---"
+            docker compose -f docker-compose-prod.yml up -d --force-recreate --remove-orphans
