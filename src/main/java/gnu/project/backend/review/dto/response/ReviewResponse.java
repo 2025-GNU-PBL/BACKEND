@@ -1,28 +1,27 @@
 package gnu.project.backend.review.dto.response;
 
-
 import gnu.project.backend.review.entity.Review;
-import lombok.Getter;
 
-@Getter
-public class ReviewResponse {
-    private Long id;
-    private Long customerId;
-    private String title;
-    private String customerName;
-    private Short star;
-    private String comment;
-    private String imageUrl;
-
-    public ReviewResponse(Review review) {
-        this.id = review.getId();
-        this.customerId = review.getCustomer().getId();
-        this.title = review.getTitle();
-        this.customerName = review.getCustomer().getName();
-        this.star = review.getStar();
-        this.comment = review.getComment();
-        this.imageUrl = review.getImageUrl();
+public record ReviewResponse(
+        Long id,
+        Long customerId,
+        String customerName,
+        Long productId,
+        Short star,
+        String title,
+        String comment,
+        String imageUrl
+) {
+    public static ReviewResponse from(final Review review) {
+        return new ReviewResponse(
+                review.getId(),
+                review.getCustomer().getId(),
+                review.getCustomer().getName(),
+                review.getProduct().getId(),
+                review.getStar(),
+                review.getTitle(),
+                review.getComment(),
+                review.getImageUrl()
+        );
     }
 }
-
-

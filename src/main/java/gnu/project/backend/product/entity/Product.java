@@ -152,4 +152,13 @@ public class Product extends BaseEntity {
     public void removeTag(final Tag tag) {
         this.tags.remove(tag);
     }
+
+    public void updateRating(
+            final double newAverageStar,
+            final int newReviewCount
+    ) {
+        this.starCount = newAverageStar;
+        this.averageRating = newReviewCount;
+    }
+
 }
