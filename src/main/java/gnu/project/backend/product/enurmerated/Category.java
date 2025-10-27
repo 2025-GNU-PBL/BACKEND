@@ -1,5 +1,5 @@
 package gnu.project.backend.product.enurmerated;
 
 public enum Category {
-    DRESS, STUDIO, MAKEUP
+    DRESS, STUDIO, MAKEUP, WEDDING_HALL
 }
