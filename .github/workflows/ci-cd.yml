@@ -75,7 +75,8 @@ jobs:
             curl -O https://raw.githubusercontent.com/${{ github.repository }}/main/docker-compose-prod.yml
             curl -O https://raw.githubusercontent.com/${{ github.repository }}/main/prometheus.yml
             curl -O https://raw.githubusercontent.com/${{ github.repository }}/main/mysql-exporter.cnf
-            
+            curl -O https://raw.githubusercontent.com/${{ github.repository }}/main/init-letsencrypt.sh
+
                       
             # .env 파일 생성
             cat <<EOF > .env
@@ -102,3 +103,8 @@ jobs:
             # Docker Compose 실행
             docker compose -f docker-compose-prod.yml pull
             docker compose -f docker-compose-prod.yml up -d --remove-orphans
+
+            echo "--- Executing Certbot Certificate Issuance ---"
+            chmod +x init-letsencrypt.sh
+            ./init-letsencrypt.sh
+            echo "--- Certbot Process Complete ---"
