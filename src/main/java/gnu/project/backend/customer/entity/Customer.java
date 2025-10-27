@@ -43,19 +43,6 @@ public class Customer extends BaseEntity implements OauthUser {
     private OauthInfo oauthInfo;
 
 
-//    public static Customer signIn(
-//            final String email,
-//            final String name,
-//            final String socialId,
-//            final SocialProvider provider) {
-//        final OauthInfo oauthInfo = OauthInfo.of(email, name, socialId, provider);
-//
-//        return Customer.builder()
-//                .oauthInfo(oauthInfo)
-//                .userRole(UserRole.CUSTOMER)
-//                .build();
-//    }
-
     public static Customer createFromOAuth(
             final String email,
             final String name,
@@ -111,6 +98,16 @@ public class Customer extends BaseEntity implements OauthUser {
         return this.isDeleted == null || !this.isDeleted;
     }
 
+    @Override
+    public UserRole getUserRole() {
+        // DB에 userRole 필드 이미 있으니까 그걸 그대로 반환해주면 돼
+        return this.userRole != null ? this.userRole : UserRole.CUSTOMER;
+    }
+
+    @Override
+    public OauthInfo getOauthInfo() {
+        return this.oauthInfo;
+    }
 
 
 
