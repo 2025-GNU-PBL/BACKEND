@@ -32,7 +32,7 @@ public enum ErrorCode {
     OWNER_PROFILE_IMAGE_NOT_SET(HttpStatus.NOT_FOUND, "OWNER001", "사장의 이미지가 지정되어 있지 않습니다."),
     // Customer EXCEPTION ADD.
     CUSTOMER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "CUSTOMER001", "고객을 찾을 수 없습니다."),
-
+    CUSTOMER_DELETED_EXCEPTION(HttpStatus.BAD_REQUEST, "CUSTOMER002", "탈퇴한 회원입니다."),
     // Image
     IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5001", "이미지 파일 업로드에 실패했습니다."),
     IMAGE_FILE_READ_FAILED(HttpStatus.BAD_REQUEST, "IMAGE4001", "업로드된 이미지 파일의 바이트 읽기에 실패했습니다."),
@@ -90,6 +90,7 @@ public enum ErrorCode {
     SCHEDULE_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "SCHEDULE001", "해당 스케줄을 찾을 수 없습니다");
 
     
+
 
 
     private final HttpStatus status;

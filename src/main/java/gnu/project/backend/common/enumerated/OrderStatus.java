@@ -6,5 +6,7 @@ public enum OrderStatus {
     CANCELED,            // 주문 취소
     REFUNDED,
     REFUND_REQUESTED,
+    PAYMENT_FAILED,
+    CANCELLED,        // 주문 취소
     PAYMENT_FAILED
 }

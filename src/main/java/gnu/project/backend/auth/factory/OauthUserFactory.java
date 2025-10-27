@@ -45,7 +45,7 @@ public class OauthUserFactory {
     private Customer findOrCreateCustomer(OauthUserInfo userInfo, SocialProvider provider) {
         return customerRepository.findByOauthInfo_SocialId(userInfo.getSocialId())
             .orElseGet(() -> customerRepository.save(
-                Customer.signIn(userInfo.getEmail(), userInfo.getName(), userInfo.getSocialId(),
+                Customer.createFromOAuth(userInfo.getEmail(), userInfo.getName(), userInfo.getSocialId(),
                     provider)
             ));
     }
