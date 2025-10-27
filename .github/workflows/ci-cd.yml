@@ -39,6 +39,8 @@ jobs:
           KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
           NAVER_REDIRECT_URI: ${{ secrets.NAVER_REDIRECT_URI }}
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
+          TOSS_CLIENT_KEY: ${{ secrets.TOSS_CLIENT_KEY }}
+          TOSS_SECRET_KEY: ${{ secrets.TOSS_SECRET_KEY }}
         run: ./gradlew clean build
 
       - name: Build Docker image
@@ -93,6 +95,8 @@ jobs:
             NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}
             GF_SECURITY_ADMIN_USER=${{ secrets.GF_SECURITY_ADMIN_USER }}
             GF_SECURITY_ADMIN_PASSWORD=${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
+            TOSS_CLIENT_KEY=${{ secrets.TOSS_CLIENT_KEY }}
+            TOSS_SECRET_KEY=${{ secrets.TOSS_SECRET_KEY }}
             EOF
             
             # Docker Compose 실행
