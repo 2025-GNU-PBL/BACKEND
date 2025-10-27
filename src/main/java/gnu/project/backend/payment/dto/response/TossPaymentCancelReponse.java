@@ -1,11 +1,9 @@
 package gnu.project.backend.payment.dto.response;
 
+import java.time.ZonedDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import javax.smartcardio.Card;
-import java.time.ZonedDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -25,6 +23,7 @@ public class TossPaymentCancelReponse {
     @NoArgsConstructor
     @ToString
     public static class Card {
+
         private String company;
         private String number;
         private String ownerType;
