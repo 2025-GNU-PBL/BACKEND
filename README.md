@@ -1,4 +1,4 @@
 # BACKEND
 
 ### 아키텍쳐
-<img width="2481" height="524" alt="image" src="https://github.com/user-attachments/assets/0931fa11-76eb-4160-9733-ce8cc85a7f50" />
+<img width="2247" height="862" alt="image" src="https://github.com/user-attachments/assets/efd7974a-3032-4324-9989-cd2d175c1ae4" />
