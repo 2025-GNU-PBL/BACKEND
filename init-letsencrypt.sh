@@ -9,7 +9,7 @@ domains=(api-monari.shop www.api-monari.shop)
 rsa_key_size=4096
 data_path="./certbot"
 email="gwa7417@gmail.com"
-staging=0
+staging=1
 
 if [ -d "$data_path" ]; then
   read -p "Existing data found for $domains. Continue and replace existing certificate? (y/N) " decision
