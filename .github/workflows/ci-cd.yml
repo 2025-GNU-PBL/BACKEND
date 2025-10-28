@@ -103,10 +103,9 @@ jobs:
             docker compose -f docker-compose-prod.yml pull
             docker compose -f docker-compose-prod.yml up -d --remove-orphans --no-deps app prometheus grafana node_exporter mysql_exporter
             
-            echo "--- Executing Certbot Certificate Issuance ---"
-            chmod +x init-letsencrypt.sh
-            ./init-letsencrypt.sh
-            echo "--- Certbot Process Complete ---"
+            if [ ! -d "certbot/conf/live" ]; then
+              chmod +x init-letsencrypt.sh
+              echo "y" | ./init-letsencrypt.sh
+            fi
             
-            echo "--- Restarting all services to load new certificates ---"
             docker compose -f docker-compose-prod.yml up -d --force-recreate --remove-orphans
