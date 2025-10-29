@@ -44,7 +44,6 @@ public class ScheduleService {
     private final ReservationRepository reservationRepository;
     private final FileProvider fileProvider;
 
-    // TODO : 삭제,수정 로직 구현
     public ScheduleResponseDto upload(
         final ScheduleRequestDto request,
         final Accessor accessor,
