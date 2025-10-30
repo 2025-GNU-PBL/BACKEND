@@ -1,4 +1,4 @@
-package gnu.project.backend.coupon.repository.iml;
+package gnu.project.backend.coupon.repository.impl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import gnu.project.backend.coupon.repository.CouponCustomRepository;

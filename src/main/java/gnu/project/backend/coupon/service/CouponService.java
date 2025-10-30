@@ -1,5 +1,6 @@
 package gnu.project.backend.coupon.service;
 
+import static gnu.project.backend.common.error.ErrorCode.COUPON_NOT_FOUND;
 import static gnu.project.backend.common.error.ErrorCode.IS_NOT_VALID_SOCIAL;
 import static gnu.project.backend.common.error.ErrorCode.PRODUCT_NOT_FOUND_EXCEPTION;
 
@@ -30,6 +31,18 @@ public class CouponService {
             throw new BusinessException(IS_NOT_VALID_SOCIAL);
         }
         final Coupon coupon = Coupon.createCoupon(request, product.getOwner(), product);
+        final Coupon savedCoupon = couponRepository.save(coupon);
+        return CouponResponseDto.toResponse(savedCoupon);
+    }
+
+    public CouponResponseDto deleteCoupon(final Long couponId, final Accessor accessor) {
+        final Coupon coupon = couponRepository.findById(couponId)
+            .orElseThrow(() -> new BusinessException(COUPON_NOT_FOUND));
+
+        if (!coupon.isValidOwner(accessor.getSocialId())) {
+            throw new BusinessException(IS_NOT_VALID_SOCIAL);
+        }
+        coupon.deactivate();
         final Coupon savedCoupon = couponRepository.save(coupon);
         return CouponResponseDto.toResponse(savedCoupon);
     }

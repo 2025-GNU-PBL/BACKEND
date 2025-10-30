@@ -136,4 +136,12 @@ public class Coupon extends BaseEntity {
             dto.maxUsagePerUser()
         );
     }
+
+    public void deactivate() {
+        super.delete();
+    }
+
+    public boolean isValidOwner(final String socialId) {
+        return this.getOwner().getSocialId().equals(socialId);
+    }
 }

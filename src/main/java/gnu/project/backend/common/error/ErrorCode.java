@@ -52,7 +52,8 @@ public enum ErrorCode {
     // makeup
     MAKEUP_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "MAKEUP001", "해당 메이크업 상품을 찾을 수 없습니다"),
     // WeddingHall
-    WEDDING_HALL_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "WEDDING_HALL001", "해당 웨딩홀 상품을 찾을 수 없습니다."),
+    WEDDING_HALL_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "WEDDING_HALL001",
+        "해당 웨딩홀 상품을 찾을 수 없습니다."),
     //Order
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "PAYMENT001", "존재하지 않는 주문입니다."),
     // 결제 승인 관련
@@ -64,7 +65,7 @@ public enum ErrorCode {
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "PAYMENT005", "결제 내역을 찾을 수 없습니다."),
     PAYMENT_ALREADY_CANCELED(HttpStatus.BAD_REQUEST, "PAYMENT006", "이미 취소된 결제입니다."),
     PAYMENT_CANCEL_FAILED(HttpStatus.BAD_REQUEST, "PAYMENT007", "결제 취소 요청에 실패했습니다."),
-    PAYMENT_GATEWAY_ERROR(HttpStatus.BAD_REQUEST,"PAYMENT008","결제 취소 실패." ),
+    PAYMENT_GATEWAY_ERROR(HttpStatus.BAD_REQUEST, "PAYMENT008", "결제 취소 실패."),
 
     // 웹훅 관련
     UNAUTHORIZED_WEBHOOK(HttpStatus.BAD_REQUEST, "WEBHOOK001", "웹훅 요청이 잘못되었습니다."),
@@ -72,7 +73,6 @@ public enum ErrorCode {
     // 환불 관련
     PAYMENT_REFUND_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "REFUND001", "환불이 허용되지 않은 상태입니다."),
     PAYMENT_REFUND_FAILED(HttpStatus.BAD_REQUEST, "REFUND002", "환불 요청에 실패했습니다."),
-
 
 
     // dress
@@ -91,11 +91,13 @@ public enum ErrorCode {
     SCHEDULE_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "SCHEDULE001", "해당 스케줄을 찾을 수 없습니다"),
 
     //Review
-    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW001","해당 리뷰를 찾을 수 없습니다."),
-    REVIEW_DUPLICATE(HttpStatus.BAD_REQUEST, "REVIEW002","중복 리뷰는 작성할 수 없습니다."),
-    REVIEW_NOT_ELIGIBLE(HttpStatus.FORBIDDEN, "REVIEW003","해당 상품에 대한 리뷰 작성 자격이 없습니다."),
-    REVIEW_FORBIDDEN(HttpStatus.FORBIDDEN, "REVIEW004","이 리뷰에 대한 수정/삭제 권한이 없습니다.");
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW001", "해당 리뷰를 찾을 수 없습니다."),
+    REVIEW_DUPLICATE(HttpStatus.BAD_REQUEST, "REVIEW002", "중복 리뷰는 작성할 수 없습니다."),
+    REVIEW_NOT_ELIGIBLE(HttpStatus.FORBIDDEN, "REVIEW003", "해당 상품에 대한 리뷰 작성 자격이 없습니다."),
+    REVIEW_FORBIDDEN(HttpStatus.FORBIDDEN, "REVIEW004", "이 리뷰에 대한 수정/삭제 권한이 없습니다."),
 
+    //Coupon
+    COUPON_NOT_FOUND(HttpStatus.NOT_FOUND, "COUPON001", "해당 쿠폰을 찾을 수 없습니다.");
 
     private final HttpStatus status;
     private final String code;
