@@ -10,10 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -33,7 +34,7 @@ public class CouponController {
 
     @DeleteMapping("/{couponId}")
     public ResponseEntity<CouponResponseDto> deleteCoupon(
-        @RequestParam(name = "couponId") final Long couponId,
+        @PathVariable(name = "couponId") final Long couponId,
         @Auth final Accessor accessor
     ) {
         return ResponseEntity.ok(couponService.deleteCoupon(couponId, accessor));
@@ -41,13 +42,25 @@ public class CouponController {
 
     @GetMapping("/{couponId}")
     public ResponseEntity<CouponResponseDto> getCoupon(
-        @RequestParam(name = "couponId") final Long couponId,
+        @PathVariable(name = "couponId") final Long couponId,
         final Accessor accessor
     ) {
         return ResponseEntity.ok(
             couponService.getCoupon(couponId, accessor)
         );
     }
+
+    @PatchMapping("/{couponId}")
+    public ResponseEntity<CouponResponseDto> updateCoupon(
+        @PathVariable(name = "couponId") final Long couponId,
+        @RequestBody final CouponRequestDto request,
+        final Accessor accessor
+    ) {
+        return ResponseEntity.ok(
+            couponService.updateCoupon(couponId, request, accessor)
+        );
+    }
+
 
     @GetMapping()
     public ResponseEntity<List<CouponResponseDto>> getCoupon(

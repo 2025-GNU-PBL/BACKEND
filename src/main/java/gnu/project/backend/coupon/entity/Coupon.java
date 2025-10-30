@@ -2,6 +2,7 @@ package gnu.project.backend.coupon.entity;
 
 import gnu.project.backend.common.entity.BaseEntity;
 import gnu.project.backend.coupon.dto.request.CouponRequestDto;
+import gnu.project.backend.coupon.enumerated.CouponStatus;
 import gnu.project.backend.coupon.enumerated.DiscountType;
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.product.entity.Product;
@@ -81,8 +82,23 @@ public class Coupon extends BaseEntity {
     @Column(name = "current_usage_count")
     private Integer currentUsageCount = 0;
 
-    @Column(name = "max_usage_per_user")
-    private Integer maxUsagePerUser = 1;
+
+    @Column(name = "version", nullable = false)
+    private Integer version = 1;
+
+    @Column(name = "parent_coupon_id")
+    private Long parentCouponId;
+
+    @Column(name = "is_latest_version", nullable = false)
+    private Boolean isLatestVersion = true;
+
+    @Column(name = "current_download_count", nullable = false)
+    private Integer currentDownloadCount = 0;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private CouponStatus status = CouponStatus.ACTIVE;
+
 
     private Coupon(
         Product product,
@@ -97,7 +113,8 @@ public class Coupon extends BaseEntity {
         Category category,
         BigDecimal maxDiscountAmount,
         BigDecimal minPurchaseAmount,
-        Integer maxUsagePerUser
+        Integer version,
+        Long parentCouponId
     ) {
         this.product = product;
         this.owner = owner;
@@ -112,7 +129,10 @@ public class Coupon extends BaseEntity {
         this.maxDiscountAmount = maxDiscountAmount;
         this.minPurchaseAmount = minPurchaseAmount;
         this.currentUsageCount = 0;
-        this.maxUsagePerUser = (maxUsagePerUser != null) ? maxUsagePerUser : 1;
+        this.version = (version != null) ? version : 1;
+        this.parentCouponId = parentCouponId;
+        this.isLatestVersion = true;
+        this.currentDownloadCount = 0;
     }
 
     public static Coupon createCoupon(
@@ -133,15 +153,83 @@ public class Coupon extends BaseEntity {
             dto.category(),
             dto.maxDiscountAmount(),
             dto.minPurchaseAmount(),
-            dto.maxUsagePerUser()
+            1,  // 첫 버전
+            null  // 부모 없음
         );
     }
 
-    public void deactivate() {
-        super.delete();
+    public static Coupon createNewVersion(final Coupon oldCoupon,
+        final CouponRequestDto updateDto) {
+        {
+            return new Coupon(
+                oldCoupon.getProduct(),
+                oldCoupon.getOwner(),
+                updateDto.couponCode(),
+                updateDto.discountType(),
+                updateDto.discountValue(),
+                updateDto.startDate(),
+                updateDto.expirationDate(),
+                updateDto.couponName(),
+                updateDto.couponDetail(),
+                updateDto.category(),
+                updateDto.maxDiscountAmount(),
+                updateDto.minPurchaseAmount(),
+                oldCoupon.getVersion() + 1,
+                oldCoupon.getId()
+            );
+        }
     }
+
 
     public boolean isValidOwner(final String socialId) {
         return this.getOwner().getSocialId().equals(socialId);
     }
+
+    public void deactivate() {
+        this.status = CouponStatus.INACTIVE;
+        super.delete();
+    }
+
+    public void markAsOldVersion() {
+        this.isLatestVersion = false;
+    }
+
+
+    public void update(final CouponRequestDto dto) {
+        this.couponCode = dto.couponCode();
+        this.couponName = dto.couponName();
+        this.couponDetail = dto.couponDetail();
+        this.discountType = dto.discountType();
+        this.discountValue = dto.discountValue();
+        this.maxDiscountAmount = dto.maxDiscountAmount();
+        this.minPurchaseAmount = dto.minPurchaseAmount();
+        this.category = dto.category();
+        this.startDate = dto.startDate();
+        this.expirationDate = dto.expirationDate();
+    }
+
+    public void increaseDownloadCount() {
+        this.currentDownloadCount++;
+    }
+
+    public void increaseUsageCount() {
+        this.currentUsageCount++;
+    }
+
+    public void expire() {
+        this.status = CouponStatus.EXPIRED;
+    }
+
+    public void deletePermanently() {
+        this.status = CouponStatus.DELETE;
+    }
+
+    public boolean isUsable() {
+        return this.status == CouponStatus.ACTIVE && !isExpired();
+    }
+
+    public boolean isExpired() {
+        return LocalDate.now().isAfter(this.expirationDate);
+    }
+
 }

@@ -28,7 +28,7 @@ public class CouponRepositoryImpl implements CouponCustomRepository {
             query.selectFrom(coupon)
                 .leftJoin(coupon.owner, owner)
                 .fetchJoin()
-                .where(coupon.id.eq(couponId))
+                .where(coupon.id.eq(couponId).and(coupon.isDeleted.isFalse()))
                 .fetchFirst()
         );
     }
@@ -38,7 +38,7 @@ public class CouponRepositoryImpl implements CouponCustomRepository {
         return query.selectFrom(coupon)
             .leftJoin(coupon.owner, owner)
             .fetchJoin()
-            .where(coupon.owner.id.eq(ownerId))
+            .where(coupon.owner.id.eq(ownerId).and(coupon.isDeleted.isFalse()))
             .orderBy(COUPON_DEFAULT_ORDER)
             .fetch();
     }

@@ -16,8 +16,7 @@ public record CouponRequestDto(
     BigDecimal minPurchaseAmount,    // 최소 구매 금액
     Category category,               // 카테고리 기준 쿠폰인 경우
     LocalDate startDate,             // 쿠폰 시작일
-    LocalDate expirationDate,        // 만료일
-    Integer maxUsagePerUser          // 사용자당 최대 사용 가능 횟수
+    LocalDate expirationDate        // 만료일
 ) {
 
 }

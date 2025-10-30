@@ -19,7 +19,6 @@ public record CouponResponseDto(
     BigDecimal maxDiscountAmount,
     BigDecimal minPurchaseAmount,
     Integer currentUsageCount,
-    Integer maxUsagePerUser,
     Long ownerId,
     Long productId
 
@@ -39,7 +38,6 @@ public record CouponResponseDto(
             coupon.getMaxDiscountAmount(),
             coupon.getMinPurchaseAmount(),
             coupon.getCurrentUsageCount(),
-            coupon.getMaxUsagePerUser(),
             (coupon.getOwner() != null) ? coupon.getOwner().getId() : null,
             (coupon.getProduct() != null) ? coupon.getProduct().getId() : null
         );
