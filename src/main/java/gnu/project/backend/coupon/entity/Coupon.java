@@ -220,9 +220,6 @@ public class Coupon extends BaseEntity {
         this.status = CouponStatus.EXPIRED;
     }
 
-    public void deletePermanently() {
-        this.status = CouponStatus.DELETE;
-    }
 
     public boolean isUsable() {
         return this.status == CouponStatus.ACTIVE && !isExpired();

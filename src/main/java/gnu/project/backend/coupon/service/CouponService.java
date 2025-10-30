@@ -53,6 +53,7 @@ public class CouponService {
             throw new BusinessException(IS_NOT_VALID_SOCIAL);
         }
         coupon.deactivate();
+        userCouponRepository.deactivateAllByCouponId(couponId);
         final Coupon savedCoupon = couponRepository.save(coupon);
         return CouponResponseDto.toResponse(savedCoupon);
     }
@@ -63,7 +64,7 @@ public class CouponService {
             () -> new BusinessException(COUPON_NOT_FOUND_EXCEPTION)
         );
 
-        if (coupon.isValidOwner(accessor.getSocialId())) {
+        if (!coupon.isValidOwner(accessor.getSocialId())) {
             throw new BusinessException(IS_NOT_VALID_SOCIAL);
         }
 
@@ -104,7 +105,9 @@ public class CouponService {
 
         oldCoupon.deactivate();
         oldCoupon.markAsOldVersion();
+
         couponRepository.save(oldCoupon);
+        userCouponRepository.deactivateAllByCouponId(couponId);
 
         final Coupon newCoupon = Coupon.createNewVersion(oldCoupon, updateDto);
         final Coupon updatedCoupon = couponRepository.save(newCoupon);

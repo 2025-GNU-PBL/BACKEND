@@ -1,6 +1,7 @@
 package gnu.project.backend.coupon.repository;
 
 import gnu.project.backend.coupon.entity.Coupon;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
@@ -11,4 +12,6 @@ public interface CouponCustomRepository {
     Optional<Coupon> findCouponWithOwner(final Long couponId);
 
     List<Coupon> findCoupons(final Long ownerId);
+
+    List<Coupon> findAllExpired(final LocalDate now);
 }

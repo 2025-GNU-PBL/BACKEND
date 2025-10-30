@@ -7,6 +7,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import gnu.project.backend.coupon.entity.Coupon;
 import gnu.project.backend.coupon.repository.CouponCustomRepository;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,13 @@ public class CouponRepositoryImpl implements CouponCustomRepository {
             .fetchJoin()
             .where(coupon.owner.id.eq(ownerId).and(coupon.isDeleted.isFalse()))
             .orderBy(COUPON_DEFAULT_ORDER)
+            .fetch();
+    }
+
+    @Override
+    public List<Coupon> findAllExpired(final LocalDate now) {
+        return query.selectFrom(coupon)
+            .where(coupon.expirationDate.before(now))
             .fetch();
     }
 }

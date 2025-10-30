@@ -3,6 +3,7 @@ package gnu.project.backend.coupon.repository.impl;
 import static gnu.project.backend.coupon.entity.QUserCoupon.userCoupon;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import gnu.project.backend.coupon.enumerated.UserCouponStatus;
 import gnu.project.backend.coupon.repository.UserCouponCustomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,13 +16,10 @@ public class UserCouponRepositoryImpl implements UserCouponCustomRepository {
 
 
     @Override
-    public boolean existsByCoupon(final Long couponId) {
-        return query.selectOne()
-            .from(userCoupon)
-            .where(
-                userCoupon.coupon.id.eq(couponId)
-                    .and(userCoupon.isUsed.isFalse())
-            )
-            .fetchFirst() != null;
+    public void deactivateAllByCouponId(final Long couponId) {
+        query.update(userCoupon)
+            .set(userCoupon.status, UserCouponStatus.CANCELLED)
+            .where(userCoupon.coupon.id.eq(couponId))
+            .execute();
     }
 }
