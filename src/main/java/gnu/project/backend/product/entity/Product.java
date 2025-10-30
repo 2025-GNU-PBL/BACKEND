@@ -123,6 +123,9 @@ public class Product extends BaseEntity {
         this.options.addAll(options);
     }
 
+    public boolean validOwner(final String socialId) {
+        return this.getOwner().getSocialId().equals(socialId);
+    }
 
     private void reorderImages() {
         for (int i = 0; i < images.size(); i++) {
@@ -154,8 +157,8 @@ public class Product extends BaseEntity {
     }
 
     public void updateRating(
-            final double newAverageStar,
-            final int newReviewCount
+        final double newAverageStar,
+        final int newReviewCount
     ) {
         this.starCount = newAverageStar;
         this.averageRating = newReviewCount;
