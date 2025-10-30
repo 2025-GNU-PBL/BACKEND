@@ -1,9 +1,12 @@
 package gnu.project.backend.coupon.entity;
 
 import gnu.project.backend.common.entity.BaseEntity;
+import gnu.project.backend.coupon.enumerated.UserCouponStatus;
 import gnu.project.backend.customer.entity.Customer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -40,14 +43,27 @@ public class UserCoupon extends BaseEntity {
     @JoinColumn(name = "coupon_id", nullable = false)
     private Coupon coupon;
 
-    @Column(name = "is_used", nullable = false)
-    private Boolean isUsed = false;
-
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private UserCouponStatus status = UserCouponStatus.AVAILABLE;
     @CreatedDate
     @Column(name = "downloaded_at", nullable = false, updatable = false)
     private LocalDateTime downloadedAt;
 
     @Column(name = "used_at")
     private LocalDateTime usedAt;
+
+    public void markAsUsed() {
+        this.status = UserCouponStatus.USED;
+        this.usedAt = LocalDateTime.now();
+    }
+
+    public void expire() {
+        this.status = UserCouponStatus.EXPIRED;
+    }
+
+    public void cancel() {
+        this.status = UserCouponStatus.CANCELLED;
+    }
 
 }
