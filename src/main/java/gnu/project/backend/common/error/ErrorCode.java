@@ -97,7 +97,7 @@ public enum ErrorCode {
     REVIEW_FORBIDDEN(HttpStatus.FORBIDDEN, "REVIEW004", "이 리뷰에 대한 수정/삭제 권한이 없습니다."),
 
     //Coupon
-    COUPON_NOT_FOUND(HttpStatus.NOT_FOUND, "COUPON001", "해당 쿠폰을 찾을 수 없습니다.");
+    COUPON_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "COUPON001", "해당 쿠폰을 찾을 수 없습니다.");
 
     private final HttpStatus status;
     private final String code;

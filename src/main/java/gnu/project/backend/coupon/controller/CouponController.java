@@ -5,9 +5,11 @@ import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.coupon.dto.request.CouponRequestDto;
 import gnu.project.backend.coupon.dto.response.CouponResponseDto;
 import gnu.project.backend.coupon.service.CouponService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,5 +37,24 @@ public class CouponController {
         @Auth final Accessor accessor
     ) {
         return ResponseEntity.ok(couponService.deleteCoupon(couponId, accessor));
+    }
+
+    @GetMapping("/{couponId}")
+    public ResponseEntity<CouponResponseDto> getCoupon(
+        @RequestParam(name = "couponId") final Long couponId,
+        final Accessor accessor
+    ) {
+        return ResponseEntity.ok(
+            couponService.getCoupon(couponId, accessor)
+        );
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<CouponResponseDto>> getCoupon(
+        final Accessor accessor
+    ) {
+        return ResponseEntity.ok(
+            couponService.getMyCoupons(accessor)
+        );
     }
 }
