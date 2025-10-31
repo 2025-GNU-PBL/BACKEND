@@ -94,8 +94,11 @@ public enum ErrorCode {
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW001","해당 리뷰를 찾을 수 없습니다."),
     REVIEW_DUPLICATE(HttpStatus.BAD_REQUEST, "REVIEW002","중복 리뷰는 작성할 수 없습니다."),
     REVIEW_NOT_ELIGIBLE(HttpStatus.FORBIDDEN, "REVIEW003","해당 상품에 대한 리뷰 작성 자격이 없습니다."),
-    REVIEW_FORBIDDEN(HttpStatus.FORBIDDEN, "REVIEW004","이 리뷰에 대한 수정/삭제 권한이 없습니다.");
-
+    REVIEW_FORBIDDEN(HttpStatus.FORBIDDEN, "REVIEW004","이 리뷰에 대한 수정/삭제 권한이 없습니다."),
+    //CART
+    OPTION_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "CART001", "해당 옵션을 찾을 수 없습니다."),
+    CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "CART002", "해당 장바구니 아이템을 찾을 수 없습니다."),
+    CART_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "CART003", "카트에 5개의 상품만 추가 가능합니다.");
 
     private final HttpStatus status;
     private final String code;
