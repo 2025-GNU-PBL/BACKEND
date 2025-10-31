@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CouponService {
 
+    // TODO : 쿠폰 카테고리별 리스트업, 페이지네이션, 유저 쿠폰 부분
     private final CouponRepository couponRepository;
     private final ProductRepository productRepository;
     private final OwnerRepository ownerRepository;

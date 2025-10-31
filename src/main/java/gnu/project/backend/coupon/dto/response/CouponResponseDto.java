@@ -1,6 +1,7 @@
 package gnu.project.backend.coupon.dto.response;
 
 import gnu.project.backend.coupon.entity.Coupon;
+import gnu.project.backend.coupon.enumerated.CouponStatus;
 import gnu.project.backend.coupon.enumerated.DiscountType;
 import gnu.project.backend.product.enurmerated.Category;
 import java.math.BigDecimal;
@@ -20,7 +21,8 @@ public record CouponResponseDto(
     BigDecimal minPurchaseAmount,
     Integer currentUsageCount,
     Long ownerId,
-    Long productId
+    Long productId,
+    CouponStatus status
 
 ) {
 
@@ -39,7 +41,8 @@ public record CouponResponseDto(
             coupon.getMinPurchaseAmount(),
             coupon.getCurrentUsageCount(),
             (coupon.getOwner() != null) ? coupon.getOwner().getId() : null,
-            (coupon.getProduct() != null) ? coupon.getProduct().getId() : null
+            (coupon.getProduct() != null) ? coupon.getProduct().getId() : null,
+            coupon.getStatus()
         );
     }
 }

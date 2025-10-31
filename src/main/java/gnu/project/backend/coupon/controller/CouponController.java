@@ -43,7 +43,7 @@ public class CouponController {
     @GetMapping("/{couponId}")
     public ResponseEntity<CouponResponseDto> getCoupon(
         @PathVariable(name = "couponId") final Long couponId,
-        final Accessor accessor
+        @Auth final Accessor accessor
     ) {
         return ResponseEntity.ok(
             couponService.getCoupon(couponId, accessor)
@@ -54,7 +54,7 @@ public class CouponController {
     public ResponseEntity<CouponResponseDto> updateCoupon(
         @PathVariable(name = "couponId") final Long couponId,
         @RequestBody final CouponRequestDto request,
-        final Accessor accessor
+        @Auth final Accessor accessor
     ) {
         return ResponseEntity.ok(
             couponService.updateCoupon(couponId, request, accessor)
@@ -64,7 +64,7 @@ public class CouponController {
 
     @GetMapping()
     public ResponseEntity<List<CouponResponseDto>> getCoupon(
-        final Accessor accessor
+        @Auth final Accessor accessor
     ) {
         return ResponseEntity.ok(
             couponService.getMyCoupons(accessor)

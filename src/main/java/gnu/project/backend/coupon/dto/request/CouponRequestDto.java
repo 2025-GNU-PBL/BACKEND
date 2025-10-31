@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record CouponRequestDto(
-    Long productId,                  // 쿠폰이 연결될 상품 (선택적)
+    Long productId,
     String couponCode,               // 쿠폰 코드
     String couponName,               // 쿠폰 이름
     String couponDetail,             // 쿠폰 상세 설명
