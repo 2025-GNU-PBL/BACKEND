@@ -14,7 +14,6 @@ import gnu.project.backend.payment.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +32,6 @@ public class PaymentConfirmService {
 
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
-    private final PaymentService paymentService;
 
     @Value("${payment.toss.secret-key}")
     private String tossSecretKey;
@@ -44,42 +42,46 @@ public class PaymentConfirmService {
     @Value("${payment.toss.confirm-url}")
     private String tossConfirmUrl;
 
-    public PaymentConfirmResponse confirmPayment(Accessor accessor, PaymentConfirmRequest request) {
+    public PaymentConfirmResponse confirm(Accessor accessor, PaymentConfirmRequest request) {
 
-        Order order = orderRepository.findByOrderCode(request.getOrderId())
+        Order order = orderRepository.findByOrderCodeWithDetails(request.orderId())
                 .orElseThrow(() -> new BusinessException(ORDER_NOT_FOUND));
 
         if (!order.getCustomer().getOauthInfo().getSocialId().equals(accessor.getSocialId())) {
             throw new BusinessException(PAYMENT_ACCESS_DENIED);
         }
 
-        if (!order.getTotalPrice().equals(request.getAmount())) {
+        if (!order.getTotalPrice().equals(request.amount())) {
             throw new BusinessException(PAYMENT_AMOUNT_MISMATCH);
         }
 
-        //(트랜잭션 밖)
-        TossPaymentConfirmResponse tossResponse = requestTossPaymentConfirm(request);
+        // 외부(PG)
+        TossPaymentConfirmResponse toss = callTossConfirm(request);
 
-        //(트랜잭션 안)
-        Payment payment = savePaymentAndUpdateOrder(order, tossResponse);
+        // 내부(DB)
+        Payment payment = savePaymentAndUpdateOrder(order, toss);
 
-        log.info("결제 승인 완료 - 주문번호: {}, 결제상태: {}", order.getOrderCode(), payment.getStatus());
-        return new PaymentConfirmResponse(payment);
+        log.info("결제 승인 완료: orderCode={}", order.getOrderCode());
+        return PaymentConfirmResponse.from(payment);
     }
 
-
     @Transactional
-    protected Payment savePaymentAndUpdateOrder(Order order, TossPaymentConfirmResponse tossResponse) {
-        Payment payment = Payment.create(order, tossResponse);
-        order.updateStatus(mapOrderStatusByPayment(payment.getStatus()));
+    protected Payment savePaymentAndUpdateOrder(Order order, TossPaymentConfirmResponse toss) {
+        // idem 보호
+        if (order.getStatus() == OrderStatus.PAID) {
+            return paymentRepository.findByPaymentKey(toss.getPaymentKey())
+                    .orElseThrow(() -> new BusinessException(PAYMENT_NOT_FOUND));
+        }
+
+        Payment payment = Payment.create(order, toss);
+        order.updateStatus(mapOrderStatus(payment.getStatus()));
 
         paymentRepository.save(payment);
         orderRepository.save(order);
         return payment;
     }
 
-
-    private TossPaymentConfirmResponse requestTossPaymentConfirm(PaymentConfirmRequest request) {
+    private TossPaymentConfirmResponse callTossConfirm(PaymentConfirmRequest req) {
         String encodedKey = Base64.getEncoder()
                 .encodeToString((tossSecretKey + ":").getBytes(StandardCharsets.UTF_8));
 
@@ -88,25 +90,25 @@ public class PaymentConfirmService {
                 .build()
                 .post()
                 .uri(tossConfirmUrl)
-                .header("Authorization", "Basic " + encodedKey)
-                .contentType(MediaType.APPLICATION_JSON)
+                .headers(h -> {
+                    h.add("Authorization", "Basic " + encodedKey);
+                    h.setContentType(MediaType.APPLICATION_JSON);
+                })
                 .bodyValue(Map.of(
-                        "paymentKey", request.getPaymentKey(),
-                        "orderId", request.getOrderId(),
-                        "amount", request.getAmount()
+                        "paymentKey", req.paymentKey(),
+                        "orderId", req.orderId(),
+                        "amount", req.amount()
                 ))
                 .retrieve()
                 .bodyToMono(TossPaymentConfirmResponse.class)
                 .block();
     }
 
-    private OrderStatus mapOrderStatusByPayment(PaymentStatus status) {
+    private OrderStatus mapOrderStatus(PaymentStatus status) {
         return switch (status) {
             case DONE -> OrderStatus.PAID;
             case CANCELED -> OrderStatus.CANCELED;
             default -> OrderStatus.PAYMENT_FAILED;
         };
     }
-
 }
-
