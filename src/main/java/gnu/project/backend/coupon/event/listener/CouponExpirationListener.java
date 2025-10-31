@@ -2,7 +2,7 @@ package gnu.project.backend.coupon.event.listener;
 
 import gnu.project.backend.coupon.event.CouponExpiredEvent;
 import gnu.project.backend.coupon.repository.CouponRepository;
-import gnu.project.backend.coupon.repository.UserCouponRepository;
+import gnu.project.backend.coupon.repository.CustomerCouponRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CouponExpirationListener {
 
     private final CouponRepository couponRepository;
-    private final UserCouponRepository userCouponRepository;
+    private final CustomerCouponRepository customerCouponRepository;
 
     @EventListener
     @Transactional
@@ -25,7 +25,7 @@ public class CouponExpirationListener {
 
         couponRepository.findById(event.couponId()).ifPresent(coupon -> {
             coupon.deactivate();
-            userCouponRepository.deactivateAllByCouponId(coupon.getId());
+            customerCouponRepository.deactivateAllByCouponId(coupon.getId());
             log.info("쿠폰 만료 처리 완료: {}", coupon.getId());
         });
     }

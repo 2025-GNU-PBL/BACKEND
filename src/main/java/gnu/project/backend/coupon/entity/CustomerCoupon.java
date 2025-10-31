@@ -17,18 +17,16 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity
-@Table(name = "user_coupon")
+@Table(name = "customer_coupon")
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserCoupon extends BaseEntity {
+public class CustomerCoupon extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,6 +51,29 @@ public class UserCoupon extends BaseEntity {
     @Column(name = "used_at")
     private LocalDateTime usedAt;
 
+    private CustomerCoupon(
+        Customer customer,
+        Coupon coupon,
+        UserCouponStatus userCouponStatus
+    ) {
+        this.customer = customer;
+        this.coupon = coupon;
+        this.status = userCouponStatus;
+    }
+
+    public static CustomerCoupon ofCreate(
+        final Customer customer,
+        final Coupon coupon,
+        final UserCouponStatus userCouponStatus
+    ) {
+        return new CustomerCoupon(
+            customer,
+            coupon,
+            userCouponStatus
+        );
+    }
+
+
     public void markAsUsed() {
         this.status = UserCouponStatus.USED;
         this.usedAt = LocalDateTime.now();
@@ -65,5 +86,4 @@ public class UserCoupon extends BaseEntity {
     public void cancel() {
         this.status = UserCouponStatus.CANCELLED;
     }
-
 }

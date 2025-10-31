@@ -2,9 +2,9 @@ package gnu.project.backend.coupon.controller;
 
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
-import gnu.project.backend.coupon.dto.request.CouponRequestDto;
-import gnu.project.backend.coupon.dto.response.CouponResponseDto;
-import gnu.project.backend.coupon.service.CouponService;
+import gnu.project.backend.coupon.dto.request.OwnerCouponRequestDto;
+import gnu.project.backend.coupon.dto.response.OwnerCouponResponseDto;
+import gnu.project.backend.coupon.service.OwnerCouponService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,55 +19,55 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/coupon")
-public class CouponController {
+@RequestMapping("api/v1/owner/coupon")
+public class OwnerCouponController {
 
-    private final CouponService couponService;
+    private final OwnerCouponService ownerCouponService;
 
     @PostMapping()
-    public ResponseEntity<CouponResponseDto> issueCoupon(
-        @RequestBody final CouponRequestDto request,
+    public ResponseEntity<OwnerCouponResponseDto> issueCoupon(
+        @RequestBody final OwnerCouponRequestDto request,
         @Auth final Accessor accessor
     ) {
-        return ResponseEntity.ok(couponService.issueCoupon(request, accessor));
+        return ResponseEntity.ok(ownerCouponService.issueCoupon(request, accessor));
     }
 
     @DeleteMapping("/{couponId}")
-    public ResponseEntity<CouponResponseDto> deleteCoupon(
+    public ResponseEntity<OwnerCouponResponseDto> deleteCoupon(
         @PathVariable(name = "couponId") final Long couponId,
         @Auth final Accessor accessor
     ) {
-        return ResponseEntity.ok(couponService.deleteCoupon(couponId, accessor));
+        return ResponseEntity.ok(ownerCouponService.deleteCoupon(couponId, accessor));
     }
 
     @GetMapping("/{couponId}")
-    public ResponseEntity<CouponResponseDto> getCoupon(
+    public ResponseEntity<OwnerCouponResponseDto> getCoupon(
         @PathVariable(name = "couponId") final Long couponId,
         @Auth final Accessor accessor
     ) {
         return ResponseEntity.ok(
-            couponService.getCoupon(couponId, accessor)
+            ownerCouponService.getCoupon(couponId, accessor)
         );
     }
 
     @PatchMapping("/{couponId}")
-    public ResponseEntity<CouponResponseDto> updateCoupon(
+    public ResponseEntity<OwnerCouponResponseDto> updateCoupon(
         @PathVariable(name = "couponId") final Long couponId,
-        @RequestBody final CouponRequestDto request,
+        @RequestBody final OwnerCouponRequestDto request,
         @Auth final Accessor accessor
     ) {
         return ResponseEntity.ok(
-            couponService.updateCoupon(couponId, request, accessor)
+            ownerCouponService.updateCoupon(couponId, request, accessor)
         );
     }
 
 
     @GetMapping()
-    public ResponseEntity<List<CouponResponseDto>> getCoupon(
+    public ResponseEntity<List<OwnerCouponResponseDto>> getCoupon(
         @Auth final Accessor accessor
     ) {
         return ResponseEntity.ok(
-            couponService.getMyCoupons(accessor)
+            ownerCouponService.getMyCoupons(accessor)
         );
     }
 }

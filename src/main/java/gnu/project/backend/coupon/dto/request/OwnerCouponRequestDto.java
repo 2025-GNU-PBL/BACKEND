@@ -5,7 +5,7 @@ import gnu.project.backend.product.enurmerated.Category;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record CouponRequestDto(
+public record OwnerCouponRequestDto(
     Long productId,
     String couponCode,               // 쿠폰 코드
     String couponName,               // 쿠폰 이름

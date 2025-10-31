@@ -7,11 +7,11 @@ import static gnu.project.backend.common.error.ErrorCode.PRODUCT_NOT_FOUND_EXCEP
 
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.exception.BusinessException;
-import gnu.project.backend.coupon.dto.request.CouponRequestDto;
-import gnu.project.backend.coupon.dto.response.CouponResponseDto;
+import gnu.project.backend.coupon.dto.request.OwnerCouponRequestDto;
+import gnu.project.backend.coupon.dto.response.OwnerCouponResponseDto;
 import gnu.project.backend.coupon.entity.Coupon;
 import gnu.project.backend.coupon.repository.CouponRepository;
-import gnu.project.backend.coupon.repository.UserCouponRepository;
+import gnu.project.backend.coupon.repository.CustomerCouponRepository;
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
 import gnu.project.backend.product.entity.Product;
@@ -25,15 +25,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class CouponService {
+public class OwnerCouponService {
 
     // TODO : 쿠폰 카테고리별 리스트업, 페이지네이션, 유저 쿠폰 부분
     private final CouponRepository couponRepository;
     private final ProductRepository productRepository;
     private final OwnerRepository ownerRepository;
-    private final UserCouponRepository userCouponRepository;
+    private final CustomerCouponRepository customerCouponRepository;
 
-    public CouponResponseDto issueCoupon(final CouponRequestDto request, final Accessor accessor) {
+    public OwnerCouponResponseDto issueCoupon(final OwnerCouponRequestDto request,
+        final Accessor accessor) {
         final Product product = productRepository.findByIdWithOwner(request.productId())
             .orElseThrow(() -> new BusinessException(
                 PRODUCT_NOT_FOUND_EXCEPTION)
@@ -43,10 +44,10 @@ public class CouponService {
         }
         final Coupon coupon = Coupon.createCoupon(request, product.getOwner(), product);
         final Coupon savedCoupon = couponRepository.save(coupon);
-        return CouponResponseDto.toResponse(savedCoupon);
+        return OwnerCouponResponseDto.toResponse(savedCoupon);
     }
 
-    public CouponResponseDto deleteCoupon(final Long couponId, final Accessor accessor) {
+    public OwnerCouponResponseDto deleteCoupon(final Long couponId, final Accessor accessor) {
         final Coupon coupon = couponRepository.findById(couponId)
             .orElseThrow(() -> new BusinessException(COUPON_NOT_FOUND_EXCEPTION));
 
@@ -54,13 +55,13 @@ public class CouponService {
             throw new BusinessException(IS_NOT_VALID_SOCIAL);
         }
         coupon.deactivate();
-        userCouponRepository.deactivateAllByCouponId(couponId);
+        customerCouponRepository.deactivateAllByCouponId(couponId);
         final Coupon savedCoupon = couponRepository.save(coupon);
-        return CouponResponseDto.toResponse(savedCoupon);
+        return OwnerCouponResponseDto.toResponse(savedCoupon);
     }
 
     @Transactional(readOnly = true)
-    public CouponResponseDto getCoupon(final Long couponId, final Accessor accessor) {
+    public OwnerCouponResponseDto getCoupon(final Long couponId, final Accessor accessor) {
         final Coupon coupon = couponRepository.findCouponWithOwner(couponId).orElseThrow(
             () -> new BusinessException(COUPON_NOT_FOUND_EXCEPTION)
         );
@@ -69,18 +70,18 @@ public class CouponService {
             throw new BusinessException(IS_NOT_VALID_SOCIAL);
         }
 
-        return CouponResponseDto.toResponse(coupon);
+        return OwnerCouponResponseDto.toResponse(coupon);
     }
 
     @Transactional(readOnly = true)
-    public List<CouponResponseDto> getMyCoupons(final Accessor accessor) {
+    public List<OwnerCouponResponseDto> getMyCoupons(final Accessor accessor) {
         final Owner owner = ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
             .orElseThrow(() -> new BusinessException(OWNER_NOT_FOUND_EXCEPTION));
 
         final List<Coupon> coupons = couponRepository.findCoupons(owner.getId());
 
         return coupons.stream()
-            .map(CouponResponseDto::toResponse)
+            .map(OwnerCouponResponseDto::toResponse)
             .collect(Collectors.toList());
     }
 
@@ -91,9 +92,9 @@ public class CouponService {
     기존 쿠폰은 즉시 비활성화 (사용 불가 상태로 전환)
     새로운 쿠폰은 새로운 버전으로 발급하여 교체
      */
-    public CouponResponseDto updateCoupon(
+    public OwnerCouponResponseDto updateCoupon(
         final Long couponId,
-        final CouponRequestDto updateDto,
+        final OwnerCouponRequestDto updateDto,
         final Accessor accessor
     ) {
         final Coupon oldCoupon = couponRepository.findCouponWithOwner(couponId)
@@ -108,11 +109,11 @@ public class CouponService {
         oldCoupon.markAsOldVersion();
 
         couponRepository.save(oldCoupon);
-        userCouponRepository.deactivateAllByCouponId(couponId);
+        customerCouponRepository.deactivateAllByCouponId(couponId);
 
         final Coupon newCoupon = Coupon.createNewVersion(oldCoupon, updateDto);
         final Coupon updatedCoupon = couponRepository.save(newCoupon);
 
-        return CouponResponseDto.toResponse(updatedCoupon);
+        return OwnerCouponResponseDto.toResponse(updatedCoupon);
     }
 }

@@ -1,7 +1,7 @@
 package gnu.project.backend.coupon.entity;
 
 import gnu.project.backend.common.entity.BaseEntity;
-import gnu.project.backend.coupon.dto.request.CouponRequestDto;
+import gnu.project.backend.coupon.dto.request.OwnerCouponRequestDto;
 import gnu.project.backend.coupon.enumerated.CouponStatus;
 import gnu.project.backend.coupon.enumerated.DiscountType;
 import gnu.project.backend.owner.entity.Owner;
@@ -136,7 +136,7 @@ public class Coupon extends BaseEntity {
     }
 
     public static Coupon createCoupon(
-        final CouponRequestDto dto,
+        final OwnerCouponRequestDto dto,
         final Owner owner,
         final Product product
     ) {
@@ -159,7 +159,7 @@ public class Coupon extends BaseEntity {
     }
 
     public static Coupon createNewVersion(final Coupon oldCoupon,
-        final CouponRequestDto updateDto) {
+        final OwnerCouponRequestDto updateDto) {
         {
             return new Coupon(
                 oldCoupon.getProduct(),
@@ -195,7 +195,7 @@ public class Coupon extends BaseEntity {
     }
 
 
-    public void update(final CouponRequestDto dto) {
+    public void update(final OwnerCouponRequestDto dto) {
         this.couponCode = dto.couponCode();
         this.couponName = dto.couponName();
         this.couponDetail = dto.couponDetail();

@@ -7,7 +7,7 @@ import gnu.project.backend.product.enurmerated.Category;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public record CouponResponseDto(
+public record OwnerCouponResponseDto(
     Long id,
     String couponCode,
     DiscountType discountType,
@@ -26,8 +26,8 @@ public record CouponResponseDto(
 
 ) {
 
-    public static CouponResponseDto toResponse(final Coupon coupon) {
-        return new CouponResponseDto(
+    public static OwnerCouponResponseDto toResponse(final Coupon coupon) {
+        return new OwnerCouponResponseDto(
             coupon.getId(),
             coupon.getCouponCode(),
             coupon.getDiscountType(),

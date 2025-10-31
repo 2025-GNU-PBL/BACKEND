@@ -33,6 +33,7 @@ public enum ErrorCode {
     // Customer EXCEPTION ADD.
     CUSTOMER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "CUSTOMER001", "고객을 찾을 수 없습니다."),
     CUSTOMER_DELETED_EXCEPTION(HttpStatus.BAD_REQUEST, "CUSTOMER002", "탈퇴한 회원입니다."),
+    IS_NOT_VALID_CUSTOMER(HttpStatus.BAD_REQUEST, "CUSTOMER003", "유효하지않은 고객입니다.."),
     // Image
     IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5001", "이미지 파일 업로드에 실패했습니다."),
     IMAGE_FILE_READ_FAILED(HttpStatus.BAD_REQUEST, "IMAGE4001", "업로드된 이미지 파일의 바이트 읽기에 실패했습니다."),
@@ -97,8 +98,15 @@ public enum ErrorCode {
     REVIEW_FORBIDDEN(HttpStatus.FORBIDDEN, "REVIEW004", "이 리뷰에 대한 수정/삭제 권한이 없습니다."),
 
     //Coupon
-    COUPON_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "COUPON001", "해당 쿠폰을 찾을 수 없습니다.");
-
+    COUPON_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "COUPON001", "해당 쿠폰을 찾을 수 없습니다."),
+    COUPON_NOT_AVAILABLE(HttpStatus.BAD_REQUEST, "COUPON002", "해당 쿠폰은 사용할 수 없습니다."),
+    COUPON_ALREADY_DOWNLOADED(HttpStatus.BAD_REQUEST, "COUPON003", "해당 쿠폰은 이미 존재합니다."),
+    COUPON_OLD_VERSION(HttpStatus.BAD_REQUEST, "COUPON004", "해당 쿠폰은 사용할 수 없습니다."),
+    COUPON_EXPIRED(HttpStatus.BAD_REQUEST, "COUPON005", "해당 쿠폰은 만료되었습니다."),
+    COUPON_NOT_STARTED(HttpStatus.BAD_REQUEST, "COUPON006", "해당 쿠폰은 사용할 수 없습니다."),
+    COUPON_ALREADY_USED(HttpStatus.BAD_REQUEST, "COUPON007", "해당 쿠폰은 이미 사용되었습니다."),
+    COUPON_CANCELLED(HttpStatus.BAD_REQUEST, "COUPON008", "해당 쿠폰은 취소되었습니다."),
+    CUSTOMER_COUPON_NOT_FOUND(HttpStatus.BAD_REQUEST, "COUPON009", "해당 쿠폰을 찾을 수 없습니다.");
     private final HttpStatus status;
     private final String code;
     private final String message;
