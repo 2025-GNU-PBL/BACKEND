@@ -1,25 +1,35 @@
 package gnu.project.backend.cart.dto.response;
 
 import gnu.project.backend.cart.entity.CartItem;
-import lombok.Getter;
+import gnu.project.backend.product.entity.Product;
 
-@Getter
-public class CartItemResponse {
+import java.time.LocalDateTime;
 
-    private final Long cartItemId;
-    private final Long productId;
-    private final String productName;
-    private final int price;
-    private final int quantity;
-    private final String image_url;
-
-    public CartItemResponse(CartItem cartItem) {
-        this.cartItemId = cartItem.getId();
-        this.productId = cartItem.getProduct().getId();
-        this.productName = cartItem.getProduct().getName();
-        this.price = cartItem.getProduct().getPrice();
-        this.quantity=cartItem.getQuantity();
-        this.image_url = cartItem.getProduct().getImages().toString();
+public record CartItemResponse(
+        Long cartItemId,
+        Long productId,
+        String productName,
+        String optionName,
+        Integer price,
+        Integer quantity,
+        boolean selected,
+        String thumbnailUrl,
+        LocalDateTime desireDate,
+        String memo
+) {
+    public static CartItemResponse from(CartItem item) {
+        final Product p = item.getProduct();
+        return new CartItemResponse(
+                item.getId(),
+                p.getId(),
+                p.getName(),
+                item.getOption() != null ? item.getOption().getName() : null,
+                p.getPrice(),
+                item.getQuantity(),
+                item.isSelected(),
+                p.getThumbnailUrl(),
+                item.getDesireDate(),
+                item.getMemo()
+        );
     }
-
 }
