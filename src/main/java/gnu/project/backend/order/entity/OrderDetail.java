@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Order_detail")
+@Table(name = "order_detail")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OrderDetail {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Setter
@@ -26,13 +26,14 @@ public class OrderDetail {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(name = "final_price")
+    // 주문 시점 확정 가격
+    @Column(name = "final_price", nullable = false)
     private Long finalPrice;
 
-    public static OrderDetail create(Product product) {
-        OrderDetail detail = new OrderDetail();
-        detail.product = product;
-        detail.finalPrice = Long.valueOf(product.getPrice()); // Product의 가격 타입에 맞춰 변환
-        return detail;
+    public static OrderDetail of(Product product, Long finalPrice) {
+        OrderDetail d = new OrderDetail();
+        d.product = product;
+        d.finalPrice = finalPrice != null ? finalPrice : product.getPrice().longValue();
+        return d;
     }
 }
