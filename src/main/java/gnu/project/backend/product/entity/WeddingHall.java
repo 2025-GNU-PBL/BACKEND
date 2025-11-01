@@ -2,8 +2,8 @@ package gnu.project.backend.product.entity;
 
 
 import gnu.project.backend.owner.entity.Owner;
-import gnu.project.backend.product.enurmerated.Category;
-import gnu.project.backend.product.enurmerated.Region;
+import gnu.project.backend.product.enumerated.Category;
+import gnu.project.backend.product.enumerated.Region;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class WeddingHall extends Product{
+public class WeddingHall extends Product {
 
     @Column
     private Integer capacity;
@@ -48,28 +48,28 @@ public class WeddingHall extends Product{
     private Region region;
 
     private WeddingHall(
-            Owner owner,
-            Integer price,
-            String address,
-            String detail,
-            String name,
-            Integer capacity,
-            Integer minGuest,
-            Integer maxGuest,
-            Integer hallType,
-            Integer parkingCapacity,
-            String cateringType,
-            String availableTimes,
-            String reservationPolicy,
-            Region region
+        Owner owner,
+        Integer price,
+        String address,
+        String detail,
+        String name,
+        Integer capacity,
+        Integer minGuest,
+        Integer maxGuest,
+        Integer hallType,
+        Integer parkingCapacity,
+        String cateringType,
+        String availableTimes,
+        String reservationPolicy,
+        Region region
     ) {
         super(
-                owner,
-                Category.WEDDING_HALL,
-                price,
-                address,
-                detail,
-                name
+            owner,
+            Category.WEDDING_HALL,
+            price,
+            address,
+            detail,
+            name
         );
         this.capacity = capacity;
         this.minGuest = minGuest;
@@ -83,53 +83,53 @@ public class WeddingHall extends Product{
     }
 
     public static WeddingHall create(
-            Owner owner,
-            Integer price,
-            String address,
-            String detail,
-            String name,
-            Integer capacity,
-            Integer minGuest,
-            Integer maxGuest,
-            Integer hallType,
-            Integer parkingCapacity,
-            String cateringType,
-            String availableTimes,
-            String reservationPolicy,
-            Region region
+        Owner owner,
+        Integer price,
+        String address,
+        String detail,
+        String name,
+        Integer capacity,
+        Integer minGuest,
+        Integer maxGuest,
+        Integer hallType,
+        Integer parkingCapacity,
+        String cateringType,
+        String availableTimes,
+        String reservationPolicy,
+        Region region
     ) {
         return new WeddingHall(
-                owner,
-                price,
-                address,
-                detail,
-                name,
-                capacity,
-                minGuest,
-                maxGuest,
-                hallType,
-                parkingCapacity,
-                cateringType,
-                availableTimes,
-                reservationPolicy,
-                region
+            owner,
+            price,
+            address,
+            detail,
+            name,
+            capacity,
+            minGuest,
+            maxGuest,
+            hallType,
+            parkingCapacity,
+            cateringType,
+            availableTimes,
+            reservationPolicy,
+            region
         );
     }
 
     public void update(
-            Integer price,
-            String address,
-            String detail,
-            String name,
-            Integer capacity,
-            Integer minGuest,
-            Integer maxGuest,
-            Integer hallType,
-            Integer parkingCapacity,
-            String cateringType,
-            String availableTimes,
-            String reservationPolicy,
-            Region region
+        Integer price,
+        String address,
+        String detail,
+        String name,
+        Integer capacity,
+        Integer minGuest,
+        Integer maxGuest,
+        Integer hallType,
+        Integer parkingCapacity,
+        String cateringType,
+        String availableTimes,
+        String reservationPolicy,
+        Region region
     ) {
         super.updateProduct(price, address, detail, name);
         this.capacity = capacity;

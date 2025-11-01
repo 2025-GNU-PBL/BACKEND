@@ -12,7 +12,7 @@ import static gnu.project.backend.common.error.ErrorCode.OAUTH_USERINFO_RESPONSE
 
 import gnu.project.backend.auth.dto.response.KakaoAccessTokenResponse;
 import gnu.project.backend.auth.dto.response.KakaoUserInfoResponse;
-import gnu.project.backend.auth.enurmerated.SocialProvider;
+import gnu.project.backend.auth.enumerated.SocialProvider;
 import gnu.project.backend.auth.provider.OauthProvider;
 import gnu.project.backend.auth.userinfo.KakaoUserInfo;
 import gnu.project.backend.auth.userinfo.OauthUserInfo;
