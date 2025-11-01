@@ -24,7 +24,7 @@ public class CouponExpirationListener {
             event.expiredAt());
 
         couponRepository.findById(event.couponId()).ifPresent(coupon -> {
-            coupon.deactivate();
+            coupon.expire();
             customerCouponRepository.deactivateAllByCouponId(coupon.getId());
             log.info("쿠폰 만료 처리 완료: {}", coupon.getId());
         });

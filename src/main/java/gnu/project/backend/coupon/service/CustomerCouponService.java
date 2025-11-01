@@ -64,7 +64,7 @@ public class CustomerCouponService {
             .orElseThrow(() -> new BusinessException(CUSTOMER_NOT_FOUND_EXCEPTION)
             );
 
-        validateCouponForDownload(coupon, customer);
+        validateCouponForDownload(coupon);
 
         if (customerCouponRepository.existsByCouponAndCustomer(coupon.getId(), customer.getId())) {
             throw new BusinessException(COUPON_ALREADY_DOWNLOADED);
@@ -135,9 +135,6 @@ public class CustomerCouponService {
         return CustomerCouponResponseDto.from(customerCoupon);
     }
 
-    /**
-     * 특정 상품에 사용 가능한 내 쿠폰 조회
-     */
     @Transactional(readOnly = true)
     public List<CustomerCouponResponseDto> getApplicableCoupons(
         final Long productId,
@@ -158,7 +155,7 @@ public class CustomerCouponService {
     }
 
 
-    private void validateCouponForDownload(final Coupon coupon, final Customer customer) {
+    private void validateCouponForDownload(final Coupon coupon) {
         if (coupon.getStatus() != CouponStatus.ACTIVE) {
             throw new BusinessException(COUPON_NOT_AVAILABLE);
         }

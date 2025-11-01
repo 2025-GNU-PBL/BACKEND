@@ -4,7 +4,7 @@ import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.coupon.dto.request.OwnerCouponRequestDto;
 import gnu.project.backend.coupon.dto.response.OwnerCouponResponseDto;
-import gnu.project.backend.coupon.service.OwnerCouponService;
+import gnu.project.backend.coupon.service.CouponService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/owner/coupon")
 public class OwnerCouponController {
 
-    private final OwnerCouponService ownerCouponService;
+    private final CouponService couponService;
 
     @PostMapping()
     public ResponseEntity<OwnerCouponResponseDto> issueCoupon(
         @RequestBody final OwnerCouponRequestDto request,
         @Auth final Accessor accessor
     ) {
-        return ResponseEntity.ok(ownerCouponService.issueCoupon(request, accessor));
+        return ResponseEntity.ok(couponService.issueCoupon(request, accessor));
     }
 
     @DeleteMapping("/{couponId}")
@@ -37,7 +37,7 @@ public class OwnerCouponController {
         @PathVariable(name = "couponId") final Long couponId,
         @Auth final Accessor accessor
     ) {
-        return ResponseEntity.ok(ownerCouponService.deleteCoupon(couponId, accessor));
+        return ResponseEntity.ok(couponService.deleteCoupon(couponId, accessor));
     }
 
     @GetMapping("/{couponId}")
@@ -46,7 +46,7 @@ public class OwnerCouponController {
         @Auth final Accessor accessor
     ) {
         return ResponseEntity.ok(
-            ownerCouponService.getCoupon(couponId, accessor)
+            couponService.getCoupon(couponId, accessor)
         );
     }
 
@@ -57,7 +57,7 @@ public class OwnerCouponController {
         @Auth final Accessor accessor
     ) {
         return ResponseEntity.ok(
-            ownerCouponService.updateCoupon(couponId, request, accessor)
+            couponService.updateCoupon(couponId, request, accessor)
         );
     }
 
@@ -67,7 +67,7 @@ public class OwnerCouponController {
         @Auth final Accessor accessor
     ) {
         return ResponseEntity.ok(
-            ownerCouponService.getMyCoupons(accessor)
+            couponService.getMyCoupons(accessor)
         );
     }
 }

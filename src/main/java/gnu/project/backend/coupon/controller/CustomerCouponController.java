@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * 손님(Customer)용 쿠폰 API - 쿠폰 검색, 다운로드, 사용 - 내 쿠폰 조회
- */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/customer/coupons")
@@ -26,9 +23,6 @@ public class CustomerCouponController {
     private final CustomerCouponService customerCouponService;
 
 
-    /**
-     * 쿠폰 상세 조회 (다운로드 전 미리보기)
-     */
     @GetMapping("/{couponId}")
     public ResponseEntity<CustomerCouponResponseDto> getCouponDetail(
         @PathVariable final Long couponId
@@ -38,9 +32,6 @@ public class CustomerCouponController {
         );
     }
 
-    /**
-     * 쿠폰 다운로드
-     */
     @PostMapping("/{couponId}/download")
     public ResponseEntity<CustomerCouponResponseDto> downloadCoupon(
         @PathVariable final Long couponId,
@@ -51,9 +42,6 @@ public class CustomerCouponController {
         );
     }
 
-    /**
-     * 내가 다운로드한 쿠폰 목록
-     */
     @GetMapping("/my")
     public ResponseEntity<List<CustomerCouponResponseDto>> getMyCoupons(
         @Auth final Accessor accessor
@@ -63,9 +51,6 @@ public class CustomerCouponController {
         );
     }
 
-    /**
-     * 사용 가능한 내 쿠폰 목록
-     */
     @GetMapping("/my/available")
     public ResponseEntity<List<CustomerCouponResponseDto>> getMyAvailableCoupons(
         @Auth final Accessor accessor
@@ -75,9 +60,6 @@ public class CustomerCouponController {
         );
     }
 
-    /**
-     * 쿠폰 사용
-     */
     @PostMapping("/my/{userCouponId}/use")
     public ResponseEntity<CustomerCouponResponseDto> useCoupon(
         @PathVariable final Long userCouponId,
@@ -88,9 +70,6 @@ public class CustomerCouponController {
         );
     }
 
-    /**
-     * 특정 상품에 사용 가능한 내 쿠폰 조회
-     */
     @GetMapping("/my/applicable")
     public ResponseEntity<List<CustomerCouponResponseDto>> getApplicableCoupons(
         @RequestParam final Long productId,
