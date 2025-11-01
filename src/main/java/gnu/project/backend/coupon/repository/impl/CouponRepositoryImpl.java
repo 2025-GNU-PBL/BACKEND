@@ -47,7 +47,8 @@ public class CouponRepositoryImpl implements CouponCustomRepository {
     @Override
     public List<Coupon> findAllExpired(final LocalDate now) {
         return query.selectFrom(coupon)
-            .where(coupon.expirationDate.before(now))
+            .where(
+                coupon.expirationDate.before(now).and(coupon.isDeleted.isFalse()))
             .fetch();
     }
 }

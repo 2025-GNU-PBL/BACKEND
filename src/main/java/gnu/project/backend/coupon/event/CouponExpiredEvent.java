@@ -6,6 +6,6 @@ import java.time.LocalDate;
 public record CouponExpiredEvent(Long couponId, LocalDate expiredAt) {
 
     public static CouponExpiredEvent from(Coupon coupon) {
-        return new CouponExpiredEvent(coupon.getId(), LocalDate.now());
+        return new CouponExpiredEvent(coupon.getId(), coupon.getExpirationDate());
     }
 }

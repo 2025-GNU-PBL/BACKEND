@@ -61,6 +61,7 @@ public class CustomerCouponRepositoryImpl implements CustomerCouponCustomReposit
 
     @Override
     public List<CustomerCoupon> findAvailableCouponsByCustomer(final Customer customer) {
+        LocalDate now = LocalDate.now();
         return query
             .selectFrom(customerCoupon)
             .join(customerCoupon.coupon, coupon).fetchJoin()
@@ -68,7 +69,8 @@ public class CustomerCouponRepositoryImpl implements CustomerCouponCustomReposit
                 customerCoupon.customer.eq(customer),
                 customerCoupon.status.eq(UserCouponStatus.AVAILABLE),
                 customerCoupon.isDeleted.eq(false),
-                coupon.expirationDate.goe(LocalDate.now()),
+                coupon.startDate.loe(now),
+                coupon.expirationDate.goe(now),
                 coupon.status.eq(CouponStatus.ACTIVE)
             )
             .orderBy(coupon.expirationDate.asc())
