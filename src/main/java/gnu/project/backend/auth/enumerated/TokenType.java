@@ -1,4 +1,4 @@
-package gnu.project.backend.auth.enurmerated;
+package gnu.project.backend.auth.enumerated;
 
 public enum TokenType {
     ACCESS_TOKEN, REFRESH_TOKEN;

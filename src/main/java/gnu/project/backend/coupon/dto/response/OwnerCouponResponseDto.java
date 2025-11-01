@@ -3,7 +3,7 @@ package gnu.project.backend.coupon.dto.response;
 import gnu.project.backend.coupon.entity.Coupon;
 import gnu.project.backend.coupon.enumerated.CouponStatus;
 import gnu.project.backend.coupon.enumerated.DiscountType;
-import gnu.project.backend.product.enurmerated.Category;
+import gnu.project.backend.product.enumerated.Category;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 

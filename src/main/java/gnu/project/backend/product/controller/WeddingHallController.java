@@ -7,7 +7,7 @@ import gnu.project.backend.product.dto.request.WeddingHallRequest;
 import gnu.project.backend.product.dto.request.WeddingHallUpdateRequest;
 import gnu.project.backend.product.dto.response.WeddingHallPageResponse;
 import gnu.project.backend.product.dto.response.WeddingHallResponse;
-import gnu.project.backend.product.enurmerated.Region;
+import gnu.project.backend.product.enumerated.Region;
 import gnu.project.backend.product.service.WeddingHallService;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
@@ -31,86 +31,86 @@ public class WeddingHallController implements WeddingHallDocs {
     @Override
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<WeddingHallResponse> createWeddingHall(
-            @Parameter(hidden = true) @Auth final Accessor accessor,
-            @Valid @RequestPart("request") final WeddingHallRequest request,
-            @RequestPart(name = "images", required = false) final List<MultipartFile> images
+        @Parameter(hidden = true) @Auth final Accessor accessor,
+        @Valid @RequestPart("request") final WeddingHallRequest request,
+        @RequestPart(name = "images", required = false) final List<MultipartFile> images
     ) {
         return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(
-                        weddingHallService.create(
-                                request,
-                                images,
-                                accessor
-                        )
-                );
+            .status(HttpStatus.CREATED)
+            .body(
+                weddingHallService.create(
+                    request,
+                    images,
+                    accessor
+                )
+            );
     }
 
     @Override
     @PatchMapping(
-            value = "/{id}",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+        value = "/{id}",
+        consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ResponseEntity<WeddingHallResponse> updateWeddingHall(
-            @Parameter(hidden = true) @Auth final Accessor accessor,
-            @PathVariable("id") final Long id,
-            @Valid @RequestPart("request") final WeddingHallUpdateRequest request,
-            @RequestPart(name = "images", required = false) final List<MultipartFile> images
+        @Parameter(hidden = true) @Auth final Accessor accessor,
+        @PathVariable("id") final Long id,
+        @Valid @RequestPart("request") final WeddingHallUpdateRequest request,
+        @RequestPart(name = "images", required = false) final List<MultipartFile> images
     ) {
         return ResponseEntity
-                .ok(
-                        weddingHallService.update(
-                                id,
-                                request,
-                                images,
-                                request.keepImagesId(), // 기존 이미지 유지 목록
-                                accessor
-                        )
-                );
+            .ok(
+                weddingHallService.update(
+                    id,
+                    request,
+                    images,
+                    request.keepImagesId(), // 기존 이미지 유지 목록
+                    accessor
+                )
+            );
     }
 
     @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteWeddingHall(
-            @Parameter(hidden = true) @Auth final Accessor accessor,
-            @PathVariable("id") final Long id
+        @Parameter(hidden = true) @Auth final Accessor accessor,
+        @PathVariable("id") final Long id
     ) {
         return ResponseEntity.ok(
-                weddingHallService.delete(id, accessor)
+            weddingHallService.delete(id, accessor)
         );
     }
 
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<WeddingHallResponse> readWeddingHall(
-            @PathVariable("id") final Long id
+        @PathVariable("id") final Long id
     ) {
         return ResponseEntity.ok(
-                weddingHallService.read(id)
+            weddingHallService.read(id)
         );
     }
 
     @Override
     @GetMapping
     public ResponseEntity<Page<WeddingHallPageResponse>> readWeddingHalls(
-            @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
-            @RequestParam(name = "pageSize", required = false, defaultValue = "6") final Integer pageSize,
-            @RequestParam(name = "region", required = false) final Region region
+        @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
+        @RequestParam(name = "pageSize", required = false, defaultValue = "6") final Integer pageSize,
+        @RequestParam(name = "region", required = false) final Region region
     ) {
         return ResponseEntity.ok(
-                weddingHallService.readWeddingHalls(pageNumber, pageSize,region)
+            weddingHallService.readWeddingHalls(pageNumber, pageSize, region)
         );
     }
 
     @Override
     @GetMapping("/me")
     public ResponseEntity<Page<WeddingHallPageResponse>> readMyWeddingHalls(
-            @Parameter(hidden = true) @Auth final Accessor accessor,
-            @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
-            @RequestParam(name = "pageSize", required = false, defaultValue = "6") final Integer pageSize
+        @Parameter(hidden = true) @Auth final Accessor accessor,
+        @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
+        @RequestParam(name = "pageSize", required = false, defaultValue = "6") final Integer pageSize
     ) {
         return ResponseEntity.ok(
-                weddingHallService.readMyWeddingHalls(accessor, pageNumber, pageSize)
+            weddingHallService.readMyWeddingHalls(accessor, pageNumber, pageSize)
         );
     }
 }

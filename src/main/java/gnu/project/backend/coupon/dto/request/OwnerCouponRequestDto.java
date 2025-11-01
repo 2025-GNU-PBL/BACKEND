@@ -1,7 +1,7 @@
 package gnu.project.backend.coupon.dto.request;
 
 import gnu.project.backend.coupon.enumerated.DiscountType;
-import gnu.project.backend.product.enurmerated.Category;
+import gnu.project.backend.product.enumerated.Category;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 

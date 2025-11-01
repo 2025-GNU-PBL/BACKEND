@@ -10,7 +10,7 @@ import static gnu.project.backend.common.error.ErrorCode.COUPON_NOT_STARTED;
 import static gnu.project.backend.common.error.ErrorCode.COUPON_OLD_VERSION;
 import static gnu.project.backend.common.error.ErrorCode.CUSTOMER_COUPON_NOT_FOUND;
 import static gnu.project.backend.common.error.ErrorCode.CUSTOMER_NOT_FOUND_EXCEPTION;
-import static gnu.project.backend.common.error.ErrorCode.IS_NOT_VALID_CUSTOMER;
+import static gnu.project.backend.common.error.ErrorCode.IS_NOT_VALID_SOCIAL;
 
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.exception.BusinessException;
@@ -121,7 +121,7 @@ public class CustomerCouponService {
             .orElseThrow(() -> new BusinessException(CUSTOMER_COUPON_NOT_FOUND));
 
         if (!customerCoupon.getCustomer().getId().equals(customer.getId())) {
-            throw new BusinessException(IS_NOT_VALID_CUSTOMER);
+            throw new BusinessException(IS_NOT_VALID_SOCIAL);
         }
 
         validateCouponForUse(customerCoupon);

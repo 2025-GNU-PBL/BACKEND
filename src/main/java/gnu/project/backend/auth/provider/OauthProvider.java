@@ -1,6 +1,6 @@
 package gnu.project.backend.auth.provider;
 
-import gnu.project.backend.auth.enurmerated.SocialProvider;
+import gnu.project.backend.auth.enumerated.SocialProvider;
 import gnu.project.backend.auth.userinfo.OauthUserInfo;
 
 public interface OauthProvider {

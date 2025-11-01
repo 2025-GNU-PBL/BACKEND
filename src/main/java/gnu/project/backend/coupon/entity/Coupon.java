@@ -6,7 +6,7 @@ import gnu.project.backend.coupon.enumerated.CouponStatus;
 import gnu.project.backend.coupon.enumerated.DiscountType;
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.product.entity.Product;
-import gnu.project.backend.product.enurmerated.Category;
+import gnu.project.backend.product.enumerated.Category;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
