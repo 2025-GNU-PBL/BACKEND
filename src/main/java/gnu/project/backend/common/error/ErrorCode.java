@@ -33,7 +33,6 @@ public enum ErrorCode {
     // Customer EXCEPTION ADD.
     CUSTOMER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "CUSTOMER001", "고객을 찾을 수 없습니다."),
     CUSTOMER_DELETED_EXCEPTION(HttpStatus.BAD_REQUEST, "CUSTOMER002", "탈퇴한 회원입니다."),
-    IS_NOT_VALID_CUSTOMER(HttpStatus.BAD_REQUEST, "CUSTOMER003", "유효하지않은 고객입니다.."),
     // Image
     IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5001", "이미지 파일 업로드에 실패했습니다."),
     IMAGE_FILE_READ_FAILED(HttpStatus.BAD_REQUEST, "IMAGE4001", "업로드된 이미지 파일의 바이트 읽기에 실패했습니다."),
@@ -92,10 +91,14 @@ public enum ErrorCode {
     SCHEDULE_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "SCHEDULE001", "해당 스케줄을 찾을 수 없습니다"),
 
     //Review
-    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW001", "해당 리뷰를 찾을 수 없습니다."),
-    REVIEW_DUPLICATE(HttpStatus.BAD_REQUEST, "REVIEW002", "중복 리뷰는 작성할 수 없습니다."),
-    REVIEW_NOT_ELIGIBLE(HttpStatus.FORBIDDEN, "REVIEW003", "해당 상품에 대한 리뷰 작성 자격이 없습니다."),
-    REVIEW_FORBIDDEN(HttpStatus.FORBIDDEN, "REVIEW004", "이 리뷰에 대한 수정/삭제 권한이 없습니다."),
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW001","해당 리뷰를 찾을 수 없습니다."),
+    REVIEW_DUPLICATE(HttpStatus.BAD_REQUEST, "REVIEW002","중복 리뷰는 작성할 수 없습니다."),
+    REVIEW_NOT_ELIGIBLE(HttpStatus.FORBIDDEN, "REVIEW003","해당 상품에 대한 리뷰 작성 자격이 없습니다."),
+    REVIEW_FORBIDDEN(HttpStatus.FORBIDDEN, "REVIEW004","이 리뷰에 대한 수정/삭제 권한이 없습니다."),
+    //CART
+    OPTION_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "CART001", "해당 옵션을 찾을 수 없습니다."),
+    CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "CART002", "해당 장바구니 아이템을 찾을 수 없습니다."),
+    CART_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "CART003", "카트에 5개의 상품만 추가 가능합니다."),
 
     //Coupon
     COUPON_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "COUPON001", "해당 쿠폰을 찾을 수 없습니다."),
