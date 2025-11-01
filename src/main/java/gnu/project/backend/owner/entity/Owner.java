@@ -16,12 +16,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Table
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Owner extends BaseEntity implements OauthUser {
@@ -35,7 +37,7 @@ public class Owner extends BaseEntity implements OauthUser {
 
     @Column
     private String bzName;
-    
+
     @Column
     private Short age;
 
