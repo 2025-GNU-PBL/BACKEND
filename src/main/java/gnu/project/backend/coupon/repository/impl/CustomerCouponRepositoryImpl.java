@@ -7,7 +7,7 @@ import static gnu.project.backend.coupon.entity.QCustomerCoupon.customerCoupon;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import gnu.project.backend.coupon.entity.CustomerCoupon;
 import gnu.project.backend.coupon.enumerated.CouponStatus;
-import gnu.project.backend.coupon.enumerated.UserCouponStatus;
+import gnu.project.backend.coupon.enumerated.CustomerCouponStatus;
 import gnu.project.backend.coupon.repository.CustomerCouponCustomRepository;
 import gnu.project.backend.customer.entity.Customer;
 import java.time.LocalDate;
@@ -26,7 +26,7 @@ public class CustomerCouponRepositoryImpl implements CustomerCouponCustomReposit
     @Override
     public void deactivateAllByCouponId(final Long couponId) {
         query.update(customerCoupon)
-            .set(customerCoupon.status, UserCouponStatus.CANCELLED)
+            .set(customerCoupon.status, CustomerCouponStatus.CANCELLED)
             .where(customerCoupon.coupon.id.eq(couponId))
             .execute();
     }
@@ -67,7 +67,7 @@ public class CustomerCouponRepositoryImpl implements CustomerCouponCustomReposit
             .join(customerCoupon.coupon, coupon).fetchJoin()
             .where(
                 customerCoupon.customer.eq(customer),
-                customerCoupon.status.eq(UserCouponStatus.AVAILABLE),
+                customerCoupon.status.eq(CustomerCouponStatus.AVAILABLE),
                 customerCoupon.isDeleted.eq(false),
                 coupon.startDate.loe(now),
                 coupon.expirationDate.goe(now),
