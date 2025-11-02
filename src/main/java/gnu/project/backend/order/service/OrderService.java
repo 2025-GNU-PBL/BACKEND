@@ -2,10 +2,6 @@ package gnu.project.backend.order.service;
 
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.exception.BusinessException;
-import gnu.project.backend.coupon.entity.Coupon;
-import gnu.project.backend.coupon.entity.CustomerCoupon;
-import gnu.project.backend.coupon.enumerated.UserCouponStatus;
-import gnu.project.backend.coupon.repository.CustomerCouponRepository;
 import gnu.project.backend.order.dto.request.OrderCreateRequest;
 import gnu.project.backend.order.dto.response.OrderResponse;
 import gnu.project.backend.order.entity.Order;

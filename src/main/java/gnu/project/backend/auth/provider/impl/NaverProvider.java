@@ -78,6 +78,7 @@ public class NaverProvider implements OauthProvider {
 
     private NaverUserInfoResponse fetchUserInfo(String accessToken) {
         return webClient
+
             .get() // ✅ 네이버는 사용자 정보 조회가 GET 방식
             .uri(userInfoUri)
             .header(HttpHeaders.AUTHORIZATION, NaverOauthConstants.BEARER_PREFIX + accessToken)

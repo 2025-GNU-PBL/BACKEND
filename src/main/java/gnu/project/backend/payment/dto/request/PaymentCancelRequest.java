@@ -1,18 +1,7 @@
 package gnu.project.backend.payment.dto.request;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@Getter
-@NoArgsConstructor
-public class PaymentCancelRequest {
-    private String paymentKey;
-    private String cancelReason;
-    private Long cancelAmount;
-
-    public PaymentCancelRequest(String paymentKey, String cancelReason, Long cancelAmount) {
-        this.paymentKey = paymentKey;
-        this.cancelReason = cancelReason;
-        this.cancelAmount = cancelAmount;
-    }
-}
+public record PaymentCancelRequest(
+        String paymentKey,
+        String cancelReason,
+        Long cancelAmount // 지금은 안 쓸 거면 서비스에서 무시
+) {}
