@@ -3,7 +3,7 @@ package gnu.project.backend.auth.provider.impl;
 import gnu.project.backend.auth.constant.NaverOauthConstants;
 import gnu.project.backend.auth.dto.response.NaverAccessTokenResponse;
 import gnu.project.backend.auth.dto.response.NaverUserInfoResponse;
-import gnu.project.backend.auth.enurmerated.SocialProvider;
+import gnu.project.backend.auth.enumerated.SocialProvider;
 import gnu.project.backend.auth.provider.OauthProvider;
 import gnu.project.backend.auth.userinfo.NaverUserInfo;
 import gnu.project.backend.auth.userinfo.OauthUserInfo;
@@ -61,14 +61,14 @@ public class NaverProvider implements OauthProvider {
         data.add(NaverOauthConstants.STATE_KEY, "STATE_STRING_FOR_TEST");
 
         return webClient.post()
-                .uri(tokenUri)
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body(BodyInserters.fromFormData(data))
-                .retrieve()
-                .onStatus(HttpStatusCode::isError, this::handleOauthError)
-                .bodyToMono(NaverAccessTokenResponse.class)
-                .map(NaverAccessTokenResponse::accessToken)
-                .block();
+            .uri(tokenUri)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .body(BodyInserters.fromFormData(data))
+            .retrieve()
+            .onStatus(HttpStatusCode::isError, this::handleOauthError)
+            .bodyToMono(NaverAccessTokenResponse.class)
+            .map(NaverAccessTokenResponse::accessToken)
+            .block();
     }
 
     @Override
@@ -78,21 +78,22 @@ public class NaverProvider implements OauthProvider {
 
     private NaverUserInfoResponse fetchUserInfo(String accessToken) {
         return webClient
-                .get()
-                .uri(userInfoUri)
-                .header(HttpHeaders.AUTHORIZATION, NaverOauthConstants.BEARER_PREFIX + accessToken)
-                .retrieve()
-                .onStatus(HttpStatusCode::isError, this::handleOauthError)
-                .bodyToMono(NaverUserInfoResponse.class)
-                .blockOptional()
-                .orElseThrow(() -> new AuthException(OAUTH_USERINFO_RESPONSE_EMPTY));
+
+            .get() // ✅ 네이버는 사용자 정보 조회가 GET 방식
+            .uri(userInfoUri)
+            .header(HttpHeaders.AUTHORIZATION, NaverOauthConstants.BEARER_PREFIX + accessToken)
+            .retrieve()
+            .onStatus(HttpStatusCode::isError, this::handleOauthError)
+            .bodyToMono(NaverUserInfoResponse.class)
+            .blockOptional()
+            .orElseThrow(() -> new AuthException(OAUTH_USERINFO_RESPONSE_EMPTY));
     }
 
     // Error Handling
     private Mono<? extends Throwable> handleOauthError(final ClientResponse response) {
         return response.bodyToMono(String.class)
-                .flatMap(errorBody ->
-                        Mono.error(new AuthException(OAUTH_TOKEN_REQUEST_FAILED))
-                );
+            .flatMap(errorBody ->
+                Mono.error(new AuthException(OAUTH_TOKEN_REQUEST_FAILED))
+            );
     }
 }

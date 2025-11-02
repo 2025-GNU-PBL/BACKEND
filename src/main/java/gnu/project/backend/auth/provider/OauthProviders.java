@@ -2,8 +2,7 @@ package gnu.project.backend.auth.provider;
 
 import static gnu.project.backend.common.error.ErrorCode.IS_NOT_VALID_SOCIAL;
 
-import gnu.project.backend.auth.enurmerated.SocialProvider;
-import gnu.project.backend.common.error.ErrorCode;
+import gnu.project.backend.auth.enumerated.SocialProvider;
 import gnu.project.backend.common.exception.AuthException;
 import java.util.List;
 import java.util.Map;

@@ -1,6 +1,6 @@
 package gnu.project.backend.owner.dto.response;
 
-import gnu.project.backend.auth.enurmerated.SocialProvider;
+import gnu.project.backend.auth.enumerated.SocialProvider;
 import gnu.project.backend.common.enumerated.UserRole;
 import gnu.project.backend.owner.entity.Owner;
 import java.time.LocalDateTime;

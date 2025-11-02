@@ -1,7 +1,7 @@
 package gnu.project.backend.product.entity;
 
 import gnu.project.backend.owner.entity.Owner;
-import gnu.project.backend.product.enurmerated.Category;
+import gnu.project.backend.product.enumerated.Category;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;

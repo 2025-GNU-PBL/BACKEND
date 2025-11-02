@@ -2,7 +2,7 @@ package gnu.project.backend.owner.entity;
 
 import gnu.project.backend.auth.entity.OauthInfo;
 import gnu.project.backend.auth.entity.OauthUser;
-import gnu.project.backend.auth.enurmerated.SocialProvider;
+import gnu.project.backend.auth.enumerated.SocialProvider;
 import gnu.project.backend.common.entity.BaseEntity;
 import gnu.project.backend.common.enumerated.UserRole;
 import jakarta.persistence.Column;
@@ -16,12 +16,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Table
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Owner extends BaseEntity implements OauthUser {
@@ -35,7 +37,7 @@ public class Owner extends BaseEntity implements OauthUser {
 
     @Column
     private String bzName;
-    
+
     @Column
     private Short age;
 
