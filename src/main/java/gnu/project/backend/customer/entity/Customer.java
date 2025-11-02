@@ -3,7 +3,7 @@ package gnu.project.backend.customer.entity;
 
 import gnu.project.backend.auth.entity.OauthInfo;
 import gnu.project.backend.auth.entity.OauthUser;
-import gnu.project.backend.auth.enurmerated.SocialProvider;
+import gnu.project.backend.auth.enumerated.SocialProvider;
 import gnu.project.backend.common.entity.BaseEntity;
 import gnu.project.backend.common.enumerated.UserRole;
 import jakarta.persistence.*;
@@ -44,29 +44,29 @@ public class Customer extends BaseEntity implements OauthUser {
 
 
     public static Customer createFromOAuth(
-            final String email,
-            final String name,
-            final String socialId,
-            final SocialProvider provider
+        final String email,
+        final String name,
+        final String socialId,
+        final SocialProvider provider
     ) {
         final OauthInfo oauthInfo = OauthInfo.of(email, name, socialId, provider);
 
         return new Customer(
-                null,
-                null,
-                null,
-                null,
-                false,
-                UserRole.CUSTOMER,
-                oauthInfo
+            null,
+            null,
+            null,
+            null,
+            false,
+            UserRole.CUSTOMER,
+            oauthInfo
 
         );
     }
 
     public void signUp(
-            final Short age,
-            final String phoneNumber,
-            final String address
+        final Short age,
+        final String phoneNumber,
+        final String address
     ) {
         this.age = age;
         this.phoneNumber = phoneNumber;
@@ -74,9 +74,9 @@ public class Customer extends BaseEntity implements OauthUser {
     }
 
     public void updateProfile(
-            final Short age,
-            final String phoneNumber,
-            final String address
+        final Short age,
+        final String phoneNumber,
+        final String address
     ) {
         this.age = age;
         this.phoneNumber = phoneNumber;
@@ -108,7 +108,6 @@ public class Customer extends BaseEntity implements OauthUser {
     public OauthInfo getOauthInfo() {
         return this.oauthInfo;
     }
-
 
 
 }

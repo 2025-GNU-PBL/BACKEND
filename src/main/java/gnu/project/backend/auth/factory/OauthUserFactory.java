@@ -1,7 +1,7 @@
 package gnu.project.backend.auth.factory;
 
 import gnu.project.backend.auth.entity.OauthUser;
-import gnu.project.backend.auth.enurmerated.SocialProvider;
+import gnu.project.backend.auth.enumerated.SocialProvider;
 import gnu.project.backend.auth.userinfo.OauthUserInfo;
 import gnu.project.backend.common.enumerated.UserRole;
 import gnu.project.backend.customer.entity.Customer;
@@ -45,7 +45,8 @@ public class OauthUserFactory {
     private Customer findOrCreateCustomer(OauthUserInfo userInfo, SocialProvider provider) {
         return customerRepository.findByOauthInfo_SocialId(userInfo.getSocialId())
             .orElseGet(() -> customerRepository.save(
-                Customer.createFromOAuth(userInfo.getEmail(), userInfo.getName(), userInfo.getSocialId(),
+                Customer.createFromOAuth(userInfo.getEmail(), userInfo.getName(),
+                    userInfo.getSocialId(),
                     provider)
             ));
     }

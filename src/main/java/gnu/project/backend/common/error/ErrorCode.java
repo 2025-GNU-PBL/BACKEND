@@ -52,7 +52,8 @@ public enum ErrorCode {
     // makeup
     MAKEUP_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "MAKEUP001", "해당 메이크업 상품을 찾을 수 없습니다"),
     // WeddingHall
-    WEDDING_HALL_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "WEDDING_HALL001", "해당 웨딩홀 상품을 찾을 수 없습니다."),
+    WEDDING_HALL_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "WEDDING_HALL001",
+        "해당 웨딩홀 상품을 찾을 수 없습니다."),
     //Order
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "PAYMENT001", "존재하지 않는 주문입니다."),
     // 결제 승인 관련
@@ -64,7 +65,7 @@ public enum ErrorCode {
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "PAYMENT005", "결제 내역을 찾을 수 없습니다."),
     PAYMENT_ALREADY_CANCELED(HttpStatus.BAD_REQUEST, "PAYMENT006", "이미 취소된 결제입니다."),
     PAYMENT_CANCEL_FAILED(HttpStatus.BAD_REQUEST, "PAYMENT007", "결제 취소 요청에 실패했습니다."),
-    PAYMENT_GATEWAY_ERROR(HttpStatus.BAD_REQUEST,"PAYMENT008","결제 취소 실패." ),
+    PAYMENT_GATEWAY_ERROR(HttpStatus.BAD_REQUEST, "PAYMENT008", "결제 취소 실패."),
 
     // 웹훅 관련
     UNAUTHORIZED_WEBHOOK(HttpStatus.BAD_REQUEST, "WEBHOOK001", "웹훅 요청이 잘못되었습니다."),
@@ -72,7 +73,6 @@ public enum ErrorCode {
     // 환불 관련
     PAYMENT_REFUND_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "REFUND001", "환불이 허용되지 않은 상태입니다."),
     PAYMENT_REFUND_FAILED(HttpStatus.BAD_REQUEST, "REFUND002", "환불 요청에 실패했습니다."),
-
 
 
     // dress
@@ -98,8 +98,18 @@ public enum ErrorCode {
     //CART
     OPTION_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "CART001", "해당 옵션을 찾을 수 없습니다."),
     CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "CART002", "해당 장바구니 아이템을 찾을 수 없습니다."),
-    CART_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "CART003", "카트에 5개의 상품만 추가 가능합니다.");
+    CART_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "CART003", "카트에 5개의 상품만 추가 가능합니다."),
 
+    //Coupon
+    COUPON_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "COUPON001", "해당 쿠폰을 찾을 수 없습니다."),
+    COUPON_NOT_AVAILABLE(HttpStatus.BAD_REQUEST, "COUPON002", "해당 쿠폰은 사용할 수 없습니다."),
+    COUPON_ALREADY_DOWNLOADED(HttpStatus.BAD_REQUEST, "COUPON003", "해당 쿠폰은 이미 존재합니다."),
+    COUPON_OLD_VERSION(HttpStatus.BAD_REQUEST, "COUPON004", "해당 쿠폰은 사용할 수 없습니다."),
+    COUPON_EXPIRED(HttpStatus.BAD_REQUEST, "COUPON005", "해당 쿠폰은 만료되었습니다."),
+    COUPON_NOT_STARTED(HttpStatus.BAD_REQUEST, "COUPON006", "해당 쿠폰은 사용할 수 없습니다."),
+    COUPON_ALREADY_USED(HttpStatus.BAD_REQUEST, "COUPON007", "해당 쿠폰은 이미 사용되었습니다."),
+    COUPON_CANCELLED(HttpStatus.BAD_REQUEST, "COUPON008", "해당 쿠폰은 취소되었습니다."),
+    CUSTOMER_COUPON_NOT_FOUND(HttpStatus.BAD_REQUEST, "COUPON009", "해당 쿠폰을 찾을 수 없습니다.");
     private final HttpStatus status;
     private final String code;
     private final String message;

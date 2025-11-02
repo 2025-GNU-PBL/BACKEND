@@ -3,7 +3,7 @@ package gnu.project.backend.auth.jwt;
 import static gnu.project.backend.auth.constant.JwtConstants.TOKEN_TYPE;
 import static gnu.project.backend.auth.constant.JwtConstants.USER_ROLE;
 
-import gnu.project.backend.auth.enurmerated.TokenType;
+import gnu.project.backend.auth.enumerated.TokenType;
 import gnu.project.backend.common.enumerated.UserRole;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

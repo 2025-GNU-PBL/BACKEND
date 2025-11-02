@@ -2,7 +2,7 @@ package gnu.project.backend.product.entity;
 
 import gnu.project.backend.common.entity.BaseEntity;
 import gnu.project.backend.owner.entity.Owner;
-import gnu.project.backend.product.enurmerated.Category;
+import gnu.project.backend.product.enumerated.Category;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -123,6 +123,9 @@ public class Product extends BaseEntity {
         this.options.addAll(options);
     }
 
+    public boolean validOwner(final String socialId) {
+        return this.getOwner().getSocialId().equals(socialId);
+    }
 
     private void reorderImages() {
         for (int i = 0; i < images.size(); i++) {
@@ -154,8 +157,8 @@ public class Product extends BaseEntity {
     }
 
     public void updateRating(
-            final double newAverageStar,
-            final int newReviewCount
+        final double newAverageStar,
+        final int newReviewCount
     ) {
         this.starCount = newAverageStar;
         this.averageRating = newReviewCount;
