@@ -4,6 +4,7 @@ import gnu.project.backend.product.entity.Dress;
 import gnu.project.backend.product.entity.Image;
 import gnu.project.backend.product.entity.Option;
 import gnu.project.backend.product.entity.Tag;
+import gnu.project.backend.product.enumerated.Region;
 import java.util.List;
 
 public record DressResponse(
@@ -13,6 +14,8 @@ public record DressResponse(
     String detail,
     Integer price,
     String availableTimes,
+    Region region,
+
     List<ImageResponse> images,
     List<OptionResponse> options,
     List<TagResponse> tags
@@ -26,6 +29,7 @@ public record DressResponse(
             dress.getDetail(),
             dress.getPrice(),
             dress.getAvailableTimes(),
+            dress.getRegion(),
             dress.getImages().stream()
                 .map(DressResponse.ImageResponse::from)
                 .toList(),

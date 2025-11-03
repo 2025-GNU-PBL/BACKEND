@@ -4,6 +4,7 @@ import gnu.project.backend.product.entity.Image;
 import gnu.project.backend.product.entity.Option;
 import gnu.project.backend.product.entity.Studio;
 import gnu.project.backend.product.entity.Tag;
+import gnu.project.backend.product.enumerated.Region;
 import java.util.List;
 
 public record StudioResponse(
@@ -13,9 +14,11 @@ public record StudioResponse(
     String detail,
     Integer price,
     String availableTimes,
-    List<StudioResponse.ImageResponse> images,
-    List<StudioResponse.OptionResponse> options,
-    List<StudioResponse.TagResponse> tags
+    Region region,
+
+    List<ImageResponse> images,
+    List<OptionResponse> options,
+    List<TagResponse> tags
 ) {
 
     public static StudioResponse from(Studio studio) {
@@ -26,14 +29,15 @@ public record StudioResponse(
             studio.getDetail(),
             studio.getPrice(),
             studio.getAvailableTimes(),
+            studio.getRegion(),
             studio.getImages().stream()
-                .map(StudioResponse.ImageResponse::from)
+                .map(ImageResponse::from)
                 .toList(),
             studio.getOptions().stream()
-                .map(StudioResponse.OptionResponse::from)
+                .map(OptionResponse::from)
                 .toList(),
             studio.getTags().stream()
-                .map(StudioResponse.TagResponse::from)
+                .map(TagResponse::from)
                 .toList()
         );
     }

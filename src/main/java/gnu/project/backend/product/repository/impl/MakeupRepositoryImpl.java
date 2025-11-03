@@ -62,6 +62,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
             makeup.type,
             makeup.availableTimes,
             makeup.createdAt,
+            makeup.region,
             image.url
         );
     }

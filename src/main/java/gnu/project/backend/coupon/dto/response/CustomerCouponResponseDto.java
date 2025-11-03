@@ -2,7 +2,7 @@ package gnu.project.backend.coupon.dto.response;
 
 import gnu.project.backend.coupon.entity.Coupon;
 import gnu.project.backend.coupon.entity.CustomerCoupon;
-import gnu.project.backend.coupon.enumerated.UserCouponStatus;
+import gnu.project.backend.coupon.enumerated.CustomerCouponStatus;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,7 +12,7 @@ import lombok.Builder;
 public record CustomerCouponResponseDto(
     // CustomerCoupon 정보
     Long userCouponId,
-    UserCouponStatus status,
+    CustomerCouponStatus status,
     LocalDateTime downloadedAt,
     LocalDateTime usedAt,
 
@@ -41,7 +41,7 @@ public record CustomerCouponResponseDto(
         final LocalDate now = LocalDate.now();
 
         // 사용 가능 여부 판단
-        final boolean canUse = customerCoupon.getStatus() == UserCouponStatus.AVAILABLE
+        final boolean canUse = customerCoupon.getStatus() == CustomerCouponStatus.AVAILABLE
             && coupon.isUsable()
             && !now.isAfter(coupon.getExpirationDate());
 

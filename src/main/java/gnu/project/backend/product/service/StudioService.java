@@ -14,12 +14,9 @@ import gnu.project.backend.product.dto.request.StudioUpdateRequest;
 import gnu.project.backend.product.dto.response.StudioPageResponse;
 import gnu.project.backend.product.dto.response.StudioResponse;
 import gnu.project.backend.product.entity.Studio;
-import gnu.project.backend.product.provider.FileProvider;
-import gnu.project.backend.product.provider.OptionProvider;
-import gnu.project.backend.product.provider.TagProvider;
+import gnu.project.backend.product.helper.ProductHelper;
 import gnu.project.backend.product.repository.StudioRepository;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -30,17 +27,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class StudioService {
 
     private final StudioRepository studioRepository;
     private final OwnerRepository ownerRepository;
-    private final FileProvider fileProvider;
-    private final OptionProvider optionProvider;
-    private final TagProvider tagProvider;
+    private final ProductHelper productHelper;
 
-    private static void validOwner(Accessor accessor, Studio studio) {
-        if (!studio.getOwner().getSocialId().equals(accessor.getSocialId())) {
+    private static void validOwner(final Accessor accessor, final Studio studio) {
+        if (!studio.validOwner(accessor.getSocialId())) {
             throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
         }
     }
@@ -95,26 +91,21 @@ public class StudioService {
 
         validOwner(accessor, studio);
 
-        fileProvider.updateImages(
+        productHelper.updateProductEnrichment(
             studio,
             images,
             keepImagesId,
-            studio.getImages()
-        );
-        optionProvider.updateOptions(
-            studio,
-            request.options()
-        );
-        tagProvider.updateTags(
-            studio,
+            request.options(),
             request.tags()
         );
+
         studio.update(
             request.price(),
             request.address(),
             request.detail(),
             request.name(),
-            request.availableTimes()
+            request.availableTimes(),
+            request.region()
         );
         return StudioResponse.from(studio);
     }
@@ -132,13 +123,17 @@ public class StudioService {
                 request.address(),
                 request.detail(),
                 request.name(),
-                request.availableTimes()
+                request.availableTimes(),
+                request.region()
             )
         );
 
-        fileProvider.uploadAndSaveImages(savedStudio, images, new AtomicInteger(0));
-        optionProvider.createOptions(savedStudio, request.options());
-        tagProvider.createTag(savedStudio, request.tags());
+        productHelper.createProduct(
+            savedStudio,
+            images,
+            request.options(),
+            request.tags()
+        );
         return StudioResponse.from(savedStudio);
     }
 

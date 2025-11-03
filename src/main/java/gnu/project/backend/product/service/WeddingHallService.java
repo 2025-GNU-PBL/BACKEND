@@ -14,10 +14,9 @@ import gnu.project.backend.product.dto.response.WeddingHallPageResponse;
 import gnu.project.backend.product.dto.response.WeddingHallResponse;
 import gnu.project.backend.product.entity.WeddingHall;
 import gnu.project.backend.product.enumerated.Region;
-import gnu.project.backend.product.provider.FileProvider;
-import gnu.project.backend.product.provider.OptionProvider;
-import gnu.project.backend.product.provider.TagProvider;
+import gnu.project.backend.product.helper.ProductHelper;
 import gnu.project.backend.product.repository.WeddingHallRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,23 +26,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 @Service
 @RequiredArgsConstructor
 public class WeddingHallService {
 
     private final WeddingHallRepository weddingHallRepository;
     private final OwnerRepository ownerRepository;
-
-    private final FileProvider fileProvider;
-    private final OptionProvider optionProvider;
-    private final TagProvider tagProvider;
+    private final ProductHelper productHelper;
 
     private static void validateOwner(final Accessor accessor, final WeddingHall hall) {
-        final String resourceOwnerSocialId = hall.getOwner().getSocialId();
-        if (!resourceOwnerSocialId.equals(accessor.getSocialId())) {
+        if (!hall.validOwner(accessor.getSocialId())) {
             throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
         }
     }
@@ -140,9 +132,12 @@ public class WeddingHallService {
 
         final WeddingHall saved = weddingHallRepository.save(hall);
 
-        fileProvider.uploadAndSaveImages(saved, images, new AtomicInteger(0));
-        optionProvider.createOptions(saved, request.options());
-        tagProvider.createTag(saved, request.tags());
+        productHelper.createProduct(
+            hall,
+            images,
+            request.options(),
+            request.tags()
+        );
 
         return WeddingHallResponse.from(saved);
     }
@@ -163,20 +158,11 @@ public class WeddingHallService {
 
         validateOwner(accessor, hall);
 
-        fileProvider.updateImages(
+        productHelper.updateProductEnrichment(
             hall,
             newImages,
             keepImagesId,
-            hall.getImages()
-        );
-
-        optionProvider.updateOptions(
-            hall,
-            request.options()
-        );
-
-        tagProvider.updateTags(
-            hall,
+            request.options(),
             request.tags()
         );
 

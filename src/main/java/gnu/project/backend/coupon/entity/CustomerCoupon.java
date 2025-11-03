@@ -1,7 +1,7 @@
 package gnu.project.backend.coupon.entity;
 
 import gnu.project.backend.common.entity.BaseEntity;
-import gnu.project.backend.coupon.enumerated.UserCouponStatus;
+import gnu.project.backend.coupon.enumerated.CustomerCouponStatus;
 import gnu.project.backend.customer.entity.Customer;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,7 +43,7 @@ public class CustomerCoupon extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private UserCouponStatus status = UserCouponStatus.AVAILABLE;
+    private CustomerCouponStatus status = CustomerCouponStatus.AVAILABLE;
     @CreatedDate
     @Column(name = "downloaded_at", nullable = false, updatable = false)
     private LocalDateTime downloadedAt;
@@ -54,36 +54,36 @@ public class CustomerCoupon extends BaseEntity {
     private CustomerCoupon(
         Customer customer,
         Coupon coupon,
-        UserCouponStatus userCouponStatus
+        CustomerCouponStatus customerCouponStatus
     ) {
         this.customer = customer;
         this.coupon = coupon;
-        this.status = userCouponStatus;
+        this.status = customerCouponStatus;
     }
 
     public static CustomerCoupon ofCreate(
         final Customer customer,
         final Coupon coupon,
-        final UserCouponStatus userCouponStatus
+        final CustomerCouponStatus customerCouponStatus
     ) {
         return new CustomerCoupon(
             customer,
             coupon,
-            userCouponStatus
+            customerCouponStatus
         );
     }
 
 
     public void markAsUsed() {
-        this.status = UserCouponStatus.USED;
+        this.status = CustomerCouponStatus.USED;
         this.usedAt = LocalDateTime.now();
     }
 
     public void expire() {
-        this.status = UserCouponStatus.EXPIRED;
+        this.status = CustomerCouponStatus.EXPIRED;
     }
 
     public void cancel() {
-        this.status = UserCouponStatus.CANCELLED;
+        this.status = CustomerCouponStatus.CANCELLED;
     }
 }

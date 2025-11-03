@@ -18,11 +18,13 @@ import static gnu.project.backend.product.constant.ProductConstant.NAME_REQUIRED
 import static gnu.project.backend.product.constant.ProductConstant.OPTION_LIMIT;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_MIN;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_REQUIRED;
+import static gnu.project.backend.product.constant.ProductConstant.REGION_REQUIRE;
 import static gnu.project.backend.product.constant.ProductConstant.STYLE_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.STYLE_REQUIRED;
 import static gnu.project.backend.product.constant.ProductConstant.TYPE_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.TYPE_REQUIRED;
 
+import gnu.project.backend.product.enumerated.Region;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -58,6 +60,8 @@ public record MakeupUpdateRequest(
     @NotBlank(message = TYPE_REQUIRED)
     @Size(max = MAX_TYPE_LENGTH, message = TYPE_LENGTH)
     String type,
+    @NotNull(message = REGION_REQUIRE)
+    Region region,
 
     @Valid
     @Size(max = MAX_OPTION_COUNT, message = OPTION_LIMIT)

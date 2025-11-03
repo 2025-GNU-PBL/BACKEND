@@ -89,6 +89,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
                 studio.availableTime(),
                 studio.createdAt(),
                 studio.Thumbnail(),
+                studio.region(),
                 tagsMap.getOrDefault(studio.id(), List.of())
             ))
             .toList();
@@ -119,6 +120,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
             studio.availableTimes,
             studio.createdAt,
             image.url,
+            studio.region,
             Expressions.nullExpression(List.class)
         );
     }

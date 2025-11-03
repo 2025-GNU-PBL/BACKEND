@@ -1,6 +1,7 @@
 package gnu.project.backend.product.dto.response;
 
 import gnu.project.backend.product.dto.response.DressResponse.TagResponse;
+import gnu.project.backend.product.enumerated.Region;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,6 +15,7 @@ public record DressPageResponse(
     String availableTime,
     LocalDateTime createdAt,
     String Thumbnail,
+    Region region,
     List<TagResponse> tags
 ) {
 
