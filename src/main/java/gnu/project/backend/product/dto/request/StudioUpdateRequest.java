@@ -16,6 +16,7 @@ import static gnu.project.backend.product.constant.ProductConstant.NAME_REQUIRED
 import static gnu.project.backend.product.constant.ProductConstant.OPTION_LIMIT;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_MIN;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_REQUIRED;
+import static gnu.project.backend.product.constant.ProductConstant.REGION_REQUIRE;
 
 import gnu.project.backend.product.enumerated.Region;
 import jakarta.validation.Valid;
@@ -45,9 +46,9 @@ public record StudioUpdateRequest(
 
     @Size(max = MAX_AVAILABLE_TIMES, message = AVAILABLE_TIMES_LENGTH)
     String availableTimes,
-    @NotBlank
+    @NotNull(message = REGION_REQUIRE)
     Region region,
-    
+
     @Valid
     @Size(max = MAX_OPTION_COUNT, message = OPTION_LIMIT)
     List<OptionUpdateRequest> options,

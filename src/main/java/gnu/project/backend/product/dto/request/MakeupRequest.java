@@ -18,6 +18,7 @@ import static gnu.project.backend.product.constant.ProductConstant.NAME_REQUIRED
 import static gnu.project.backend.product.constant.ProductConstant.OPTION_LIMIT;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_MIN;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_REQUIRED;
+import static gnu.project.backend.product.constant.ProductConstant.REGION_REQUIRE;
 import static gnu.project.backend.product.constant.ProductConstant.STYLE_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.STYLE_REQUIRED;
 import static gnu.project.backend.product.constant.ProductConstant.TYPE_LENGTH;
@@ -59,7 +60,7 @@ public record MakeupRequest(
     @NotBlank(message = TYPE_REQUIRED)
     @Size(max = MAX_TYPE_LENGTH, message = TYPE_LENGTH)
     String type,
-    @NotBlank
+    @NotNull(message = REGION_REQUIRE)
     Region region,
     List<TagRequest> tags,
 

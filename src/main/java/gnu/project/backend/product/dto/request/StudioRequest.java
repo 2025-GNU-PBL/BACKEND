@@ -16,6 +16,7 @@ import static gnu.project.backend.product.constant.ProductConstant.NAME_REQUIRED
 import static gnu.project.backend.product.constant.ProductConstant.OPTION_LIMIT;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_MIN;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_REQUIRED;
+import static gnu.project.backend.product.constant.ProductConstant.REGION_REQUIRE;
 
 import gnu.project.backend.product.enumerated.Region;
 import jakarta.validation.Valid;
@@ -46,7 +47,7 @@ public record StudioRequest(
     String availableTimes,
 
     List<TagRequest> tags,
-    @NotBlank
+    @NotNull(message = REGION_REQUIRE)
     Region region,
 
     @Valid
