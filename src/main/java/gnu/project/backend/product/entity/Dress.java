@@ -25,8 +25,7 @@ public class Dress extends Product {
 
     private Dress(Owner owner, Integer price, String address, String detail,
         String name, String availableTimes) {
-        super(owner, Category.DRESS, price, address, detail, name);
-        this.availableTimes = availableTimes;
+        super(owner, Category.DRESS, price, address, detail, name, availableTimes);
     }
 
     public static Dress create(Owner owner, Integer price, String address,
@@ -41,8 +40,7 @@ public class Dress extends Product {
         final String name,
         final String availableTimes
     ) {
-        super.updateProduct(price, address, detail, name);
-        this.availableTimes = availableTimes;
+        super.updateProduct(price, address, detail, name, availableTimes);
     }
 
 }

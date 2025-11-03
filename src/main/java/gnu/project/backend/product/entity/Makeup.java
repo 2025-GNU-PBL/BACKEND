@@ -31,9 +31,8 @@ public class Makeup extends Product {
 
     private Makeup(Owner owner, Integer price, String address, String detail,
         String name, String style, String availableTimes, String type) {
-        super(owner, Category.MAKEUP, price, address, detail, name);
+        super(owner, Category.MAKEUP, price, address, detail, name, availableTimes);
         this.style = style;
-        this.availableTimes = availableTimes;
         this.type = type;
     }
 
@@ -51,9 +50,8 @@ public class Makeup extends Product {
         final String availableTimes,
         final String type
     ) {
-        super.updateProduct(price, address, detail, name);
+        super.updateProduct(price, address, detail, name, availableTimes);
         this.style = style;
-        this.availableTimes = availableTimes;
         this.type = type;
     }
 

@@ -22,11 +22,8 @@ public class ProductEnrichmentService {
     private final OptionProvider optionProvider;
     private final TagProvider tagProvider;
 
-    /**
-     * 상품 생성 시 이미지/옵션/태그 일괄 처리
-     */
     @Transactional
-    public void enrichNewProduct(
+    public void createProduct(
         Product product,
         List<MultipartFile> images,
         List<OptionCreateRequest> options,
@@ -37,9 +34,6 @@ public class ProductEnrichmentService {
         processTags(product, tags);
     }
 
-    /**
-     * 상품 수정 시 이미지/옵션/태그 일괄 처리
-     */
     @Transactional
     public void updateProductEnrichment(
         Product product,

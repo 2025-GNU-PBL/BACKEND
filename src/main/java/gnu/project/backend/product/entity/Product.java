@@ -80,21 +80,27 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tag> tags = new ArrayList<>();
 
+    @Column
+    private String availableTimes;
+
     protected Product(Owner owner, Category category, Integer price,
-        String address, String detail, String name) {
+        String address, String detail, String name, String availableTimes) {
         this.owner = owner;
         this.category = category;
         this.price = price;
         this.address = address;
         this.detail = detail;
         this.name = name;
+        this.availableTimes = availableTimes;
     }
 
-    protected void updateProduct(Integer price, String address, String detail, String name) {
+    protected void updateProduct(Integer price, String address, String detail, String name,
+        String availableTimes) {
         this.price = price;
         this.address = address;
         this.detail = detail;
         this.name = name;
+        this.availableTimes = availableTimes;
     }
 
     public void addImage(final Image image) {

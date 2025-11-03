@@ -35,41 +35,29 @@ VALUES (5, 'https://cdn.example.com/owner1.jpg', '청담 뷰티샵', 35, '010-12
 
 
 INSERT INTO product (id, owner_id, product_type, category, price, address, detail, star_count,
-                     average_rating, name, created_at, updated_at)
+                     average_rating, name, created_at, updated_at, available_times)
 VALUES (1, 5, 'MAKEUP', 'MAKEUP', 150000, '서울 강남구', '자연스러운 웨딩 메이크업', 4.5, 45,
-        'Romantic Wedding Makeup', NOW(), NOW()),
+        'Romantic Wedding Makeup', NOW(), NOW(), '09:00, 11:00, 14:00'),
        (2, 5, 'MAKEUP', 'MAKEUP', 180000, '서울 서초구', '고전적인 느낌의 신부 메이크업', 4.8, 48,
-        'Classic Bridal Makeup', NOW(), NOW()),
+        'Classic Bridal Makeup', NOW(), NOW(), '09:00, 11:00, 14:00'),
        (3, 6, 'MAKEUP', 'MAKEUP', 130000, '서울 송파구', '트렌디한 스타일', 4.2, 42, 'Modern Chic Makeup',
-        NOW(), NOW()),
+        NOW(), NOW(), '09:00, 11:00, 14:00'),
        (4, 6, 'MAKEUP', 'MAKEUP', 200000, '서울 종로구', '럭셔리한 스튜디오 전용', 4.9, 49, 'Luxury Studio Makeup',
-        NOW(), NOW()),
+        NOW(), NOW(), '09:00, 11:00, 14:00'),
        (5, 7, 'MAKEUP', 'MAKEUP', 80000, '부산 해운대구', '데일리 내추럴 메이크업', 4.1, 41, 'Natural Daily Makeup',
-        NOW(), NOW()),
+        NOW(), NOW(), '09:00, 11:00, 14:00'),
        (6, 7, 'MAKEUP', 'MAKEUP', 120000, '부산 수영구', '화려한 파티 전용', 4.6, 46, 'Glam Party Makeup',
-        NOW(), NOW()),
+        NOW(), NOW(), '09:00, 11:00, 14:00'),
        (7, 8, 'MAKEUP', 'MAKEUP', 110000, '서울 마포구', '부드럽고 은은한 파스텔톤', 4.3, 43, 'Soft Pastel Makeup',
-        NOW(), NOW()),
+        NOW(), NOW(), '09:00, 11:00, 14:00'),
        (8, 8, 'MAKEUP', 'MAKEUP', 90000, '서울 영등포구', '직장인 전용 메이크업', 4.4, 44, 'Elegant Office Makeup',
-        NOW(), NOW()),
+        NOW(), NOW(), '09:00, 11:00, 14:00'),
        (9, 9, 'MAKEUP', 'MAKEUP', 160000, '서울 용산구', '드라마 스타일 재현', 4.7, 47, 'K-Drama Makeup', NOW(),
-        NOW()),
+        NOW(), '09:00, 11:00, 14:00'),
        (10, 9, 'MAKEUP', 'MAKEUP', 140000, '서울 종로구', '한복 전용 메이크업', 4.5, 45,
-        'Traditional Korean Makeup', NOW(), NOW());
+        'Traditional Korean Makeup', NOW(), NOW(), '09:00, 11:00, 14:00');
 
 
-
-INSERT INTO makeup (id, style, type, available_times)
-VALUES (1, 'romantic', 'wedding', '09:00, 11:00, 14:00'),
-       (2, 'classic', 'wedding', '10:00, 13:00, 16:00'),
-       (3, 'modern', 'daily', '09:30, 12:00, 15:00'),
-       (4, 'luxury', 'studio', '11:00, 14:00, 17:00'),
-       (5, 'natural', 'daily', '08:30, 11:30, 14:30'),
-       (6, 'glam', 'party', '12:00, 15:00, 18:00'),
-       (7, 'soft', 'daily', '09:00, 13:00, 16:00'),
-       (8, 'elegant', 'office', '08:00, 10:30, 14:00'),
-       (9, 'kdrama', 'studio', '11:00, 15:00, 19:00'),
-       (10, 'traditional', 'wedding', '10:00, 13:30, 17:00');
 
 INSERT INTO image (id, product_id, url, s3key, display_order, created_at, updated_at)
 VALUES (1, 1, 'https://cdn.example.com/makeup/1_thumb.jpg', 'makeup/1_thumb.jpg', 0, NOW(), NOW()),

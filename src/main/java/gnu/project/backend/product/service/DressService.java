@@ -14,12 +14,8 @@ import gnu.project.backend.product.dto.request.DressUpdateRequest;
 import gnu.project.backend.product.dto.response.DressPageResponse;
 import gnu.project.backend.product.dto.response.DressResponse;
 import gnu.project.backend.product.entity.Dress;
-import gnu.project.backend.product.provider.FileProvider;
-import gnu.project.backend.product.provider.OptionProvider;
-import gnu.project.backend.product.provider.TagProvider;
 import gnu.project.backend.product.repository.DressRepository;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -35,9 +31,7 @@ public class DressService {
 
     private final DressRepository dressRepository;
     private final OwnerRepository ownerRepository;
-    private final FileProvider fileProvider;
-    private final OptionProvider optionProvider;
-    private final TagProvider tagProvider;
+    private final ProductEnrichmentService productEnrichmentService;
 
     private static void validOwner(Accessor accessor, Dress dress) {
         if (!dress.getOwner().getSocialId().equals(accessor.getSocialId())) {
@@ -95,20 +89,14 @@ public class DressService {
 
         validOwner(accessor, dress);
 
-        fileProvider.updateImages(
+        productEnrichmentService.updateProductEnrichment(
             dress,
             images,
             keepImagesId,
-            dress.getImages()
-        );
-        optionProvider.updateOptions(
-            dress,
-            request.options()
-        );
-        tagProvider.updateTags(
-            dress,
+            request.options(),
             request.tags()
         );
+
         dress.update(
             request.price(),
             request.address(),
@@ -136,9 +124,13 @@ public class DressService {
             )
         );
 
-        fileProvider.uploadAndSaveImages(savedDress, images, new AtomicInteger(0));
-        optionProvider.createOptions(savedDress, request.options());
-        tagProvider.createTag(savedDress, request.tags());
+        productEnrichmentService.createProduct(
+            savedDress,
+            images,
+            request.options(),
+            request.tags()
+        );
+
         return DressResponse.from(savedDress);
     }
 

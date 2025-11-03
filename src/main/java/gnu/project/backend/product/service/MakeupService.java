@@ -13,12 +13,8 @@ import gnu.project.backend.product.dto.request.MakeupUpdateRequest;
 import gnu.project.backend.product.dto.response.MakeupPageResponse;
 import gnu.project.backend.product.dto.response.MakeupResponse;
 import gnu.project.backend.product.entity.Makeup;
-import gnu.project.backend.product.provider.FileProvider;
-import gnu.project.backend.product.provider.OptionProvider;
-import gnu.project.backend.product.provider.TagProvider;
 import gnu.project.backend.product.repository.MakeupRepository;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -35,9 +31,7 @@ public class MakeupService {
 
     private final MakeupRepository makeupRepository;
     private final OwnerRepository ownerRepository;
-    private final FileProvider fileProvider;
-    private final OptionProvider optionProvider;
-    private final TagProvider tagProvider;
+    private final ProductEnrichmentService productEnrichmentService;
 
     @Transactional(readOnly = true)
     public MakeupResponse read(
@@ -92,19 +86,12 @@ public class MakeupService {
         if (!makeup.getOwner().getSocialId().equals(accessor.getSocialId())) {
             throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
         }
-        fileProvider.updateImages(
+
+        productEnrichmentService.updateProductEnrichment(
             makeup,
             images,
             keepImagesId,
-            makeup.getImages()
-        );
-
-        optionProvider.updateOptions(
-            makeup,
-            request.options()
-        );
-        tagProvider.updateTags(
-            makeup,
+            request.options(),
             request.tags()
         );
 
@@ -139,9 +126,12 @@ public class MakeupService {
             )
         );
 
-        fileProvider.uploadAndSaveImages(savedMakeup, images, new AtomicInteger(0));
-        optionProvider.createOptions(savedMakeup, request.options());
-        tagProvider.createTag(savedMakeup, request.tags());
+        productEnrichmentService.createProduct(
+            savedMakeup,
+            images,
+            request.options(),
+            request.tags()
+        );
         return MakeupResponse.from(savedMakeup);
     }
 
