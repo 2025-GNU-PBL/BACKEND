@@ -3,7 +3,6 @@ package gnu.project.backend.product.entity;
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.Region;
-import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -20,9 +19,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Dress extends Product {
 
-
-    @Column
-    private String availableTimes;
 
     private Dress(Owner owner, Integer price, String address, String detail,
         String name, String availableTimes, Region region) {

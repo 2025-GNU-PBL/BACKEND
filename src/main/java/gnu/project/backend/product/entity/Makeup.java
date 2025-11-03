@@ -24,8 +24,6 @@ public class Makeup extends Product {
     @Column
     private String style;
 
-    @Column
-    private String availableTimes;
 
     @Column
     private String type;
