@@ -34,6 +34,12 @@ public class MakeupService {
     private final OwnerRepository ownerRepository;
     private final ProductHelper productHelper;
 
+    private static void validOwner(final Accessor accessor, final Makeup makeup) {
+        if (!makeup.validOwner(accessor.getSocialId())) {
+            throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
+        }
+    }
+
     @Transactional(readOnly = true)
     public MakeupResponse read(
         final Long id
@@ -64,9 +70,8 @@ public class MakeupService {
                 () -> new BusinessException(MAKEUP_NOT_FOUND_EXCEPTION)
             );
 
-        if (!makeup.getOwner().getSocialId().equals(accessor.getSocialId())) {
-            throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
-        }
+        validOwner(accessor, makeup);
+
         makeup.delete();
 
         return MAKEUP_DELETE_SUCCESS;
@@ -84,9 +89,7 @@ public class MakeupService {
                 () -> new BusinessException(MAKEUP_NOT_FOUND_EXCEPTION)
             );
 
-        if (!makeup.getOwner().getSocialId().equals(accessor.getSocialId())) {
-            throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
-        }
+        validOwner(accessor, makeup);
 
         productHelper.updateProductEnrichment(
             makeup,

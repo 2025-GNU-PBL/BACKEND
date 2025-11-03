@@ -35,8 +35,8 @@ public class StudioService {
     private final OwnerRepository ownerRepository;
     private final ProductHelper productHelper;
 
-    private static void validOwner(Accessor accessor, Studio studio) {
-        if (!studio.getOwner().getSocialId().equals(accessor.getSocialId())) {
+    private static void validOwner(final Accessor accessor, final Studio studio) {
+        if (!studio.validOwner(accessor.getSocialId())) {
             throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
         }
     }

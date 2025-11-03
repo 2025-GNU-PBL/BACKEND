@@ -35,8 +35,7 @@ public class WeddingHallService {
     private final ProductHelper productHelper;
 
     private static void validateOwner(final Accessor accessor, final WeddingHall hall) {
-        final String resourceOwnerSocialId = hall.getOwner().getSocialId();
-        if (!resourceOwnerSocialId.equals(accessor.getSocialId())) {
+        if (!hall.validOwner(accessor.getSocialId())) {
             throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
         }
     }

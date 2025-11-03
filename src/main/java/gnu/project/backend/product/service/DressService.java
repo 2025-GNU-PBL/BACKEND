@@ -1,7 +1,6 @@
 package gnu.project.backend.product.service;
 
 import static gnu.project.backend.common.error.ErrorCode.DRESS_NOT_FOUND_EXCEPTION;
-import static gnu.project.backend.common.error.ErrorCode.MAKEUP_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.common.error.ErrorCode.OWNER_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.product.constant.ProductConstant.DRESS_DELETE_SUCCESS;
 
@@ -36,7 +35,7 @@ public class DressService {
     private final ProductHelper productHelper;
 
     private static void validOwner(Accessor accessor, Dress dress) {
-        if (!dress.getOwner().getSocialId().equals(accessor.getSocialId())) {
+        if (!dress.validOwner(accessor.getSocialId())) {
             throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
         }
     }
@@ -68,7 +67,7 @@ public class DressService {
     ) {
         final Dress dress = dressRepository.findById(id)
             .orElseThrow(
-                () -> new BusinessException(MAKEUP_NOT_FOUND_EXCEPTION)
+                () -> new BusinessException(DRESS_NOT_FOUND_EXCEPTION)
             );
 
         validOwner(accessor, dress);
