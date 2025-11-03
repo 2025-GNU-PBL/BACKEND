@@ -89,6 +89,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
                 dress.availableTime(),
                 dress.createdAt(),
                 dress.Thumbnail(),
+                dress.region(),
                 tagsMap.getOrDefault(dress.id(), List.of())
             ))
             .toList();
@@ -119,6 +120,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
             dress.availableTimes,
             dress.createdAt,
             image.url,
+            dress.region,
             Expressions.nullExpression(List.class)
         );
     }

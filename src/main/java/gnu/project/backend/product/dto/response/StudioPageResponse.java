@@ -16,7 +16,6 @@ public record StudioPageResponse(
     LocalDateTime createdAt,
     String Thumbnail,
     Region region,
-    
     List<TagResponse> tags
 ) {
 
