@@ -163,22 +163,22 @@ public class Customer extends BaseEntity implements OauthUser {
         final String weddingSigungu,
         final LocalDate weddingDate
     ) {
-        this.age = age;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
+        if (age != null) this.age = age;
+        if (phoneNumber != null) this.phoneNumber = phoneNumber;
+        if (address != null) this.address = address;
 
-        this.zipCode = zipCode;
-        this.roadAddress = roadAddress;
-        this.jibunAddress = jibunAddress;
-        this.detailAddress = detailAddress;
-        this.sido = sido;
-        this.sigungu = sigungu;
-        this.dong = dong;
-        this.buildingName = buildingName;
+        if (zipCode != null) this.zipCode = zipCode;
+        if (roadAddress != null) this.roadAddress = roadAddress;
+        if (jibunAddress != null) this.jibunAddress = jibunAddress;
+        if (detailAddress != null) this.detailAddress = detailAddress;
+        if (sido != null) this.sido = sido;
+        if (sigungu != null) this.sigungu = sigungu;
+        if (dong != null) this.dong = dong;
+        if (buildingName != null) this.buildingName = buildingName;
 
-        this.weddingSido = weddingSido;
-        this.weddingSigungu = weddingSigungu;
-        this.weddingDate = weddingDate;
+        if (weddingSido != null) this.weddingSido = weddingSido;
+        if (weddingSigungu != null) this.weddingSigungu = weddingSigungu;
+        if (weddingDate != null) this.weddingDate = weddingDate;
     }
 
     public void withdraw() {
