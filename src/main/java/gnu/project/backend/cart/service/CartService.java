@@ -1,5 +1,11 @@
 package gnu.project.backend.cart.service;
 
+import static gnu.project.backend.common.error.ErrorCode.AUTH_FORBIDDEN;
+import static gnu.project.backend.common.error.ErrorCode.CART_ITEM_NOT_FOUND;
+import static gnu.project.backend.common.error.ErrorCode.CUSTOMER_NOT_FOUND_EXCEPTION;
+import static gnu.project.backend.common.error.ErrorCode.OPTION_NOT_FOUND_EXCEPTION;
+import static gnu.project.backend.common.error.ErrorCode.PRODUCT_NOT_FOUND_EXCEPTION;
+
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.cart.dto.request.CartAddRequest;
 import gnu.project.backend.cart.dto.request.CartBulkDeleteRequest;
@@ -21,13 +27,10 @@ import gnu.project.backend.product.repository.ProductRepository;
 import gnu.project.backend.reservation.entity.Reservation;
 import gnu.project.backend.reservation.enumerated.Status;
 import gnu.project.backend.reservation.repository.ReservationRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static gnu.project.backend.common.error.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -43,12 +46,12 @@ public class CartService {
 
     private Customer getCurrentCustomer(Accessor accessor) {
         return customerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
-                .orElseThrow(() -> new BusinessException(CUSTOMER_NOT_FOUND_EXCEPTION));
+            .orElseThrow(() -> new BusinessException(CUSTOMER_NOT_FOUND_EXCEPTION));
     }
 
     private Cart getOrCreateCart(Customer customer) {
         return cartRepository.findByCustomer_Id(customer.getId())
-                .orElseGet(() -> cartRepository.save(Cart.create(customer)));
+            .orElseGet(() -> cartRepository.save(Cart.create(customer)));
     }
 
     @Transactional
@@ -57,23 +60,23 @@ public class CartService {
         Cart cart = getOrCreateCart(customer);
 
         Product product = productRepository.findById(request.productId())
-                .orElseThrow(() -> new BusinessException(PRODUCT_NOT_FOUND_EXCEPTION));
+            .orElseThrow(() -> new BusinessException(PRODUCT_NOT_FOUND_EXCEPTION));
 
         Option option = null;
         if (request.optionId() != null && request.optionId() != 0) {   // 프론트가 0 보내는 케이스 방지
             option = optionRepository.findById(request.optionId())
-                    .orElseThrow(() -> new BusinessException(OPTION_NOT_FOUND_EXCEPTION));
+                .orElseThrow(() -> new BusinessException(OPTION_NOT_FOUND_EXCEPTION));
         }
 
         int qty = (request.quantity() != null && request.quantity() > 0)
-                ? request.quantity()
-                : 1;
+            ? request.quantity()
+            : 1;
 
         CartItem sameItem = cartItemRepository.findSameItem(
-                cart.getId(),
-                request.productId(),
-                request.optionId(),
-                request.desireDate()
+            cart.getId(),
+            request.productId(),
+            request.optionId(),
+            request.desireDate()
         );
         if (sameItem != null) {
             sameItem.updateQuantity(sameItem.getQuantity() + qty);
@@ -81,12 +84,12 @@ public class CartService {
         }
 
         CartItem cartItem = CartItem.create(
-                cart,
-                product,
-                option,
-                qty,
-                request.desireDate(),
-                request.memo()
+            cart,
+            product,
+            option,
+            qty,
+            request.desireDate(),
+            request.memo()
         );
 
         cartItemRepository.save(cartItem);
@@ -98,35 +101,36 @@ public class CartService {
         List<CartItem> items = cartItemRepository.findAllByCustomerSocialId(socialId);
 
         List<CartItemResponse> responses = items.stream()
-                .map(CartItemResponse::from)
-                .toList();
-
+            .map(CartItemResponse::from)
+            .toList();
+        // TODO 메서드 처리
         int totalProductAmount = items.stream()
-                .filter(CartItem::isSelected)
-                .mapToInt(i -> i.getProduct().getPrice() * i.getQuantity())
-                .sum();
+            .filter(CartItem::isSelected)
+            .mapToInt(i -> i.getProduct().getPrice() * i.getQuantity())
+            .sum();
 
         int totalDiscountAmount = 0;
         int paymentAmount = totalProductAmount - totalDiscountAmount;
 
         return new CartSummaryResponse(
-                responses,
-                totalProductAmount,
-                totalDiscountAmount,
-                paymentAmount
+            responses,
+            totalProductAmount,
+            totalDiscountAmount,
+            paymentAmount
         );
     }
 
     @Transactional
     public void updateCartItem(
-            Long cartItemId,
-            Accessor accessor,
-            CartItemUpdateRequest request
+        Long cartItemId,
+        Accessor accessor,
+        CartItemUpdateRequest request
     ) {
         Customer current = getCurrentCustomer(accessor);
 
+        //TODO : N+1 문제해결
         CartItem item = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new BusinessException(CART_ITEM_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(CART_ITEM_NOT_FOUND));
 
         if (!item.getCart().getCustomer().getId().equals(current.getId())) {
             throw new AuthException(AUTH_FORBIDDEN);
@@ -144,7 +148,7 @@ public class CartService {
     public void deleteCartItem(Long cartItemId, Accessor accessor) {
         Customer current = getCurrentCustomer(accessor);
         CartItem item = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new BusinessException(CART_ITEM_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(CART_ITEM_NOT_FOUND));
         if (!item.getCart().getCustomer().getId().equals(current.getId())) {
             throw new AuthException(AUTH_FORBIDDEN);
         }
@@ -174,11 +178,11 @@ public class CartService {
         Customer customer = getCurrentCustomer(accessor);
 
         List<CartItem> selectedItems =
-                cartItemRepository.findSelectedByCustomerSocialId(accessor.getSocialId());
+            cartItemRepository.findSelectedByCustomerSocialId(accessor.getSocialId());
 
         for (CartItem item : selectedItems) {
             var product = item.getProduct();
-
+            //TODO : Product 로 변경
             StringBuilder contentBuilder = new StringBuilder();
 
             if (item.getOption() != null) {
@@ -190,15 +194,15 @@ public class CartService {
                 }
                 contentBuilder.append(item.getMemo());
             }
-
+            //TODO : 이벤트기반으로 구현
             Reservation reservation = Reservation.ofCreate(
-                    product.getOwner(),
-                    customer,
-                    product,
-                    Status.PENDING,
-                    item.getDesireDate() != null ? item.getDesireDate().toLocalDate() : null,
-                    product.getName(),
-                    contentBuilder.length() > 0 ? contentBuilder.toString() : null
+                product.getOwner(),
+                customer,
+                product,
+                Status.PENDING,
+                item.getDesireDate() != null ? item.getDesireDate().toLocalDate() : null,
+                product.getName(),
+                contentBuilder.length() > 0 ? contentBuilder.toString() : null
             );
 
             reservationRepository.save(reservation);
