@@ -9,6 +9,8 @@ import gnu.project.backend.common.enumerated.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "Customer")
 @Getter
@@ -34,6 +36,39 @@ public class Customer extends BaseEntity implements OauthUser {
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
+    @Column(name = "zip_code", length = 10)
+    private String zipCode;
+
+    @Column(name = "road_address", length = 255)
+    private String roadAddress;
+
+    @Column(name = "jibun_address", length = 255)
+    private String jibunAddress;
+
+    @Column(name = "detail_address", length = 255)
+    private String detailAddress;
+
+    @Column(name = "sido", length = 30)
+    private String sido;
+
+    @Column(name = "sigungu", length = 50)
+    private String sigungu;
+
+    @Column(name = "dong", length = 50)
+    private String dong;
+
+    @Column(name = "building_name", length = 100)
+    private String buildingName;
+
+    @Column(name = "wedding_sido")
+    private String weddingSido;
+
+    @Column(name = "wedding_sigungu")
+    private String weddingSigungu;
+
+    @Column(name = "wedding_date")
+    private LocalDate weddingDate;
+
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -57,6 +92,17 @@ public class Customer extends BaseEntity implements OauthUser {
             null,
             null,
             false,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
             UserRole.CUSTOMER,
             oauthInfo
 
@@ -66,21 +112,73 @@ public class Customer extends BaseEntity implements OauthUser {
     public void signUp(
         final Short age,
         final String phoneNumber,
-        final String address
+        final String address,
+
+        final String zipCode,
+        final String roadAddress,
+        final String jibunAddress,
+        final String detailAddress,
+        final String sido,
+        final String sigungu,
+        final String dong,
+        final String buildingName,
+
+        final String weddingSido,
+        final String weddingSigungu,
+        final LocalDate weddingDate
     ) {
         this.age = age;
         this.phoneNumber = phoneNumber;
         this.address = address;
+
+        this.zipCode = zipCode;
+        this.roadAddress = roadAddress;
+        this.jibunAddress = jibunAddress;
+        this.detailAddress = detailAddress;
+        this.sido = sido;
+        this.sigungu = sigungu;
+        this.dong = dong;
+        this.buildingName = buildingName;
+
+        this.weddingSido = weddingSido;
+        this.weddingSigungu = weddingSigungu;
+        this.weddingDate = weddingDate;
     }
 
     public void updateProfile(
         final Short age,
         final String phoneNumber,
-        final String address
+        final String address,
+
+        final String zipCode,
+        final String roadAddress,
+        final String jibunAddress,
+        final String detailAddress,
+        final String sido,
+        final String sigungu,
+        final String dong,
+        final String buildingName,
+
+        final String weddingSido,
+        final String weddingSigungu,
+        final LocalDate weddingDate
     ) {
         this.age = age;
         this.phoneNumber = phoneNumber;
         this.address = address;
+
+        this.zipCode = zipCode;
+        this.roadAddress = roadAddress;
+        this.jibunAddress = jibunAddress;
+        this.detailAddress = detailAddress;
+        this.sido = sido;
+        this.sigungu = sigungu;
+        this.dong = dong;
+        this.buildingName = buildingName;
+
+        this.weddingSido = weddingSido;
+        this.weddingSigungu = weddingSigungu;
+        this.weddingDate = weddingDate;
     }
 
     public void withdraw() {
@@ -88,6 +186,19 @@ public class Customer extends BaseEntity implements OauthUser {
         this.phoneNumber = null;
         this.address = null;
         this.age = null;
+
+        this.zipCode = null;
+        this.roadAddress = null;
+        this.jibunAddress = null;
+        this.detailAddress = null;
+        this.sido = null;
+        this.sigungu = null;
+        this.dong = null;
+        this.buildingName = null;
+
+        this.weddingSido = null;
+        this.weddingSigungu = null;
+        this.weddingDate = null;
     }
 
     public void reactivate() {
@@ -100,7 +211,6 @@ public class Customer extends BaseEntity implements OauthUser {
 
     @Override
     public UserRole getUserRole() {
-        // DB에 userRole 필드 이미 있으니까 그걸 그대로 반환해주면 돼
         return this.userRole != null ? this.userRole : UserRole.CUSTOMER;
     }
 
