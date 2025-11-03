@@ -104,7 +104,8 @@ public class StudioService {
             request.address(),
             request.detail(),
             request.name(),
-            request.availableTimes()
+            request.availableTimes(),
+            request.region()
         );
         return StudioResponse.from(studio);
     }
@@ -122,7 +123,8 @@ public class StudioService {
                 request.address(),
                 request.detail(),
                 request.name(),
-                request.availableTimes()
+                request.availableTimes(),
+                request.region()
             )
         );
 

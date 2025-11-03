@@ -103,7 +103,8 @@ public class MakeupService {
             request.name(),
             request.style(),
             request.availableTimes(),
-            request.type()
+            request.type(),
+            request.region()
         );
         return MakeupResponse.from(makeup);
     }
@@ -123,7 +124,8 @@ public class MakeupService {
                 request.name(),
                 request.style(),
                 request.availableTimes(),
-                request.type()
+                request.type(),
+                request.region()
             )
         );
 

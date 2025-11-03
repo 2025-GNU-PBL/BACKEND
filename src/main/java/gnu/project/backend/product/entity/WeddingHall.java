@@ -7,8 +7,6 @@ import gnu.project.backend.product.enumerated.Region;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -46,9 +44,6 @@ public class WeddingHall extends Product {
     @Column(name = "reservation_policy")
     private String reservationPolicy;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "region", nullable = false, length = 20)
-    private Region region;
 
     private WeddingHall(
         Owner owner,
@@ -73,7 +68,8 @@ public class WeddingHall extends Product {
             address,
             detail,
             name,
-            availableTimes
+            availableTimes,
+            region
         );
         this.capacity = capacity;
         this.minGuest = minGuest;
@@ -82,7 +78,6 @@ public class WeddingHall extends Product {
         this.parkingCapacity = parkingCapacity;
         this.cateringType = cateringType;
         this.reservationPolicy = reservationPolicy;
-        this.region = region;
     }
 
     public static WeddingHall create(
@@ -134,7 +129,7 @@ public class WeddingHall extends Product {
         String reservationPolicy,
         Region region
     ) {
-        super.updateProduct(price, address, detail, name, availableTimes);
+        super.updateProduct(price, address, detail, name, availableTimes, region);
         this.capacity = capacity;
         this.minGuest = minGuest;
         this.maxGuest = maxGuest;
@@ -142,7 +137,6 @@ public class WeddingHall extends Product {
         this.parkingCapacity = parkingCapacity;
         this.cateringType = cateringType;
         this.reservationPolicy = reservationPolicy;
-        this.region = region;
     }
 
 

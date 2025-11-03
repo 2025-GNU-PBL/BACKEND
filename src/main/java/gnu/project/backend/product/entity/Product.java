@@ -3,6 +3,7 @@ package gnu.project.backend.product.entity;
 import gnu.project.backend.common.entity.BaseEntity;
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.product.enumerated.Category;
+import gnu.project.backend.product.enumerated.Region;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -68,6 +69,13 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
+    @Column
+    private String availableTimes;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Region region;
+
     @BatchSize(size = 100)
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options = new ArrayList<>();
@@ -80,11 +88,9 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tag> tags = new ArrayList<>();
 
-    @Column
-    private String availableTimes;
 
     protected Product(Owner owner, Category category, Integer price,
-        String address, String detail, String name, String availableTimes) {
+        String address, String detail, String name, String availableTimes, Region region) {
         this.owner = owner;
         this.category = category;
         this.price = price;
@@ -92,15 +98,17 @@ public class Product extends BaseEntity {
         this.detail = detail;
         this.name = name;
         this.availableTimes = availableTimes;
+        this.region = region;
     }
 
     protected void updateProduct(Integer price, String address, String detail, String name,
-        String availableTimes) {
+        String availableTimes, Region region) {
         this.price = price;
         this.address = address;
         this.detail = detail;
         this.name = name;
         this.availableTimes = availableTimes;
+        this.region = region;
     }
 
     public void addImage(final Image image) {

@@ -4,6 +4,7 @@ package gnu.project.backend.product.dto.response;
 import gnu.project.backend.product.entity.Image;
 import gnu.project.backend.product.entity.Makeup;
 import gnu.project.backend.product.entity.Option;
+import gnu.project.backend.product.enumerated.Region;
 import java.util.List;
 
 public record MakeupResponse(
@@ -15,6 +16,8 @@ public record MakeupResponse(
     Integer price,
     String type,
     String availableTimes,
+    Region region,
+
     List<ImageResponse> images,
     List<OptionResponse> options
 ) {
@@ -29,6 +32,7 @@ public record MakeupResponse(
             makeup.getPrice(),
             makeup.getType(),
             makeup.getAvailableTimes(),
+            makeup.getRegion(),
             makeup.getImages().stream()
                 .map(ImageResponse::from)
                 .toList(),

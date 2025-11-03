@@ -17,6 +17,7 @@ import static gnu.project.backend.product.constant.ProductConstant.OPTION_LIMIT;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_MIN;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_REQUIRED;
 
+import gnu.project.backend.product.enumerated.Region;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -43,6 +44,9 @@ public record DressRequest(
 
     @Size(max = MAX_AVAILABLE_TIMES, message = AVAILABLE_TIMES_LENGTH)
     String availableTimes,
+
+    @NotBlank
+    Region region,
 
     List<TagRequest> tags,
 

@@ -104,7 +104,8 @@ public class DressService {
             request.address(),
             request.detail(),
             request.name(),
-            request.availableTimes()
+            request.availableTimes(),
+            request.region()
         );
         return DressResponse.from(dress);
     }
@@ -122,7 +123,8 @@ public class DressService {
                 request.address(),
                 request.detail(),
                 request.name(),
-                request.availableTimes()
+                request.availableTimes(),
+                request.region()
             )
         );
 

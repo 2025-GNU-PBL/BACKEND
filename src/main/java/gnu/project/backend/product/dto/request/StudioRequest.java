@@ -17,6 +17,7 @@ import static gnu.project.backend.product.constant.ProductConstant.OPTION_LIMIT;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_MIN;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_REQUIRED;
 
+import gnu.project.backend.product.enumerated.Region;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -45,6 +46,8 @@ public record StudioRequest(
     String availableTimes,
 
     List<TagRequest> tags,
+    @NotBlank
+    Region region,
 
     @Valid
     @Size(max = MAX_OPTION_COUNT, message = OPTION_LIMIT)
