@@ -14,6 +14,7 @@ import gnu.project.backend.product.dto.request.DressUpdateRequest;
 import gnu.project.backend.product.dto.response.DressPageResponse;
 import gnu.project.backend.product.dto.response.DressResponse;
 import gnu.project.backend.product.entity.Dress;
+import gnu.project.backend.product.helper.ProductHelper;
 import gnu.project.backend.product.repository.DressRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class DressService {
 
     private final DressRepository dressRepository;
     private final OwnerRepository ownerRepository;
-    private final ProductEnrichmentService productEnrichmentService;
+    private final ProductHelper productHelper;
 
     private static void validOwner(Accessor accessor, Dress dress) {
         if (!dress.getOwner().getSocialId().equals(accessor.getSocialId())) {
@@ -89,7 +90,7 @@ public class DressService {
 
         validOwner(accessor, dress);
 
-        productEnrichmentService.updateProductEnrichment(
+        productHelper.updateProductEnrichment(
             dress,
             images,
             keepImagesId,
@@ -124,7 +125,7 @@ public class DressService {
             )
         );
 
-        productEnrichmentService.createProduct(
+        productHelper.createProduct(
             savedDress,
             images,
             request.options(),

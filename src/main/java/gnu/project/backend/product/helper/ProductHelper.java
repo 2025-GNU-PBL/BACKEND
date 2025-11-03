@@ -1,4 +1,4 @@
-package gnu.project.backend.product.service;
+package gnu.project.backend.product.helper;
 
 import gnu.project.backend.product.dto.request.OptionCreateRequest;
 import gnu.project.backend.product.dto.request.OptionUpdateRequest;
@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-public class ProductEnrichmentService {
+public class ProductHelper {
 
     private final FileProvider fileProvider;
     private final OptionProvider optionProvider;

@@ -14,6 +14,7 @@ import gnu.project.backend.product.dto.response.WeddingHallPageResponse;
 import gnu.project.backend.product.dto.response.WeddingHallResponse;
 import gnu.project.backend.product.entity.WeddingHall;
 import gnu.project.backend.product.enumerated.Region;
+import gnu.project.backend.product.helper.ProductHelper;
 import gnu.project.backend.product.repository.WeddingHallRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class WeddingHallService {
 
     private final WeddingHallRepository weddingHallRepository;
     private final OwnerRepository ownerRepository;
-    private final ProductEnrichmentService productEnrichmentService;
+    private final ProductHelper productHelper;
 
     private static void validateOwner(final Accessor accessor, final WeddingHall hall) {
         final String resourceOwnerSocialId = hall.getOwner().getSocialId();
@@ -132,7 +133,7 @@ public class WeddingHallService {
 
         final WeddingHall saved = weddingHallRepository.save(hall);
 
-        productEnrichmentService.createProduct(
+        productHelper.createProduct(
             hall,
             images,
             request.options(),
@@ -158,7 +159,7 @@ public class WeddingHallService {
 
         validateOwner(accessor, hall);
 
-        productEnrichmentService.updateProductEnrichment(
+        productHelper.updateProductEnrichment(
             hall,
             newImages,
             keepImagesId,

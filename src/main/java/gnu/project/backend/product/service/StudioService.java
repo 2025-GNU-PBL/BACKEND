@@ -14,6 +14,7 @@ import gnu.project.backend.product.dto.request.StudioUpdateRequest;
 import gnu.project.backend.product.dto.response.StudioPageResponse;
 import gnu.project.backend.product.dto.response.StudioResponse;
 import gnu.project.backend.product.entity.Studio;
+import gnu.project.backend.product.helper.ProductHelper;
 import gnu.project.backend.product.repository.StudioRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class StudioService {
 
     private final StudioRepository studioRepository;
     private final OwnerRepository ownerRepository;
-    private final ProductEnrichmentService productEnrichmentService;
+    private final ProductHelper productHelper;
 
     private static void validOwner(Accessor accessor, Studio studio) {
         if (!studio.getOwner().getSocialId().equals(accessor.getSocialId())) {
@@ -89,14 +90,14 @@ public class StudioService {
 
         validOwner(accessor, studio);
 
-        productEnrichmentService.updateProductEnrichment(
+        productHelper.updateProductEnrichment(
             studio,
             images,
             keepImagesId,
             request.options(),
             request.tags()
         );
-        
+
         studio.update(
             request.price(),
             request.address(),
@@ -124,7 +125,7 @@ public class StudioService {
             )
         );
 
-        productEnrichmentService.createProduct(
+        productHelper.createProduct(
             savedStudio,
             images,
             request.options(),

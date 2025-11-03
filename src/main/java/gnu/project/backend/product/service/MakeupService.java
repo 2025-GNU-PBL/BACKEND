@@ -13,6 +13,7 @@ import gnu.project.backend.product.dto.request.MakeupUpdateRequest;
 import gnu.project.backend.product.dto.response.MakeupPageResponse;
 import gnu.project.backend.product.dto.response.MakeupResponse;
 import gnu.project.backend.product.entity.Makeup;
+import gnu.project.backend.product.helper.ProductHelper;
 import gnu.project.backend.product.repository.MakeupRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class MakeupService {
 
     private final MakeupRepository makeupRepository;
     private final OwnerRepository ownerRepository;
-    private final ProductEnrichmentService productEnrichmentService;
+    private final ProductHelper productHelper;
 
     @Transactional(readOnly = true)
     public MakeupResponse read(
@@ -87,7 +88,7 @@ public class MakeupService {
             throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
         }
 
-        productEnrichmentService.updateProductEnrichment(
+        productHelper.updateProductEnrichment(
             makeup,
             images,
             keepImagesId,
@@ -126,7 +127,7 @@ public class MakeupService {
             )
         );
 
-        productEnrichmentService.createProduct(
+        productHelper.createProduct(
             savedMakeup,
             images,
             request.options(),
