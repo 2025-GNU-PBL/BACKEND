@@ -16,12 +16,11 @@ import gnu.project.backend.customer.entity.Customer;
 import gnu.project.backend.customer.repository.CustomerRepository;
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,25 +35,25 @@ public class ChatService {
     private final CustomerRepository customerRepository;
 
     /**
-     * ownerId, customerId 조합으로만 방을 만든다.
-     * (역순 매칭은 제거)
+     * ownerId, customerId 조합으로만 방을 만든다. (역순 매칭은 제거)
      */
     public Long createOrGetRoom(String ownerId, String customerId) {
         return chatRoomRepository.findByOwnerIdAndCustomerId(ownerId, customerId)
-                .map(ChatRoom::getId)
-                .orElseGet(() -> {
-                    ChatRoom room = ChatRoom.builder()
-                            .ownerId(ownerId)
-                            .customerId(customerId)
-                            .build();
-                    chatRoomRepository.save(room);
-                    return room.getId();
-                });
+            .map(ChatRoom::getId)
+            .orElseGet(() -> {
+                ChatRoom room = ChatRoom.builder()
+                    .ownerId(ownerId)
+                    .customerId(customerId)
+                    .build();
+                chatRoomRepository.save(room);
+                return room.getId();
+            });
     }
 
     public ChatMessageResponse saveMessage(ChatMessageRequest req) {
         ChatRoom room = chatRoomRepository.findById(req.chatRoomId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.BAD_REQUEST));
+            .orElseThrow(() -> new BusinessException(ErrorCode.BAD_REQUEST));
+        //TODO : 대체
 
         // 1) 우리 시스템에 실제로 있는 유저인지 + ROLE이 맞는지
         verifySender(req.senderRole(), req.senderId());
@@ -78,30 +77,30 @@ public class ChatService {
         }
 
         Chatting chatting = Chatting.builder()
-                .chatRoom(room)
-                .message(req.message())
-                .senderRole(req.senderRole())
-                .senderId(req.senderId())
-                .sendTime(now)
-                .ownerRead(ownerRead)
-                .ownerReadAt(ownerReadAt)
-                .customerRead(customerRead)
-                .customerReadAt(customerReadAt)
-                .build();
+            .chatRoom(room)
+            .message(req.message())
+            .senderRole(req.senderRole())
+            .senderId(req.senderId())
+            .sendTime(now)
+            .ownerRead(ownerRead)
+            .ownerReadAt(ownerReadAt)
+            .customerRead(customerRead)
+            .customerReadAt(customerReadAt)
+            .build();
 
         chattingRepository.save(chatting);
 
         return new ChatMessageResponse(
-                room.getId(),
-                chatting.getSenderRole(),
-                chatting.getSenderId(),
-                chatting.getMessage(),
-                chatting.getSendTime(),
-                chatting.isOwnerRead(),
-                chatting.isCustomerRead(),
-                chatting.getOwnerReadAt(),
-                chatting.getCustomerReadAt(),
-                chatting.getId()
+            room.getId(),
+            chatting.getSenderRole(),
+            chatting.getSenderId(),
+            chatting.getMessage(),
+            chatting.getSendTime(),
+            chatting.isOwnerRead(),
+            chatting.isCustomerRead(),
+            chatting.getOwnerReadAt(),
+            chatting.getCustomerReadAt(),
+            chatting.getId()
         );
     }
 
@@ -115,7 +114,7 @@ public class ChatService {
 
         if (ChatConstants.ROLE_OWNER.equalsIgnoreCase(senderRole)) {
             Owner owner = ownerRepository.findByOauthInfo_SocialId(senderSocialId)
-                    .orElseThrow(() -> new BusinessException(ErrorCode.OWNER_NOT_FOUND_EXCEPTION));
+                .orElseThrow(() -> new BusinessException(ErrorCode.OWNER_NOT_FOUND_EXCEPTION));
 
             if (owner.getUserRole() != UserRole.OWNER) {
                 throw new BusinessException(ErrorCode.ROLE_IS_NOT_VALID);
@@ -125,7 +124,7 @@ public class ChatService {
 
         if (ChatConstants.ROLE_CUSTOMER.equalsIgnoreCase(senderRole)) {
             Customer customer = customerRepository.findByOauthInfo_SocialId(senderSocialId)
-                    .orElseThrow(() -> new BusinessException(ErrorCode.CUSTOMER_NOT_FOUND_EXCEPTION));
+                .orElseThrow(() -> new BusinessException(ErrorCode.CUSTOMER_NOT_FOUND_EXCEPTION));
 
             if (!customer.isActive()) {
                 throw new BusinessException(ErrorCode.CUSTOMER_DELETED_EXCEPTION);
@@ -173,20 +172,20 @@ public class ChatService {
     @Transactional(readOnly = true)
     public List<ChatMessageResponse> getHistory(Long chatRoomId, Long cursor, int size) {
         return chattingRepository.findPage(chatRoomId, cursor, size)
-                .stream()
-                .map(c -> new ChatMessageResponse(
-                        chatRoomId,
-                        c.getSenderRole(),
-                        c.getSenderId(),
-                        c.getMessage(),
-                        c.getSendTime(),
-                        c.isOwnerRead(),
-                        c.isCustomerRead(),
-                        c.getOwnerReadAt(),
-                        c.getCustomerReadAt(),
-                        c.getId()
-                ))
-                .toList();
+            .stream()
+            .map(c -> new ChatMessageResponse(
+                chatRoomId,
+                c.getSenderRole(),
+                c.getSenderId(),
+                c.getMessage(),
+                c.getSendTime(),
+                c.isOwnerRead(),
+                c.isCustomerRead(),
+                c.getOwnerReadAt(),
+                c.getCustomerReadAt(),
+                c.getId()
+            ))
+            .toList();
     }
 
     public void readAll(Long chatRoomId, String role) {
@@ -213,7 +212,7 @@ public class ChatService {
 
     public void deleteRoomForSide(Long chatRoomId, String role, String senderId) {
         ChatRoom room = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.BAD_REQUEST));
+            .orElseThrow(() -> new BusinessException(ErrorCode.BAD_REQUEST));
 
         // 내가 그 방 사람 맞는지도 한 번 더
         validateParticipant(room, role, senderId);
