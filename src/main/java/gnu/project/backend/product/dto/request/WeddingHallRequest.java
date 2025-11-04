@@ -11,44 +11,46 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 public record WeddingHallRequest(
-    @NotBlank(message = NAME_REQUIRED)
-    @Size(max = MAX_NAME_LENGTH, message = NAME_LENGTH)
-    String name,
+        @NotBlank(message = NAME_REQUIRED)
+        @Size(max = MAX_NAME_LENGTH, message = NAME_LENGTH)
+        String name,
 
-    @NotNull(message = PRICE_REQUIRED)
-    @Min(value = MIN_PRICE, message = PRICE_MIN)
-    Integer price,
+        @NotNull(message = PRICE_REQUIRED)
+        @Min(value = MIN_PRICE, message = PRICE_MIN)
+        Integer price,
 
-    @NotBlank(message = ADDRESS_REQUIRED)
-    @Size(max = MAX_ADDRESS_LENGTH, message = ADDRESS_LENGTH)
-    String address,
+        @NotBlank(message = ADDRESS_REQUIRED)
+        @Size(max = MAX_ADDRESS_LENGTH, message = ADDRESS_LENGTH)
+        String address,
 
-    @NotBlank(message = DETAIL_REQUIRED)
-    @Size(max = MAX_DETAIL_LENGTH, message = DETAIL_LENGTH)
-    String detail,
+        @NotBlank(message = DETAIL_REQUIRED)
+        @Size(max = MAX_DETAIL_LENGTH, message = DETAIL_LENGTH)
+        String detail,
 
-    @Size(max = MAX_AVAILABLE_TIMES, message = AVAILABLE_TIMES_LENGTH)
-    String availableTimes,
+        @Size(max = MAX_AVAILABLE_TIMES, message = AVAILABLE_TIMES_LENGTH)
+        String availableTimes,
 
-    Integer capacity,
-    Integer minGuest,
-    Integer maxGuest,
-    Integer hallType,
-    Integer parkingCapacity,
+        Integer capacity,
+        Integer minGuest,
+        Integer maxGuest,
+        Integer parkingCapacity,
 
-    @Size(max = 100)
-    String cateringType,
+        @Size(max = 100)
+        String cateringType,
 
-    String reservationPolicy,
+        String reservationPolicy,
 
-    @NotNull(message = REGION_REQUIRE)
-    Region region,
+        @NotNull(message = REGION_REQUIRE)
+        Region region,
 
-    List<TagRequest> tags,
+        boolean subwayAccessible,
+        boolean diningAvailable,
 
-    @Valid
-    @Size(max = MAX_OPTION_COUNT, message = OPTION_LIMIT)
-    List<OptionCreateRequest> options
+        List<TagRequest> tags,
+
+        @Valid
+        @Size(max = MAX_OPTION_COUNT, message = OPTION_LIMIT)
+        List<OptionCreateRequest> options
 
 ) {
 
