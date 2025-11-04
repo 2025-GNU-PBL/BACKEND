@@ -1,18 +1,10 @@
 package gnu.project.backend.product.entity;
 
-
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.Region;
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "wedding_hall")
@@ -31,9 +23,6 @@ public class WeddingHall extends Product {
     @Column(name = "max_guest")
     private Integer maxGuest;
 
-    @Column(name = "hall_type")
-    private Integer hallType;
-
     @Column(name = "parking_capacity")
     private Integer parkingCapacity;
 
@@ -44,100 +33,90 @@ public class WeddingHall extends Product {
     @Column(name = "reservation_policy")
     private String reservationPolicy;
 
+    // ✅ 새 필터 컬럼
+    @Column(name = "subway_accessible", nullable = false)
+    private boolean subwayAccessible;
+
+    @Column(name = "dining_available", nullable = false)
+    private boolean diningAvailable;
 
     private WeddingHall(
-        Owner owner,
-        Integer price,
-        String address,
-        String detail,
-        String name,
-        Integer capacity,
-        Integer minGuest,
-        Integer maxGuest,
-        Integer hallType,
-        Integer parkingCapacity,
-        String cateringType,
-        String availableTimes,
-        String reservationPolicy,
-        Region region
+            Owner owner,
+            Integer price,
+            String address,
+            String detail,
+            String name,
+            Integer capacity,
+            Integer minGuest,
+            Integer maxGuest,
+            Integer parkingCapacity,
+            String cateringType,
+            String availableTimes,
+            String reservationPolicy,
+            Region region,
+            boolean subwayAccessible,
+            boolean diningAvailable
     ) {
-        super(
-            owner,
-            Category.WEDDING_HALL,
-            price,
-            address,
-            detail,
-            name,
-            availableTimes,
-            region
-        );
+        super(owner, Category.WEDDING_HALL, price, address, detail, name, availableTimes, region);
         this.capacity = capacity;
         this.minGuest = minGuest;
         this.maxGuest = maxGuest;
-        this.hallType = hallType;
         this.parkingCapacity = parkingCapacity;
         this.cateringType = cateringType;
         this.reservationPolicy = reservationPolicy;
+        this.subwayAccessible = subwayAccessible;
+        this.diningAvailable = diningAvailable;
     }
 
     public static WeddingHall create(
-        Owner owner,
-        Integer price,
-        String address,
-        String detail,
-        String name,
-        Integer capacity,
-        Integer minGuest,
-        Integer maxGuest,
-        Integer hallType,
-        Integer parkingCapacity,
-        String cateringType,
-        String availableTimes,
-        String reservationPolicy,
-        Region region
+            Owner owner,
+            Integer price,
+            String address,
+            String detail,
+            String name,
+            Integer capacity,
+            Integer minGuest,
+            Integer maxGuest,
+            Integer parkingCapacity,
+            String cateringType,
+            String availableTimes,
+            String reservationPolicy,
+            Region region,
+            boolean subwayAccessible,
+            boolean diningAvailable
     ) {
         return new WeddingHall(
-            owner,
-            price,
-            address,
-            detail,
-            name,
-            capacity,
-            minGuest,
-            maxGuest,
-            hallType,
-            parkingCapacity,
-            cateringType,
-            availableTimes,
-            reservationPolicy,
-            region
+                owner, price, address, detail, name,
+                capacity, minGuest, maxGuest, parkingCapacity,
+                cateringType, availableTimes, reservationPolicy, region,
+                subwayAccessible, diningAvailable
         );
     }
 
     public void update(
-        Integer price,
-        String address,
-        String detail,
-        String name,
-        Integer capacity,
-        Integer minGuest,
-        Integer maxGuest,
-        Integer hallType,
-        Integer parkingCapacity,
-        String cateringType,
-        String availableTimes,
-        String reservationPolicy,
-        Region region
+            Integer price,
+            String address,
+            String detail,
+            String name,
+            Integer capacity,
+            Integer minGuest,
+            Integer maxGuest,
+            Integer parkingCapacity,
+            String cateringType,
+            String availableTimes,
+            String reservationPolicy,
+            Region region,
+            boolean subwayAccessible,
+            boolean diningAvailable
     ) {
         super.updateProduct(price, address, detail, name, availableTimes, region);
         this.capacity = capacity;
         this.minGuest = minGuest;
         this.maxGuest = maxGuest;
-        this.hallType = hallType;
         this.parkingCapacity = parkingCapacity;
         this.cateringType = cateringType;
         this.reservationPolicy = reservationPolicy;
+        this.subwayAccessible = subwayAccessible;
+        this.diningAvailable = diningAvailable;
     }
-
-
 }

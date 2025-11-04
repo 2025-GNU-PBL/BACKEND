@@ -7,18 +7,20 @@ import java.util.List;
 
 
 public record WeddingHallPageResponse(
-    Long id,
-    String name,
-    Double starCount,
-    String address,
-    String detail,
-    Integer price,
-    Integer hallType,
-    String availableTime,
-    LocalDateTime createdAt,
-    String thumbnail,
-    Region region,
-    List<WeddingHallResponse.TagResponse> tags
+        Long id,
+        String name,
+        Double starCount,
+        String address,
+        String detail,
+        Integer price,
+        String availableTime,
+        LocalDateTime createdAt,
+        String thumbnail,
+        Region region,
+        String ownerName,
+        boolean subwayAccessible,
+        boolean diningAvailable,
+        List<WeddingHallResponse.TagResponse> tags
 ) {
 
 }

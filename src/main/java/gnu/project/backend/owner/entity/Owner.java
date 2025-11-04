@@ -99,4 +99,13 @@ public class Owner extends BaseEntity implements OauthUser {
         this.bzNumber = bzNumber;
         this.bankAccount = bankAccount;
     }
+
+    public String getDisplayName() {
+        if (this.bzName != null && !this.bzName.isBlank()) {
+            return this.bzName;
+        }
+        return this.getOauthInfo() != null ? this.getOauthInfo().getName() : null;
+    }
+
+
 }
