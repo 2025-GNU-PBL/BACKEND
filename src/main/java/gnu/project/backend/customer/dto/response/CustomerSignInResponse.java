@@ -2,6 +2,8 @@ package gnu.project.backend.customer.dto.response;
 
 import gnu.project.backend.customer.entity.Customer;
 
+import java.time.LocalDate;
+
 public record CustomerSignInResponse(
         Long id,
         String name,
@@ -9,7 +11,20 @@ public record CustomerSignInResponse(
         String socialId,
         Short age,
         String phoneNumber,
-        String address
+        String address,
+
+        String zipCode,
+        String roadAddress,
+        String jibunAddress,
+        String detailAddress,
+        String sido,
+        String sigungu,
+        String dong,
+        String buildingName,
+
+        String weddingSido,
+        String weddingSigungu,
+        LocalDate weddingDate
 ) {
     public static CustomerSignInResponse from(final Customer customer) {
         return new CustomerSignInResponse(
@@ -19,7 +34,20 @@ public record CustomerSignInResponse(
                 customer.getOauthInfo().getSocialId(),
                 customer.getAge(),
                 customer.getPhoneNumber(),
-                customer.getAddress()
+                customer.getAddress(),
+
+                customer.getZipCode(),
+                customer.getRoadAddress(),
+                customer.getJibunAddress(),
+                customer.getDetailAddress(),
+                customer.getSido(),
+                customer.getSigungu(),
+                customer.getDong(),
+                customer.getBuildingName(),
+
+                customer.getWeddingSido(),
+                customer.getWeddingSigungu(),
+                customer.getWeddingDate()
         );
     }
 }

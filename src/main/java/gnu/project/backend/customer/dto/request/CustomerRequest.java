@@ -2,6 +2,8 @@ package gnu.project.backend.customer.dto.request;
 
 import jakarta.validation.constraints.*;
 
+import java.time.LocalDate;
+
 import static gnu.project.backend.customer.constant.CustomerConstant.*;
 
 public record CustomerRequest(
@@ -18,7 +20,22 @@ public record CustomerRequest(
         String phoneNumber,
 
         @Size(max = 255, message = ADDRESS_SIZE_MESSAGE)
-        String address
+        String address,
+        String zipCode,
+        String roadAddress,
+        String jibunAddress,
+        String detailAddress,
+        String sido,
+        String sigungu,
+        String dong,
+        String buildingName,
+
+        @Size(max = 30, message = SIDO_SIZE_MESSAGE)
+        String weddingSido,
+        @Size(max = 50, message = SIGUNGU_SIZE_MESSAGE)
+        String weddingSigungu,
+
+        LocalDate weddingDate
 
 ) {
 }

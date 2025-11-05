@@ -9,20 +9,17 @@ import gnu.project.backend.product.enumerated.SortType;
 import gnu.project.backend.product.enumerated.WeddingHallTag;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface WeddingHallCustomRepository {
 
     WeddingHallResponse findByWeddingHallId(final Long id);
 
-    List<WeddingHallPageResponse> searchWeddingHall(final int pageSize, final int pageNumber,
-        final Region region);
 
-    long countActiveByRegion(final Region region);
-
-    List<WeddingHallPageResponse> searchWeddingHallByOwner(
+    Page<WeddingHallPageResponse> searchWeddingHallByOwner(
         final String ownerSocialId,
-        final int pageSize,
-        final int pageNumber
+        final Pageable pageable
     );
 
     Optional<WeddingHall> findWeddingHallWithImagesAndOptionsById(final Long id);

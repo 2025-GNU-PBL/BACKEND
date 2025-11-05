@@ -21,14 +21,15 @@ import gnu.project.backend.product.enumerated.Region;
 import gnu.project.backend.product.enumerated.SortType;
 import gnu.project.backend.product.enumerated.WeddingHallTag;
 import gnu.project.backend.product.repository.WeddingHallCustomRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,218 +38,151 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class WeddingHallRepositoryImpl implements WeddingHallCustomRepository {
 
+    // 최신순 (updatedAt desc → id desc)
+    private static final OrderSpecifier<?>[] HALL_DEFAULT_ORDER = {
+        weddingHall.updatedAt.desc(),
+        weddingHall.id.desc()
+    };
     private final JPAQueryFactory query;
-    @PersistenceContext
-    private EntityManager em;
 
+    /**
+     * 상세 조회: MultipleBagFetchException 회피를 위해 이미지만 fetch join
+     */
     @Override
     public WeddingHallResponse findByWeddingHallId(final Long id) {
-        final TypedQuery<WeddingHall> query = em.createQuery(
-            """
-                SELECT DISTINCT w
-                FROM WeddingHall w
-                LEFT JOIN FETCH w.owner o
-                LEFT JOIN FETCH w.images imgs
-                WHERE w.id = :id
-                  AND w.isDeleted = false
-                """,
-            WeddingHall.class
-        );
-        query.setParameter("id", id);
-
-        final List<WeddingHall> result = query.getResultList();
-        if (result.isEmpty()) {
-            return null; // 서비스에서 null 체크 후 BusinessException 던질 예정
-        }
-
-        final WeddingHall hall = result.get(0);
-        return WeddingHallResponse.from(hall);
-    }
-
-
-    @Override
-    public List<WeddingHallPageResponse> searchWeddingHall(
-        final int pageSize,
-        final int pageNumber,
-        final Region region
-    ) {
-        final int offset = (pageNumber - 1) * pageSize;
-
-        String jpql = """
-                SELECT DISTINCT w
-                FROM WeddingHall w
-                LEFT JOIN FETCH w.owner o
-                LEFT JOIN FETCH w.tags t
-                WHERE w.isDeleted = false
-            """;
-
-        if (region != null) {
-            jpql += " AND w.region = :region ";
-        }
-
-        jpql += " ORDER BY w.id DESC ";
-
-        final TypedQuery<WeddingHall> query = em.createQuery(jpql, WeddingHall.class);
-
-        if (region != null) {
-            query.setParameter("region", region);
-        }
-
-        query.setFirstResult(offset);
-        query.setMaxResults(pageSize);
-
-        final List<WeddingHall> halls = query.getResultList();
-
-        return halls.stream()
-            .map(hall ->
-                new WeddingHallPageResponse(
-                    hall.getId(),
-                    hall.getName(),
-                    hall.getStarCount(),
-                    hall.getAddress(),
-                    hall.getDetail(),
-                    hall.getPrice(),
-                    hall.getHallType(),
-                    hall.getAvailableTimes(),
-                    hall.getCreatedAt(),
-                    hall.getThumbnailUrl(),
-                    hall.getRegion(),
-                    hall.getTags().stream()
-                        .map(tag -> new WeddingHallResponse.TagResponse(
-                            tag.getId(),
-                            tag.getName()
-                        ))
-                        .toList()
-                )
+        final WeddingHall hall = query
+            .selectFrom(weddingHall)
+            .leftJoin(weddingHall.images, image).fetchJoin()
+            .where(
+                weddingHall.id.eq(id),
+                weddingHall.isDeleted.isFalse()
             )
-            .toList();
-    }
+            .fetchOne();
 
-    @Override
-    public long countActiveByRegion(final Region region) {
-        String jpql = """
-                SELECT COUNT(w)
-                FROM WeddingHall w
-                WHERE w.isDeleted = false
-            """;
-
-        if (region != null) {
-            jpql += " AND w.region = :region ";
-        }
-
-        final TypedQuery<Long> query = em.createQuery(jpql, Long.class);
-
-        if (region != null) {
-            query.setParameter("region", region);
-        }
-
-        return query.getSingleResult();
+        return WeddingHallResponse.from(Objects.requireNonNull(hall));
     }
 
 
+    /**
+     * 오너 전용 목록
+     */
     @Override
-    public List<WeddingHallPageResponse> searchWeddingHallByOwner(
+    public Page<WeddingHallPageResponse> searchWeddingHallByOwner(
         final String ownerSocialId,
-        final int pageSize,
-        final int pageNumber
+        final Pageable pageable
     ) {
-        final int offset = (pageNumber - 1) * pageSize;
-
-        final TypedQuery<WeddingHall> query = em.createQuery(
-            """
-                SELECT DISTINCT w
-                FROM WeddingHall w
-                LEFT JOIN FETCH w.owner o
-                LEFT JOIN FETCH w.tags t
-                WHERE w.isDeleted = false
-                  AND o.oauthInfo.socialId = :socialId
-                ORDER BY w.id DESC
-                """,
-            WeddingHall.class
-        );
-        query.setParameter("socialId", ownerSocialId);
-        query.setFirstResult(offset);
-        query.setMaxResults(pageSize);
-
-        final List<WeddingHall> halls = query.getResultList();
-
-        return halls.stream()
-            .map(hall ->
-                new WeddingHallPageResponse(
-                    hall.getId(),
-                    hall.getName(),
-                    hall.getStarCount(),
-                    hall.getAddress(),
-                    hall.getDetail(),
-                    hall.getPrice(),
-                    hall.getHallType(),
-                    hall.getAvailableTimes(),
-                    hall.getCreatedAt(),
-                    hall.getThumbnailUrl(),
-                    hall.getRegion(),
-                    hall.getTags().stream()
-                        .map(tag -> new WeddingHallResponse.TagResponse(
-                            tag.getId(),
-                            tag.getName()
-                        ))
-                        .toList()
+        final List<WeddingHallPageResponse> halls = pagination(
+            query
+                .select(createPageProjection())
+                .from(weddingHall)
+                .leftJoin(weddingHall.images, image)
+                .where(
+                    weddingHall.isDeleted.isFalse(),
+                    weddingHall.owner.oauthInfo.socialId.eq(ownerSocialId),
+                    image.displayOrder.eq(0).or(image.isNull())
                 )
-            )
-            .toList();
-    }
+                .orderBy(HALL_DEFAULT_ORDER),
+            pageable
+        ).fetch();
 
+        if (halls.isEmpty()) {
+            return new PageImpl<>(List.of(), pageable, 0);
+        }
+
+        final Map<Long, List<TagResponse>> tagsMap = loadTagsGroupedByProductId(
+            halls.stream().map(WeddingHallPageResponse::id).toList()
+        );
+
+        final List<WeddingHallPageResponse> withTags = halls.stream()
+            .map(h -> new WeddingHallPageResponse(
+                h.id(),
+                h.name(),
+                h.starCount(),
+                h.address(),
+                h.detail(),
+                h.price(),
+                h.availableTime(),
+                h.createdAt(),
+                h.thumbnail(),
+                h.region(),
+                tagsMap.getOrDefault(h.id(), List.of())
+            ))
+            .toList();
+
+        final long total = countActiveByOwner(ownerSocialId);
+        return new PageImpl<>(withTags, pageable, total);
+    }
 
     @Override
     public Optional<WeddingHall> findWeddingHallWithImagesAndOptionsById(final Long id) {
-        final TypedQuery<WeddingHall> query = em.createQuery(
-            """
-                SELECT DISTINCT w
-                FROM WeddingHall w
-                LEFT JOIN FETCH w.owner o
-                LEFT JOIN FETCH w.images imgs
-                WHERE w.id = :id
-                  AND w.isDeleted = false
-                """,
-            WeddingHall.class
+        return Optional.ofNullable(
+            query
+                .selectFrom(weddingHall)
+                .leftJoin(weddingHall.images, image).fetchJoin()
+                .where(
+                    weddingHall.id.eq(id),
+                    weddingHall.isDeleted.isFalse()
+                )
+                .fetchOne()
         );
-
-        query.setParameter("id", id);
-        final List<WeddingHall> result = query.getResultList();
-
-        if (result.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(result.get(0));
     }
-
 
     @Override
     public long countActive() {
-        final TypedQuery<Long> query = em.createQuery(
-            """
-                SELECT COUNT(w)
-                FROM WeddingHall w
-                WHERE w.isDeleted = false
-                """,
-            Long.class
-        );
-        return query.getSingleResult();
+        final Long cnt = query
+            .select(weddingHall.count())
+            .from(weddingHall)
+            .where(weddingHall.isDeleted.isFalse())
+            .fetchOne();
+        return cnt != null ? cnt : 0L;
     }
 
     @Override
     public long countActiveByOwner(final String ownerSocialId) {
-        final TypedQuery<Long> query = em.createQuery(
-            """
-                SELECT COUNT(w)
-                FROM WeddingHall w
-                JOIN w.owner o
-                WHERE w.isDeleted = false
-                  AND o.oauthInfo.socialId = :socialId
-                """,
-            Long.class
+        final Long cnt = query
+            .select(weddingHall.count())
+            .from(weddingHall)
+            .where(
+                weddingHall.isDeleted.isFalse(),
+                weddingHall.owner.oauthInfo.socialId.eq(ownerSocialId)
+            )
+            .fetchOne();
+        return cnt != null ? cnt : 0L;
+    }
+
+    private ConstructorExpression<WeddingHallPageResponse> createPageProjection() {
+        return Projections.constructor(
+            WeddingHallPageResponse.class,
+            weddingHall.id,                               // Long id
+            weddingHall.name,                             // String name
+            weddingHall.starCount,                        // Double starCount
+            weddingHall.address,                          // String address
+            weddingHall.detail,                           // String detail
+            weddingHall.price,                            // Integer price
+            weddingHall.availableTimes,                   // String availableTime
+            weddingHall.createdAt,                        // LocalDateTime createdAt
+            image.url,                                    // String thumbnail (displayOrder=0)
+            weddingHall.region,                           // Region region
+            weddingHall.owner.bzName.coalesce(weddingHall.owner.oauthInfo.name),
+            Expressions.nullExpression(List.class)
         );
-        query.setParameter("socialId", ownerSocialId);
-        return query.getSingleResult();
+    }
+
+    private <T> JPAQuery<T> pagination(final JPAQuery<T> q, final Pageable pageable) {
+        return q.offset(pageable.getOffset()).limit(pageable.getPageSize());
+    }
+
+    private Map<Long, List<TagResponse>> loadTagsGroupedByProductId(final List<Long> productIds) {
+        final List<Tag> allTags = query
+            .selectFrom(tag)
+            .where(tag.product.id.in(productIds))
+            .fetch();
+
+        return allTags.stream()
+            .collect(Collectors.groupingBy(
+                t -> t.getProduct().getId(),
+                Collectors.mapping(TagResponse::from, Collectors.toList())
+            ));
     }
 
     @Override
@@ -316,7 +250,6 @@ public class WeddingHallRepositoryImpl implements WeddingHallCustomRepository {
                 hall.address(),
                 hall.detail(),
                 hall.price(),
-                hall.hallType(),
                 hall.availableTime(),
                 hall.createdAt(),
                 hall.thumbnail(),
@@ -380,7 +313,6 @@ public class WeddingHallRepositoryImpl implements WeddingHallCustomRepository {
             weddingHall.address,
             weddingHall.detail,
             weddingHall.price,
-            weddingHall.hallType,
             weddingHall.availableTimes,
             weddingHall.createdAt,
             image.url,

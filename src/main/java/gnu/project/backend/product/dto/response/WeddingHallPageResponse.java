@@ -13,7 +13,6 @@ public record WeddingHallPageResponse(
     String address,
     String detail,
     Integer price,
-    Integer hallType,
     String availableTime,
     LocalDateTime createdAt,
     String thumbnail,

@@ -131,7 +131,6 @@ public class CustomerCouponService {
 
         customerCouponRepository.save(customerCoupon);
         couponRepository.save(customerCoupon.getCoupon());
-
         return CustomerCouponResponseDto.from(customerCoupon);
     }
 
@@ -153,7 +152,6 @@ public class CustomerCouponService {
             .map(CustomerCouponResponseDto::from)
             .collect(Collectors.toList());
     }
-
 
     private void validateCouponForDownload(final Coupon coupon) {
         if (coupon.getStatus() != CouponStatus.ACTIVE) {
