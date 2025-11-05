@@ -13,7 +13,10 @@ import gnu.project.backend.product.dto.request.WeddingHallUpdateRequest;
 import gnu.project.backend.product.dto.response.WeddingHallPageResponse;
 import gnu.project.backend.product.dto.response.WeddingHallResponse;
 import gnu.project.backend.product.entity.WeddingHall;
+import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.Region;
+import gnu.project.backend.product.enumerated.SortType;
+import gnu.project.backend.product.enumerated.WeddingHallTag;
 import gnu.project.backend.product.helper.ProductHelper;
 import gnu.project.backend.product.repository.WeddingHallRepository;
 import java.util.List;
@@ -200,5 +203,21 @@ public class WeddingHallService {
         hall.delete();
 
         return WEDDING_HALL_DELETE_SUCCESS;
+    }
+
+    public Page<WeddingHallPageResponse> getWeddingHallsByFilters(List<WeddingHallTag> tags,
+        Category category, Region region, Integer minPrice, Integer maxPrice, SortType sortType,
+        Integer pageNumber, Integer pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+
+        List<WeddingHallPageResponse> results = weddingHallRepository.searchWeddingHallByFilter(
+            tags, category, region, minPrice, maxPrice, sortType, pageNumber, pageSize
+        );
+
+        long total = weddingHallRepository.countWeddingHallByFilter(tags, category, region,
+            minPrice, maxPrice);
+
+        return new PageImpl<>(results, pageable, total);
     }
 }

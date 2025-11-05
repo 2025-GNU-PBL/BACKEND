@@ -7,7 +7,10 @@ import gnu.project.backend.product.dto.request.WeddingHallRequest;
 import gnu.project.backend.product.dto.request.WeddingHallUpdateRequest;
 import gnu.project.backend.product.dto.response.WeddingHallPageResponse;
 import gnu.project.backend.product.dto.response.WeddingHallResponse;
+import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.Region;
+import gnu.project.backend.product.enumerated.SortType;
+import gnu.project.backend.product.enumerated.WeddingHallTag;
 import gnu.project.backend.product.service.WeddingHallService;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
@@ -121,20 +124,21 @@ public class WeddingHallController implements WeddingHallDocs {
         );
     }
 
-//    @GetMapping("/filter")
-//    public ResponseEntity<Page<DressPageResponse>> getProductsByTags(
-//        @RequestParam(required = false) List<DressTag> tags,
-//        @RequestParam(required = false) Category category,
-//        @RequestParam(required = false) Region region,
-//        @RequestParam(required = false) Integer minPrice,
-//        @RequestParam(required = false) Integer maxPrice,
-//        @RequestParam(required = false, defaultValue = "LATEST") SortType sortType,
-//        @RequestParam(required = false, defaultValue = "1") Integer pageNumber,
-//        @RequestParam(required = false, defaultValue = "6") Integer pageSize
-//    ) {
-//        return ResponseEntity.ok(
-//            dressService.getDressesByFilters(tags, category, region, minPrice, maxPrice, sortType,
-//                pageNumber, pageSize)
-//        );
-//    }
+    @GetMapping("/filter")
+    public ResponseEntity<Page<WeddingHallPageResponse>> getWeddingHallsByTags(
+        @RequestParam(required = false) List<WeddingHallTag> tags,
+        @RequestParam(required = false) Category category,
+        @RequestParam(required = false) Region region,
+        @RequestParam(required = false) Integer minPrice,
+        @RequestParam(required = false) Integer maxPrice,
+        @RequestParam(required = false, defaultValue = "LATEST") SortType sortType,
+        @RequestParam(required = false, defaultValue = "1") Integer pageNumber,
+        @RequestParam(required = false, defaultValue = "6") Integer pageSize
+    ) {
+        return ResponseEntity.ok(
+            weddingHallService.getWeddingHallsByFilters(tags, category, region, minPrice, maxPrice,
+                sortType,
+                pageNumber, pageSize)
+        );
+    }
 }
