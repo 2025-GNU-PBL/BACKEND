@@ -124,6 +124,7 @@ public class WeddingHallController implements WeddingHallDocs {
         );
     }
 
+    @Override
     @GetMapping("/filter")
     public ResponseEntity<Page<WeddingHallPageResponse>> getWeddingHallsByTags(
         @RequestParam(required = false) List<WeddingHallTag> tags,

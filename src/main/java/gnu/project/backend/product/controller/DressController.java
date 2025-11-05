@@ -114,5 +114,4 @@ public class DressController implements DressDocs {
                 pageNumber, pageSize)
         );
     }
-    //TODO : 필터, 태그기반 정렬, Response 수정
 }

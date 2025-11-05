@@ -84,7 +84,7 @@ public class StudioController implements StudioDocs {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<Page<StudioPageResponse>> getProductsByTags(
+    public ResponseEntity<Page<StudioPageResponse>> getStudiosByTags(
         @RequestParam(required = false) List<StudioTag> tags,
         @RequestParam(required = false) Category category,
         @RequestParam(required = false) Region region,
