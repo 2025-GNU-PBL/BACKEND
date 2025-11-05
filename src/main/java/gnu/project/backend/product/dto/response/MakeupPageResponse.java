@@ -1,22 +1,22 @@
 package gnu.project.backend.product.dto.response;
 
+import gnu.project.backend.product.dto.response.DressResponse.TagResponse;
 import gnu.project.backend.product.enumerated.Region;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record MakeupPageResponse(
     Long id,
     String name,
-    String style,
     Double starCount,
     String address,
     String detail,
     Integer price,
-    String type,
     String availableTime,
     LocalDateTime createdAt,
     Region region,
-    
-    String Thumbnail
+    String Thumbnail,
+    List<TagResponse> tags
 ) {
 
 }

@@ -152,13 +152,15 @@ public class DressService {
     public Page<DressPageResponse> getDressesByFilters(List<DressTag> tags, Category category,
         Region region, Integer minPrice, Integer maxPrice, SortType sortType,
         Integer pageNumber, Integer pageSize) {
+
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+
         List<DressPageResponse> results = dressRepository.searchDressByFilter(
             tags, category, region, minPrice, maxPrice, sortType, pageNumber, pageSize
         );
 
         long total = dressRepository.countDressByFilter(tags, category, region, minPrice, maxPrice);
-        
+
         return new PageImpl<>(results, pageable, total);
     }
 }

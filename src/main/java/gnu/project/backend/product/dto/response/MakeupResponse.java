@@ -10,11 +10,9 @@ import java.util.List;
 public record MakeupResponse(
     Long id,
     String name,
-    String style,
     String address,
     String detail,
     Integer price,
-    String type,
     String availableTimes,
     Region region,
 
@@ -26,11 +24,9 @@ public record MakeupResponse(
         return new MakeupResponse(
             makeup.getId(),
             makeup.getName(),
-            makeup.getStyle(),
             makeup.getAddress(),
             makeup.getDetail(),
             makeup.getPrice(),
-            makeup.getType(),
             makeup.getAvailableTimes(),
             makeup.getRegion(),
             makeup.getImages().stream()

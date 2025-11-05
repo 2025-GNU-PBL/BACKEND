@@ -78,4 +78,21 @@ public class StudioController implements StudioDocs {
     ) {
         return ResponseEntity.ok(studioService.delete(id, accessor));
     }
+
+//    @GetMapping("/filter")
+//    public ResponseEntity<Page<DressPageResponse>> getProductsByTags(
+//        @RequestParam(required = false) List<DressTag> tags,
+//        @RequestParam(required = false) Category category,
+//        @RequestParam(required = false) Region region,
+//        @RequestParam(required = false) Integer minPrice,
+//        @RequestParam(required = false) Integer maxPrice,
+//        @RequestParam(required = false, defaultValue = "LATEST") SortType sortType,
+//        @RequestParam(required = false, defaultValue = "1") Integer pageNumber,
+//        @RequestParam(required = false, defaultValue = "6") Integer pageSize
+//    ) {
+//        return ResponseEntity.ok(
+//            dressService.getDressesByFilters(tags, category, region, minPrice, maxPrice, sortType,
+//                pageNumber, pageSize)
+//        );
+//    }
 }

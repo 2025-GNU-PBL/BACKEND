@@ -7,6 +7,10 @@ import gnu.project.backend.product.dto.request.MakeupRequest;
 import gnu.project.backend.product.dto.request.MakeupUpdateRequest;
 import gnu.project.backend.product.dto.response.MakeupPageResponse;
 import gnu.project.backend.product.dto.response.MakeupResponse;
+import gnu.project.backend.product.enumerated.Category;
+import gnu.project.backend.product.enumerated.MakeupTag;
+import gnu.project.backend.product.enumerated.Region;
+import gnu.project.backend.product.enumerated.SortType;
 import gnu.project.backend.product.service.MakeupService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -77,5 +81,22 @@ public class MakeupController implements MakeupDocs {
         @PathVariable(name = "id") final Long id
     ) {
         return ResponseEntity.ok(makeupService.delete(id, accessor));
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<Page<MakeupPageResponse>> getMakeupsByTags(
+        @RequestParam(required = false) List<MakeupTag> tags,
+        @RequestParam(required = false) Category category,
+        @RequestParam(required = false) Region region,
+        @RequestParam(required = false) Integer minPrice,
+        @RequestParam(required = false) Integer maxPrice,
+        @RequestParam(required = false, defaultValue = "LATEST") SortType sortType,
+        @RequestParam(required = false, defaultValue = "1") Integer pageNumber,
+        @RequestParam(required = false, defaultValue = "6") Integer pageSize
+    ) {
+        return ResponseEntity.ok(
+            makeupService.getMakeupsByFilters(tags, category, region, minPrice, maxPrice, sortType,
+                pageNumber, pageSize)
+        );
     }
 }
