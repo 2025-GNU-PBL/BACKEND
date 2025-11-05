@@ -98,9 +98,7 @@ public class MakeupDataGenerator implements CommandLineRunner {
     }
 
     private Makeup createRandomMakeup(Owner owner) {
-        String style = STYLES[random.nextInt(STYLES.length)];
         String times = TIMES[random.nextInt(TIMES.length)];
-        String type = TYPES[random.nextInt(TYPES.length)];
         Region region = REGIONS[random.nextInt(REGIONS.length)];
         String detail = DETAIL_TEMPLATES[random.nextInt(DETAIL_TEMPLATES.length)];
 
@@ -108,7 +106,7 @@ public class MakeupDataGenerator implements CommandLineRunner {
         int maxPrice = 200000;
         int price = basePrice + (random.nextInt((maxPrice - basePrice) / 1000) * 1000);
 
-        String name = String.format("%s %s 전문", style, type);
+        String name = String.format("%s %s 전문");
         String address = String.format("%s %d번길 %d",
             region,
             random.nextInt(100) + 1,
@@ -120,9 +118,7 @@ public class MakeupDataGenerator implements CommandLineRunner {
             address,
             detail,
             name,
-            style,
             times,
-            type,
             region
         );
     }

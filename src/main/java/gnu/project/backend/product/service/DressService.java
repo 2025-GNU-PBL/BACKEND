@@ -13,6 +13,10 @@ import gnu.project.backend.product.dto.request.DressUpdateRequest;
 import gnu.project.backend.product.dto.response.DressPageResponse;
 import gnu.project.backend.product.dto.response.DressResponse;
 import gnu.project.backend.product.entity.Dress;
+import gnu.project.backend.product.enumerated.Category;
+import gnu.project.backend.product.enumerated.DressTag;
+import gnu.project.backend.product.enumerated.Region;
+import gnu.project.backend.product.enumerated.SortType;
 import gnu.project.backend.product.helper.ProductHelper;
 import gnu.project.backend.product.repository.DressRepository;
 import java.util.List;
@@ -143,5 +147,20 @@ public class DressService {
             .orElseThrow(() -> new BusinessException(
                 OWNER_NOT_FOUND_EXCEPTION)
             );
+    }
+
+    public Page<DressPageResponse> getDressesByFilters(List<DressTag> tags, Category category,
+        Region region, Integer minPrice, Integer maxPrice, SortType sortType,
+        Integer pageNumber, Integer pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+
+        List<DressPageResponse> results = dressRepository.searchDressByFilter(
+            tags, category, region, minPrice, maxPrice, sortType, pageNumber, pageSize
+        );
+
+        long total = dressRepository.countDressByFilter(tags, category, region, minPrice, maxPrice);
+
+        return new PageImpl<>(results, pageable, total);
     }
 }

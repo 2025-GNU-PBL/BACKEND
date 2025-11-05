@@ -13,12 +13,16 @@ import gnu.project.backend.product.dto.request.WeddingHallUpdateRequest;
 import gnu.project.backend.product.dto.response.WeddingHallPageResponse;
 import gnu.project.backend.product.dto.response.WeddingHallResponse;
 import gnu.project.backend.product.entity.WeddingHall;
+import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.Region;
+import gnu.project.backend.product.enumerated.SortType;
+import gnu.project.backend.product.enumerated.WeddingHallTag;
 import gnu.project.backend.product.helper.ProductHelper;
 import gnu.project.backend.product.repository.WeddingHallRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,33 +45,24 @@ public class WeddingHallService {
 
     private Owner findOwnerBySocialId(final Accessor accessor) {
         return ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
-                .orElseThrow(() -> new BusinessException(OWNER_NOT_FOUND_EXCEPTION));
+            .orElseThrow(() -> new BusinessException(OWNER_NOT_FOUND_EXCEPTION));
     }
 
     @Transactional(readOnly = true)
     public WeddingHallResponse read(final Long id) {
         final WeddingHallResponse hall = weddingHallRepository.findByWeddingHallId(id);
-        if (hall == null) throw new BusinessException(WEDDING_HALL_NOT_FOUND_EXCEPTION);
+        if (hall == null) {
+            throw new BusinessException(WEDDING_HALL_NOT_FOUND_EXCEPTION);
+        }
         return hall;
     }
 
-    @Transactional(readOnly = true)
-    public Page<WeddingHallPageResponse> readWeddingHalls(
-            final Integer pageNumber,
-            final Integer pageSize,
-            final Region region,
-            final Boolean subwayAccessible,
-            final Boolean diningAvailable
-    ) {
-        final Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
-        return weddingHallRepository.searchWeddingHall(pageable, region, subwayAccessible, diningAvailable);
-    }
 
     @Transactional(readOnly = true)
     public Page<WeddingHallPageResponse> readMyWeddingHalls(
-            final Accessor accessor,
-            final Integer pageNumber,
-            final Integer pageSize
+        final Accessor accessor,
+        final Integer pageNumber,
+        final Integer pageSize
     ) {
         final Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
         return weddingHallRepository.searchWeddingHallByOwner(accessor.getSocialId(), pageable);
@@ -75,37 +70,37 @@ public class WeddingHallService {
 
     @Transactional
     public WeddingHallResponse create(
-            final WeddingHallRequest request,
-            final List<MultipartFile> images,
-            final Accessor accessor
+        final WeddingHallRequest request,
+        final List<MultipartFile> images,
+        final Accessor accessor
     ) {
         final Owner owner = findOwnerBySocialId(accessor);
 
         final WeddingHall hall = WeddingHall.create(
-                owner,
-                request.price(),
-                request.address(),
-                request.detail(),
-                request.name(),
-                request.capacity(),
-                request.minGuest(),
-                request.maxGuest(),
-                request.parkingCapacity(),
-                request.cateringType(),
-                request.availableTimes(),
-                request.reservationPolicy(),
-                request.region(),
-                request.subwayAccessible(),
-                request.diningAvailable()
+            owner,
+            request.price(),
+            request.address(),
+            request.detail(),
+            request.name(),
+            request.capacity(),
+            request.minGuest(),
+            request.maxGuest(),
+            request.parkingCapacity(),
+            request.cateringType(),
+            request.availableTimes(),
+            request.reservationPolicy(),
+            request.region(),
+            request.subwayAccessible(),
+            request.diningAvailable()
         );
 
         final WeddingHall saved = weddingHallRepository.save(hall);
 
         productHelper.createProduct(
-                hall,
-                images,
-                request.options(),
-                request.tags()
+            hall,
+            images,
+            request.options(),
+            request.tags()
         );
 
         return WeddingHallResponse.from(saved);
@@ -113,41 +108,41 @@ public class WeddingHallService {
 
     @Transactional
     public WeddingHallResponse update(
-            final Long id,
-            final WeddingHallUpdateRequest request,
-            final List<MultipartFile> newImages,
-            final List<Long> keepImagesId,
-            final Accessor accessor
+        final Long id,
+        final WeddingHallUpdateRequest request,
+        final List<MultipartFile> newImages,
+        final List<Long> keepImagesId,
+        final Accessor accessor
     ) {
         final WeddingHall hall = weddingHallRepository
-                .findWeddingHallWithImagesAndOptionsById(id)
-                .orElseThrow(() -> new BusinessException(WEDDING_HALL_NOT_FOUND_EXCEPTION));
+            .findWeddingHallWithImagesAndOptionsById(id)
+            .orElseThrow(() -> new BusinessException(WEDDING_HALL_NOT_FOUND_EXCEPTION));
 
         validateOwner(accessor, hall);
 
         productHelper.updateProductEnrichment(
-                hall,
-                newImages,
-                keepImagesId,
-                request.options(),
-                request.tags()
+            hall,
+            newImages,
+            keepImagesId,
+            request.options(),
+            request.tags()
         );
 
         hall.update(
-                request.price(),
-                request.address(),
-                request.detail(),
-                request.name(),
-                request.capacity(),
-                request.minGuest(),
-                request.maxGuest(),
-                request.parkingCapacity(),
-                request.cateringType(),
-                request.availableTimes(),
-                request.reservationPolicy(),
-                request.region(),
-                request.subwayAccessible(),
-                request.diningAvailable()
+            request.price(),
+            request.address(),
+            request.detail(),
+            request.name(),
+            request.capacity(),
+            request.minGuest(),
+            request.maxGuest(),
+            request.parkingCapacity(),
+            request.cateringType(),
+            request.availableTimes(),
+            request.reservationPolicy(),
+            request.region(),
+            request.subwayAccessible(),
+            request.diningAvailable()
         );
 
         return WeddingHallResponse.from(hall);
@@ -156,11 +151,27 @@ public class WeddingHallService {
     @Transactional
     public String delete(final Long id, final Accessor accessor) {
         final WeddingHall hall = weddingHallRepository
-                .findById(id)
-                .orElseThrow(() -> new BusinessException(WEDDING_HALL_NOT_FOUND_EXCEPTION));
+            .findById(id)
+            .orElseThrow(() -> new BusinessException(WEDDING_HALL_NOT_FOUND_EXCEPTION));
 
         validateOwner(accessor, hall);
         hall.delete();
         return WEDDING_HALL_DELETE_SUCCESS;
+    }
+
+    public Page<WeddingHallPageResponse> getWeddingHallsByFilters(List<WeddingHallTag> tags,
+        Category category, Region region, Integer minPrice, Integer maxPrice, SortType sortType,
+        Integer pageNumber, Integer pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+
+        List<WeddingHallPageResponse> results = weddingHallRepository.searchWeddingHallByFilter(
+            tags, category, region, minPrice, maxPrice, sortType, pageNumber, pageSize
+        );
+
+        long total = weddingHallRepository.countWeddingHallByFilter(tags, category, region,
+            minPrice, maxPrice);
+
+        return new PageImpl<>(results, pageable, total);
     }
 }

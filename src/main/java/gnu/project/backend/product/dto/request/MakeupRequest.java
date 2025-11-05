@@ -10,8 +10,6 @@ import static gnu.project.backend.product.constant.ProductConstant.MAX_AVAILABLE
 import static gnu.project.backend.product.constant.ProductConstant.MAX_DETAIL_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.MAX_NAME_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.MAX_OPTION_COUNT;
-import static gnu.project.backend.product.constant.ProductConstant.MAX_STYLE_LENGTH;
-import static gnu.project.backend.product.constant.ProductConstant.MAX_TYPE_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.MIN_PRICE;
 import static gnu.project.backend.product.constant.ProductConstant.NAME_LENGTH;
 import static gnu.project.backend.product.constant.ProductConstant.NAME_REQUIRED;
@@ -19,10 +17,6 @@ import static gnu.project.backend.product.constant.ProductConstant.OPTION_LIMIT;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_MIN;
 import static gnu.project.backend.product.constant.ProductConstant.PRICE_REQUIRED;
 import static gnu.project.backend.product.constant.ProductConstant.REGION_REQUIRE;
-import static gnu.project.backend.product.constant.ProductConstant.STYLE_LENGTH;
-import static gnu.project.backend.product.constant.ProductConstant.STYLE_REQUIRED;
-import static gnu.project.backend.product.constant.ProductConstant.TYPE_LENGTH;
-import static gnu.project.backend.product.constant.ProductConstant.TYPE_REQUIRED;
 
 import gnu.project.backend.product.enumerated.Region;
 import jakarta.validation.Valid;
@@ -50,16 +44,9 @@ public record MakeupRequest(
     @Size(max = MAX_DETAIL_LENGTH, message = DETAIL_LENGTH)
     String detail,
 
-    @NotBlank(message = STYLE_REQUIRED)
-    @Size(max = MAX_STYLE_LENGTH, message = STYLE_LENGTH)
-    String style,
-
     @Size(max = MAX_AVAILABLE_TIMES, message = AVAILABLE_TIMES_LENGTH)
     String availableTimes,
 
-    @NotBlank(message = TYPE_REQUIRED)
-    @Size(max = MAX_TYPE_LENGTH, message = TYPE_LENGTH)
-    String type,
     @NotNull(message = REGION_REQUIRE)
     Region region,
     List<TagRequest> tags,

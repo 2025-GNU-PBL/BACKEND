@@ -3,8 +3,14 @@ package gnu.project.backend.product.provider;
 import gnu.project.backend.product.dto.request.TagRequest;
 import gnu.project.backend.product.entity.Product;
 import gnu.project.backend.product.entity.Tag;
+import gnu.project.backend.product.enumerated.Category;
+import gnu.project.backend.product.enumerated.DressTag;
+import gnu.project.backend.product.enumerated.MakeupTag;
+import gnu.project.backend.product.enumerated.StudioTag;
+import gnu.project.backend.product.enumerated.WeddingHallTag;
 import gnu.project.backend.product.repository.TagRepository;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -17,6 +23,21 @@ public class TagProvider {
 
     private final TagRepository tagRepository;
 
+    public static boolean isValidForProduct(Product product, String tagName) {
+        Category category = product.getCategory();
+        return switch (category) {
+            case DRESS -> isEnumValue(DressTag.class, tagName);
+            case STUDIO -> isEnumValue(StudioTag.class, tagName);
+            case WEDDING_HALL -> isEnumValue(WeddingHallTag.class, tagName);
+            case MAKEUP -> isEnumValue(MakeupTag.class, tagName);
+        };
+    }
+
+    private static <E extends Enum<E>> boolean isEnumValue(Class<E> enumClass, String name) {
+        return Arrays.stream(enumClass.getEnumConstants())
+            .anyMatch(e -> e.name().equalsIgnoreCase(name));
+    }
+
     public void createTag(
         final Product product,
         final List<TagRequest> tagRequests
@@ -24,12 +45,14 @@ public class TagProvider {
         if (tagRequests == null || tagRequests.isEmpty()) {
             return;
         }
-        final List<Tag> tags = tagRequests.stream()
+
+        final List<Tag> validTags = tagRequests.stream()
+            .filter(req -> isValidForProduct(product, req.tagName()))
             .map(req -> Tag.ofCreate(product, req.tagName()))
             .collect(Collectors.toList());
 
-        product.addAllTag(tags);
-        tagRepository.saveAll(tags);
+        product.addAllTag(validTags);
+        tagRepository.saveAll(validTags);
     }
 
     public void updateTags(final Product product, final List<TagRequest> newTagRequests) {

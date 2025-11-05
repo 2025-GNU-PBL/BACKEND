@@ -13,6 +13,10 @@ import gnu.project.backend.product.dto.request.MakeupUpdateRequest;
 import gnu.project.backend.product.dto.response.MakeupPageResponse;
 import gnu.project.backend.product.dto.response.MakeupResponse;
 import gnu.project.backend.product.entity.Makeup;
+import gnu.project.backend.product.enumerated.Category;
+import gnu.project.backend.product.enumerated.MakeupTag;
+import gnu.project.backend.product.enumerated.Region;
+import gnu.project.backend.product.enumerated.SortType;
 import gnu.project.backend.product.helper.ProductHelper;
 import gnu.project.backend.product.repository.MakeupRepository;
 import java.util.List;
@@ -104,9 +108,7 @@ public class MakeupService {
             request.address(),
             request.detail(),
             request.name(),
-            request.style(),
             request.availableTimes(),
-            request.type(),
             request.region()
         );
         return MakeupResponse.from(makeup);
@@ -125,9 +127,7 @@ public class MakeupService {
                 request.address(),
                 request.detail(),
                 request.name(),
-                request.style(),
                 request.availableTimes(),
-                request.type(),
                 request.region()
             )
         );
@@ -147,5 +147,21 @@ public class MakeupService {
             .orElseThrow(() -> new BusinessException(
                 OWNER_NOT_FOUND_EXCEPTION)
             );
+    }
+
+    public Page<MakeupPageResponse> getMakeupsByFilters(List<MakeupTag> tags, Category category,
+        Region region, Integer minPrice, Integer maxPrice, SortType sortType,
+        Integer pageNumber, Integer pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+
+        List<MakeupPageResponse> results = makeupRepository.searchMakeupsByFilter(
+            tags, category, region, minPrice, maxPrice, sortType, pageNumber, pageSize
+        );
+
+        long total = makeupRepository.countMakeupsByFilter(tags, category, region, minPrice,
+            maxPrice);
+
+        return new PageImpl<>(results, pageable, total);
     }
 }
