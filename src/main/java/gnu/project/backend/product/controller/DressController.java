@@ -7,6 +7,10 @@ import gnu.project.backend.product.dto.request.DressRequest;
 import gnu.project.backend.product.dto.request.DressUpdateRequest;
 import gnu.project.backend.product.dto.response.DressPageResponse;
 import gnu.project.backend.product.dto.response.DressResponse;
+import gnu.project.backend.product.enumerated.Category;
+import gnu.project.backend.product.enumerated.DressTag;
+import gnu.project.backend.product.enumerated.Region;
+import gnu.project.backend.product.enumerated.SortType;
 import gnu.project.backend.product.service.DressService;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
@@ -94,5 +98,21 @@ public class DressController implements DressDocs {
         return ResponseEntity.ok(dressService.delete(id, accessor));
     }
 
-
+    @GetMapping("/filter")
+    public ResponseEntity<Page<DressPageResponse>> getProductsByTags(
+        @RequestParam(required = false) List<DressTag> tags,
+        @RequestParam(required = false) Category category,
+        @RequestParam(required = false) Region region,
+        @RequestParam(required = false) Integer minPrice,
+        @RequestParam(required = false) Integer maxPrice,
+        @RequestParam(required = false, defaultValue = "LATEST") SortType sortType,
+        @RequestParam(required = false, defaultValue = "1") Integer pageNumber,
+        @RequestParam(required = false, defaultValue = "6") Integer pageSize
+    ) {
+        return ResponseEntity.ok(
+            dressService.getDressesByFilters(tags, category, region, minPrice, maxPrice, sortType,
+                pageNumber, pageSize)
+        );
+    }
+    //TODO : 필터, 태그기반 정렬, Response 수정
 }
