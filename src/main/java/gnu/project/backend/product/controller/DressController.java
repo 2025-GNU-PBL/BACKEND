@@ -99,7 +99,7 @@ public class DressController implements DressDocs {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<Page<DressPageResponse>> getProductsByTags(
+    public ResponseEntity<Page<DressPageResponse>> getDressesByTags(
         @RequestParam(required = false) List<DressTag> tags,
         @RequestParam(required = false) Category category,
         @RequestParam(required = false) Region region,

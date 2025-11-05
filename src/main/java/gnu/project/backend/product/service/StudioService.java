@@ -14,6 +14,10 @@ import gnu.project.backend.product.dto.request.StudioUpdateRequest;
 import gnu.project.backend.product.dto.response.StudioPageResponse;
 import gnu.project.backend.product.dto.response.StudioResponse;
 import gnu.project.backend.product.entity.Studio;
+import gnu.project.backend.product.enumerated.Category;
+import gnu.project.backend.product.enumerated.Region;
+import gnu.project.backend.product.enumerated.SortType;
+import gnu.project.backend.product.enumerated.StudioTag;
 import gnu.project.backend.product.helper.ProductHelper;
 import gnu.project.backend.product.repository.StudioRepository;
 import java.util.List;
@@ -143,5 +147,21 @@ public class StudioService {
             .orElseThrow(() -> new BusinessException(
                 OWNER_NOT_FOUND_EXCEPTION)
             );
+    }
+
+    public Page<StudioPageResponse> getStudiosByFilters(List<StudioTag> tags, Category category,
+        Region region, Integer minPrice, Integer maxPrice, SortType sortType,
+        Integer pageNumber, Integer pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+
+        List<StudioPageResponse> results = studioRepository.searchStudiosByFilter(
+            tags, category, region, minPrice, maxPrice, sortType, pageNumber, pageSize
+        );
+
+        long total = studioRepository.countStudiosByFilter(tags, category, region, minPrice,
+            maxPrice);
+
+        return new PageImpl<>(results, pageable, total);
     }
 }
