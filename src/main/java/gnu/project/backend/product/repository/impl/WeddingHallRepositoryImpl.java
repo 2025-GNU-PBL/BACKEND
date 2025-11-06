@@ -50,6 +50,7 @@ public class WeddingHallRepositoryImpl implements WeddingHallCustomRepository {
         final WeddingHall hall = query
                 .selectFrom(weddingHall)
                 .leftJoin(weddingHall.images, image).fetchJoin() // 이미지만 fetch-join
+                .distinct()
                 .where(
                         weddingHall.id.eq(id),
                         weddingHall.isDeleted.isFalse()
