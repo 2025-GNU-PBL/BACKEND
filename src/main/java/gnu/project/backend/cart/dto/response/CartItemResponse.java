@@ -9,13 +9,11 @@ public record CartItemResponse(
         Long cartItemId,
         Long productId,
         String productName,
-        String optionName,
         Integer price,
         Integer quantity,
         boolean selected,
         String thumbnailUrl,
-        LocalDateTime desireDate,
-        String memo
+        LocalDateTime desireDate
 ) {
     public static CartItemResponse from(CartItem item) {
         final Product p = item.getProduct();
@@ -23,13 +21,11 @@ public record CartItemResponse(
                 item.getId(),
                 p.getId(),
                 p.getName(),
-                item.getOption() != null ? item.getOption().getName() : null,
                 p.getPrice(),
                 item.getQuantity(),
                 item.isSelected(),
                 p.getThumbnailUrl(),
-                item.getDesireDate(),
-                item.getMemo()
+                item.getDesireDate()
         );
     }
 }

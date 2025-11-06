@@ -100,6 +100,10 @@ public enum ErrorCode {
     CART_ITEM_NOT_FOUND(HttpStatus.NOT_FOUND, "CART002", "해당 장바구니 아이템을 찾을 수 없습니다."),
     CART_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "CART003", "카트에 5개의 상품만 추가 가능합니다."),
 
+    PREFILL_NOT_FOUND_OR_EXPIRED(HttpStatus.BAD_REQUEST,"PREFILL001", "해당 프리필이 없거나 만료되었습니다."),
+
+
+
     //Coupon
     COUPON_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "COUPON001", "해당 쿠폰을 찾을 수 없습니다."),
     COUPON_NOT_AVAILABLE(HttpStatus.BAD_REQUEST, "COUPON002", "해당 쿠폰은 사용할 수 없습니다."),
