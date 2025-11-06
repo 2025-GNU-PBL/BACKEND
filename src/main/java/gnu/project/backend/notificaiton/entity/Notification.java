@@ -33,7 +33,7 @@ public class Notification extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String recipientSocialId;
+    private Long customerId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -70,13 +70,13 @@ public class Notification extends BaseEntity {
 
     // === 생성 메서드 ===
     public static Notification createPaymentNotification(
-        String customerSocialId,
+        Long customerId,
         Long reservationId,
         String reservationTitle,
         String paymentUrl
     ) {
         Notification notification = new Notification();
-        notification.recipientSocialId = customerSocialId;
+        notification.customerId = customerId;
         notification.recipientRole = CUSTOMER;
         notification.type = PAYMENT_REQUIRED;
         notification.title = "예약 승인 완료";
@@ -89,14 +89,14 @@ public class Notification extends BaseEntity {
     }
 
     public static Notification createReservationStatusNotification(
-        String recipientSocialId,
+        Long customerId,
         UserRole recipientRole,
         Long reservationId,
         String reservationTitle,
         Status status
     ) {
         Notification notification = new Notification();
-        notification.recipientSocialId = recipientSocialId;
+        notification.customerId = customerId;
         notification.recipientRole = recipientRole;
         notification.reservationId = reservationId;
 

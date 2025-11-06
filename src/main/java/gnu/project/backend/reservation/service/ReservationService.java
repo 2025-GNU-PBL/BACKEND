@@ -81,6 +81,7 @@ public class ReservationService {
         if (reservation.getStatus() == Status.APPROVE) {
             eventPublisher.publishEvent(
                 new ReservationApprovedEvent(
+                    reservation.getCustomer().getId(),
                     reservation.getId(),
                     reservation.getReservationTime(),
                     reservation.getTitle(),
