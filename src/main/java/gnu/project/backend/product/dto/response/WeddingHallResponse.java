@@ -27,8 +27,6 @@ public record WeddingHallResponse(
         Region region,
 
         String ownerName,
-        boolean subwayAccessible,
-        boolean diningAvailable,
 
         List<ImageResponse> images,
         List<OptionResponse> options,
@@ -58,9 +56,6 @@ public record WeddingHallResponse(
                 hall.getRegion(),
 
                 ownerName,
-                hall.isSubwayAccessible(),
-                hall.isDiningAvailable(),
-
                 hall.getImages().stream()
                         .map(img -> new ImageResponse(img.getId(), img.getUrl(), img.getDisplayOrder(), img.isThumbnail()))
                         .toList(),
