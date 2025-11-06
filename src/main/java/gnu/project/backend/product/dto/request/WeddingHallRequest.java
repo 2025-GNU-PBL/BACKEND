@@ -43,8 +43,6 @@ public record WeddingHallRequest(
         @NotNull(message = REGION_REQUIRE)
         Region region,
 
-        boolean subwayAccessible,
-        boolean diningAvailable,
 
         List<TagRequest> tags,
 
