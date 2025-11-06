@@ -80,7 +80,9 @@ public interface WeddingHallDocs {
     );
 
     @Operation(
-        summary = "드레스 필터 조회",
+        summary = "웨딩홀"
+            + ""
+            + " 필터 조회",
         description = "태그, 카테고리, 지역, 가격 범위, 정렬 기준 등을 조합하여 드레스 목록을 필터링하여 조회한다.",
         responses = {
             @ApiResponse(
