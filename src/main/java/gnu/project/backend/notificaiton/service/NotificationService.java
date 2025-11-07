@@ -135,7 +135,7 @@ public class NotificationService {
             sseEmitterService.sendNotification(
                 savedNotification.getRecipientRole(),
                 savedNotification.getRecipientId(),
-                savedNotification.getMessage()
+                savedNotification
             );
             savedNotification.markAsSent();
             notificationRepository.save(savedNotification);
