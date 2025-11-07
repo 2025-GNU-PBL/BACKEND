@@ -1,8 +1,7 @@
 package gnu.project.backend.notificaiton.event;
 
 import gnu.project.backend.notificaiton.entity.Notification;
-import gnu.project.backend.notificaiton.repository.NotificationRepository;
-import gnu.project.backend.notificaiton.service.SseEmitterService;
+import gnu.project.backend.notificaiton.service.NotificationService;
 import gnu.project.backend.reservation.event.ReservationApprovedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +15,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Slf4j
 public class NotificationEventListener {
 
-    private final NotificationRepository notificationRepository;
-    private final SseEmitterService sseEmitterService;
+    private final NotificationService notificationService;
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -28,7 +26,7 @@ public class NotificationEventListener {
             event.title(),
             String.format("/payment?reservationId=%d", event.reservationId())
         );
-        notificationRepository.save(notification);
-        sseEmitterService.sendNotification(event.customerId(), notification);
+
+        notificationService.createAndSendNotification(notification);
     }
 }

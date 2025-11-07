@@ -1,51 +1,30 @@
 package gnu.project.backend.notificaiton.service;
 
-import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.enumerated.UserRole;
-import gnu.project.backend.common.error.ErrorCode;
-import gnu.project.backend.common.exception.BusinessException;
-import gnu.project.backend.customer.entity.Customer;
-import gnu.project.backend.customer.repository.CustomerRepository;
-import gnu.project.backend.owner.entity.Owner;
-import gnu.project.backend.owner.repository.OwnerRepository;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SseEmitterService {
 
     private static final Long DEFAULT_TIMEOUT = 30 * 60 * 1000L;
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
-    private final CustomerRepository customerRepository;
-    private final OwnerRepository ownerRepository;
 
     private static String generateKey(UserRole userRole, Long userId) {
         return userRole.name() + ":" + userId;
     }
 
-    public SseEmitter createEmitter(final Accessor accessor) {
-        Long userId;
-        String key;
-        switch (accessor.getUserRole()) {
-            case OWNER -> {
-                Owner owner = ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
-                    .orElseThrow(() -> new BusinessException(ErrorCode.OWNER_NOT_FOUND_EXCEPTION));
-                userId = owner.getId();
-            }
-            case CUSTOMER -> {
-                Customer customer = customerRepository.findByOauthInfo_SocialId(
-                        accessor.getSocialId())
-                    .orElseThrow(
-                        () -> new BusinessException(ErrorCode.CUSTOMER_NOT_FOUND_EXCEPTION));
-                userId = customer.getId();
-            }
-            default -> throw new BusinessException(ErrorCode.UNAUTHORIZED);
-        }
-        key = generateKey(accessor.getUserRole(), userId);
+    /**
+     * SSE 연결 생성
+     */
+    public SseEmitter createEmitter(UserRole userRole, Long userId) {
+        String key = generateKey(userRole, userId);
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
 
         emitter.onCompletion(() -> emitters.remove(key));
@@ -53,19 +32,23 @@ public class SseEmitterService {
         emitter.onError((e) -> emitters.remove(key));
 
         emitters.put(key, emitter);
+
+        log.info("SSE 연결 생성 완료 - key: {}", key);
         return emitter;
     }
 
-    public void sendNotification(Long userId, Object data) {
-        String key = generateKey(UserRole.CUSTOMER, userId);
+    public void sendNotification(UserRole role, Long userId, Object data) {
+        String key = generateKey(role, userId);
         SseEmitter emitter = emitters.get(key);
         if (emitter != null) {
             try {
                 emitter.send(SseEmitter.event()
                     .name("notification")
                     .data(data));
+                log.info("알림 실시간 전송 - key: {}", key);
             } catch (Exception e) {
-                emitters.remove(key); // 송신 실패 시 제거
+                emitters.remove(key);
+                log.warn("알림 전송 실패, Emitter 제거 - key: {}", key);
             }
         }
     }

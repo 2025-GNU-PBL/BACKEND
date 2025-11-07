@@ -33,7 +33,7 @@ public class Notification extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private Long customerId;
+    private Long recipientId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -54,7 +54,7 @@ public class Notification extends BaseEntity {
 
     @Column(length = 500)
     private String actionUrl;
-    
+
     @Column(nullable = false)
     private Boolean isRead = false;
 
@@ -68,13 +68,13 @@ public class Notification extends BaseEntity {
     private LocalDateTime expiresAt;
 
     public static Notification createPaymentNotification(
-        Long customerId,
-        Long reservationId,
-        String reservationTitle,
-        String paymentUrl
+        final Long recipientId,
+        final Long reservationId,
+        final String reservationTitle,
+        final String paymentUrl
     ) {
         Notification notification = new Notification();
-        notification.customerId = customerId;
+        notification.recipientId = recipientId;
         notification.recipientRole = CUSTOMER;
         notification.type = PAYMENT_REQUIRED;
         notification.title = "예약 승인 완료";
@@ -87,14 +87,14 @@ public class Notification extends BaseEntity {
     }
 
     public static Notification createReservationStatusNotification(
-        Long customerId,
+        Long recipientId,
         UserRole recipientRole,
         Long reservationId,
         String reservationTitle,
         Status status
     ) {
         Notification notification = new Notification();
-        notification.customerId = customerId;
+        notification.recipientId = recipientId;
         notification.recipientRole = recipientRole;
         notification.reservationId = reservationId;
 
