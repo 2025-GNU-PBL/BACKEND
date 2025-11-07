@@ -1,6 +1,7 @@
 package gnu.project.backend.product.controller;
 
 import gnu.project.backend.auth.aop.Auth;
+import gnu.project.backend.auth.aop.OnlyOwner;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.product.controller.docs.StudioDocs;
 import gnu.project.backend.product.dto.request.StudioRequest;
@@ -37,6 +38,7 @@ public class StudioController implements StudioDocs {
     private final StudioService studioService;
 
     @Override
+    @OnlyOwner
     @PostMapping
     public ResponseEntity<StudioResponse> createStudio(
         @Valid @RequestPart("request") final StudioRequest request,
@@ -48,6 +50,7 @@ public class StudioController implements StudioDocs {
     }
 
     @Override
+    @OnlyOwner
     @PatchMapping("/{id}")
     public ResponseEntity<StudioResponse> updateStudio(
         @PathVariable(name = "id") final Long id,
@@ -75,6 +78,7 @@ public class StudioController implements StudioDocs {
     }
 
     @Override
+    @OnlyOwner
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteStudio(
         @Auth final Accessor accessor,

@@ -2,6 +2,7 @@ package gnu.project.backend.owner.controller;
 
 
 import gnu.project.backend.auth.aop.Auth;
+import gnu.project.backend.auth.aop.OnlyOwner;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.dto.UploadImageDto;
 import gnu.project.backend.owner.controller.docs.OwnerDocs;
@@ -29,6 +30,7 @@ public class OwnerController implements OwnerDocs {
     private final OwnerService ownerService;
 
     @Override
+    @OnlyOwner
     @PostMapping()
     public ResponseEntity<OwnerSignInResponse> signIn(
         @Auth final Accessor accessor,
@@ -38,6 +40,7 @@ public class OwnerController implements OwnerDocs {
     }
 
     @Override
+    @OnlyOwner
     @PostMapping("/profile/image")
     public ResponseEntity<UploadImageDto> uploadImage(
         @Auth final Accessor accessor,
@@ -52,6 +55,7 @@ public class OwnerController implements OwnerDocs {
     }
 
     @Override
+    @OnlyOwner
     @PatchMapping()
     public ResponseEntity<OwnerUpdateResponse> update(
         @Auth final Accessor accessor,
@@ -61,6 +65,7 @@ public class OwnerController implements OwnerDocs {
     }
 
     @Override
+    @OnlyOwner
     @GetMapping()
     public ResponseEntity<OwnerResponse> find(
         @Auth final Accessor accessor

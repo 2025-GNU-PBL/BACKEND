@@ -1,6 +1,7 @@
 package gnu.project.backend.product.controller;
 
 import gnu.project.backend.auth.aop.Auth;
+import gnu.project.backend.auth.aop.OnlyOwner;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.product.controller.docs.DressDocs;
 import gnu.project.backend.product.dto.request.DressRequest;
@@ -38,6 +39,7 @@ public class DressController implements DressDocs {
     private final DressService dressService;
 
     @Override
+    @OnlyOwner
     @PostMapping()
     public ResponseEntity<DressResponse> createDress(
         @Valid @RequestPart("request") final DressRequest request,
@@ -54,6 +56,7 @@ public class DressController implements DressDocs {
     }
 
     @Override
+    @OnlyOwner
     @PatchMapping("/{id}")
     public ResponseEntity<DressResponse> updateDress(
         @PathVariable(name = "id") final Long id,
@@ -90,6 +93,7 @@ public class DressController implements DressDocs {
     }
 
     @Override
+    @OnlyOwner
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDress(
         @Parameter(hidden = true) @Auth final Accessor accessor,

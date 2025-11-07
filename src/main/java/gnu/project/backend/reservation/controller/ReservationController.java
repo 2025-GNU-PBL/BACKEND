@@ -1,6 +1,7 @@
 package gnu.project.backend.reservation.controller;
 
 import gnu.project.backend.auth.aop.Auth;
+import gnu.project.backend.auth.aop.OnlyCustomer;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.reservation.controller.docs.ReservationDocs;
 import gnu.project.backend.reservation.dto.request.ReservationRequestDto;
@@ -24,6 +25,7 @@ public class ReservationController implements ReservationDocs {
 
     private final ReservationService reservationService;
 
+    @OnlyCustomer
     @PostMapping()
     public ResponseEntity<ReservationResponseDto> enrollReservation(
         @Auth final Accessor accessor,
