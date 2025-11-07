@@ -4,8 +4,8 @@ import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.product.dto.request.MakeupRequest;
 import gnu.project.backend.product.dto.request.MakeupUpdateRequest;
-import gnu.project.backend.product.dto.response.MakeupPageResponse;
 import gnu.project.backend.product.dto.response.MakeupResponse;
+import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.MakeupTag;
 import gnu.project.backend.product.enumerated.Region;
@@ -96,11 +96,11 @@ public interface MakeupDocs {
             @ApiResponse(
                 responseCode = "200",
                 description = "조회 성공",
-                content = @Content(schema = @Schema(implementation = MakeupPageResponse.class))
+                content = @Content(schema = @Schema(implementation = ProductPageResponse.class))
             )
         }
     )
-    ResponseEntity<Page<MakeupPageResponse>> readMakeups(
+    ResponseEntity<Page<ProductPageResponse>> readMakeups(
         @Parameter(description = "페이지 번호 (기본값 1)")
         @RequestParam(name = "pageNumber", required = false, defaultValue = "1") Integer pageNumber,
 
@@ -134,7 +134,7 @@ public interface MakeupDocs {
         }
     )
     @GetMapping("/filter")
-    ResponseEntity<Page<MakeupPageResponse>> getMakeupsByTags(
+    ResponseEntity<Page<ProductPageResponse>> getMakeupsByTags(
 
         @Parameter(
             description = "메이크업 태그 목록 (예: SHOOTING, CEREMONY, CLEAN_AND_BRIGHT 등)",

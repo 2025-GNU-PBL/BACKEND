@@ -6,7 +6,7 @@ import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.product.controller.docs.StudioDocs;
 import gnu.project.backend.product.dto.request.StudioRequest;
 import gnu.project.backend.product.dto.request.StudioUpdateRequest;
-import gnu.project.backend.product.dto.response.StudioPageResponse;
+import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.dto.response.StudioResponse;
 import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.Region;
@@ -70,7 +70,7 @@ public class StudioController implements StudioDocs {
 
     @Override
     @GetMapping
-    public ResponseEntity<Page<StudioPageResponse>> readStudios(
+    public ResponseEntity<Page<ProductPageResponse>> readStudios(
         @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
         @RequestParam(name = "pageSize", required = false, defaultValue = "6") final Integer pageSize
     ) {
@@ -88,7 +88,7 @@ public class StudioController implements StudioDocs {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<Page<StudioPageResponse>> getStudiosByTags(
+    public ResponseEntity<Page<ProductPageResponse>> getStudiosByTags(
         @RequestParam(required = false) List<StudioTag> tags,
         @RequestParam(required = false) Category category,
         @RequestParam(required = false) Region region,

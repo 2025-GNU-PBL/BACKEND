@@ -3,8 +3,8 @@ package gnu.project.backend.product.controller.docs;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.product.dto.request.DressRequest;
 import gnu.project.backend.product.dto.request.DressUpdateRequest;
-import gnu.project.backend.product.dto.response.DressPageResponse;
 import gnu.project.backend.product.dto.response.DressResponse;
+import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.enumerated.DressTag;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -64,7 +64,7 @@ public interface DressDocs {
         description = "드레스 상품 목록을 페이지네이션하여 조회합니다."
     )
     @GetMapping()
-    ResponseEntity<Page<DressPageResponse>> readDresses(
+    ResponseEntity<Page<ProductPageResponse>> readDresses(
         @Parameter(description = "페이지 번호 (기본값: 1)")
         @RequestParam(name = "pageNumber", required = false, defaultValue = "1") Integer pageNumber,
         @Parameter(description = "페이지 사이즈 (기본값: 6)")
@@ -95,7 +95,7 @@ public interface DressDocs {
         }
     )
     @GetMapping("/filter")
-    ResponseEntity<Page<DressPageResponse>> getDressesByTags(
+    ResponseEntity<Page<ProductPageResponse>> getDressesByTags(
 
         @Parameter(
             description = "드레스 태그 목록 (예: SILK, LACE, BEADS, DOMESTIC, IMPORTED 등)",

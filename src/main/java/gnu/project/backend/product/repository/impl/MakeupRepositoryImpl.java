@@ -12,8 +12,8 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import gnu.project.backend.product.dto.response.DressResponse.TagResponse;
-import gnu.project.backend.product.dto.response.MakeupPageResponse;
 import gnu.project.backend.product.dto.response.MakeupResponse;
+import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.entity.Makeup;
 import gnu.project.backend.product.entity.Tag;
 import gnu.project.backend.product.enumerated.Category;
@@ -48,7 +48,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
     }
 
     @Override
-    public List<MakeupPageResponse> searchMakeup(final int pageSize, final int pageNumber) {
+    public List<ProductPageResponse> searchMakeup(final int pageSize, final int pageNumber) {
         return pagination(query
                 .select(createMakeupResponse())
                 .from(makeup)
@@ -61,7 +61,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
     }
 
     @Override
-    public List<MakeupPageResponse> searchMakeupsByFilter(List<MakeupTag> tags, Category category,
+    public List<ProductPageResponse> searchMakeupsByFilter(List<MakeupTag> tags, Category category,
         Region region, Integer minPrice, Integer maxPrice, SortType sortType, Integer pageNumber,
         Integer pageSize) {
         OrderSpecifier<?> order = switch (sortType) {
@@ -71,7 +71,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
             default -> makeup.createdAt.desc();
         };
 
-        List<MakeupPageResponse> makeups = pagination(query
+        List<ProductPageResponse> makeups = pagination(query
             .select(createMakeupResponse())
             .from(makeup)
             .leftJoin(makeup.images, image)
@@ -91,7 +91,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
         List<Tag> allTags = query
             .selectFrom(tag)
             .where(tag.product.id.in(makeups.stream()
-                .map(MakeupPageResponse::id)
+                .map(ProductPageResponse::id)
                 .toList())
             ).fetch();
 
@@ -105,7 +105,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
             ));
 
         return makeups.stream()
-            .map(makeup -> new MakeupPageResponse(
+            .map(makeup -> new ProductPageResponse(
                 makeup.id(),
                 makeup.name(),
                 makeup.starCount(),
@@ -167,9 +167,9 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
         );
     }
 
-    private ConstructorExpression<MakeupPageResponse> createMakeupResponse() {
+    private ConstructorExpression<ProductPageResponse> createMakeupResponse() {
         return Projections.constructor(
-            MakeupPageResponse.class,
+            ProductPageResponse.class,
             makeup.id,
             makeup.name,
             makeup.starCount,

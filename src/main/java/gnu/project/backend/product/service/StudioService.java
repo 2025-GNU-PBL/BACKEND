@@ -11,7 +11,7 @@ import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
 import gnu.project.backend.product.dto.request.StudioRequest;
 import gnu.project.backend.product.dto.request.StudioUpdateRequest;
-import gnu.project.backend.product.dto.response.StudioPageResponse;
+import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.dto.response.StudioResponse;
 import gnu.project.backend.product.entity.Studio;
 import gnu.project.backend.product.enumerated.Category;
@@ -53,7 +53,7 @@ public class StudioService {
     }
 
     @Transactional(readOnly = true)
-    public Page<StudioPageResponse> readStudios(
+    public Page<ProductPageResponse> readStudios(
         final Integer pageNumber,
         final Integer pageSize
     ) {
@@ -149,13 +149,13 @@ public class StudioService {
             );
     }
 
-    public Page<StudioPageResponse> getStudiosByFilters(List<StudioTag> tags, Category category,
+    public Page<ProductPageResponse> getStudiosByFilters(List<StudioTag> tags, Category category,
         Region region, Integer minPrice, Integer maxPrice, SortType sortType,
         Integer pageNumber, Integer pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
 
-        List<StudioPageResponse> results = studioRepository.searchStudiosByFilter(
+        List<ProductPageResponse> results = studioRepository.searchStudiosByFilter(
             tags, category, region, minPrice, maxPrice, sortType, pageNumber, pageSize
         );
 

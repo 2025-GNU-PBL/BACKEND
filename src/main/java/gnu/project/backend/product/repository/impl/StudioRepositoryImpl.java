@@ -14,7 +14,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import gnu.project.backend.product.dto.response.DressResponse.TagResponse;
-import gnu.project.backend.product.dto.response.StudioPageResponse;
+import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.dto.response.StudioResponse;
 import gnu.project.backend.product.entity.Studio;
 import gnu.project.backend.product.entity.Tag;
@@ -94,8 +94,8 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
     }
 
     @Override
-    public List<StudioPageResponse> searchStudio(int pageSize, int pageNumber) {
-        List<StudioPageResponse> studios = pagination(
+    public List<ProductPageResponse> searchStudio(int pageSize, int pageNumber) {
+        List<ProductPageResponse> studios = pagination(
             query
                 .select(createStudioResponse())
                 .from(studio)
@@ -113,7 +113,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
         List<Tag> allTags = query
             .selectFrom(tag)
             .where(tag.product.id.in(studios.stream()
-                .map(StudioPageResponse::id)
+                .map(ProductPageResponse::id)
                 .toList())
             ).fetch();
 
@@ -127,7 +127,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
             ));
 
         return studios.stream()
-            .map(studio -> new StudioPageResponse(
+            .map(studio -> new ProductPageResponse(
                 studio.id(),
                 studio.name(),
                 studio.starCount(),
@@ -136,8 +136,8 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
                 studio.price(),
                 studio.availableTime(),
                 studio.createdAt(),
-                studio.Thumbnail(),
                 studio.region(),
+                studio.Thumbnail(),
                 tagsMap.getOrDefault(studio.id(), List.of())
             ))
             .toList();
@@ -157,7 +157,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
     }
 
     @Override
-    public List<StudioPageResponse> searchStudiosByFilter(List<StudioTag> tags, Category category,
+    public List<ProductPageResponse> searchStudiosByFilter(List<StudioTag> tags, Category category,
         Region region, Integer minPrice, Integer maxPrice, SortType sortType, Integer pageNumber,
         Integer pageSize) {
         OrderSpecifier<?> order = switch (sortType) {
@@ -167,7 +167,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
             default -> studio.createdAt.desc();
         };
 
-        List<StudioPageResponse> studios = pagination(
+        List<ProductPageResponse> studios = pagination(
             query
                 .select(createStudioResponse())
                 .from(studio)
@@ -191,7 +191,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
         List<Tag> allTags = query
             .selectFrom(tag)
             .where(tag.product.id.in(studios.stream()
-                .map(StudioPageResponse::id)
+                .map(ProductPageResponse::id)
                 .toList())
             ).fetch();
 
@@ -205,7 +205,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
             ));
 
         return studios.stream()
-            .map(studio -> new StudioPageResponse(
+            .map(studio -> new ProductPageResponse(
                 studio.id(),
                 studio.name(),
                 studio.starCount(),
@@ -214,8 +214,8 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
                 studio.price(),
                 studio.availableTime(),
                 studio.createdAt(),
-                studio.Thumbnail(),
                 studio.region(),
+                studio.Thumbnail(),
                 tagsMap.getOrDefault(studio.id(), List.of())
             ))
             .toList();
@@ -239,9 +239,9 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
         return category != null ? dress.category.eq(category) : null;
     }
 
-    private ConstructorExpression<StudioPageResponse> createStudioResponse() {
+    private ConstructorExpression<ProductPageResponse> createStudioResponse() {
         return Projections.constructor(
-            StudioPageResponse.class,
+            ProductPageResponse.class,
             studio.id,
             studio.name,
             studio.starCount,
@@ -250,8 +250,8 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
             studio.price,
             studio.availableTimes,
             studio.createdAt,
-            image.url,
             studio.region,
+            image.url,
             Expressions.nullExpression(List.class)
         );
     }

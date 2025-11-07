@@ -6,8 +6,8 @@ import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.product.controller.docs.DressDocs;
 import gnu.project.backend.product.dto.request.DressRequest;
 import gnu.project.backend.product.dto.request.DressUpdateRequest;
-import gnu.project.backend.product.dto.response.DressPageResponse;
 import gnu.project.backend.product.dto.response.DressResponse;
+import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.DressTag;
 import gnu.project.backend.product.enumerated.Region;
@@ -83,7 +83,7 @@ public class DressController implements DressDocs {
 
     @Override
     @GetMapping()
-    public ResponseEntity<Page<DressPageResponse>> readDresses(
+    public ResponseEntity<Page<ProductPageResponse>> readDresses(
         @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
         @RequestParam(name = "pageSize", required = false, defaultValue = "6") final Integer pageSize
     ) {
@@ -103,7 +103,7 @@ public class DressController implements DressDocs {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<Page<DressPageResponse>> getDressesByTags(
+    public ResponseEntity<Page<ProductPageResponse>> getDressesByTags(
         @RequestParam(required = false) List<DressTag> tags,
         @RequestParam(required = false) Category category,
         @RequestParam(required = false) Region region,
