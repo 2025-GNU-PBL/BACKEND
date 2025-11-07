@@ -1,4 +1,4 @@
-package gnu.project.backend.notificaiton.service;
+package gnu.project.backend.notification.service;
 
 import static gnu.project.backend.common.error.ErrorCode.CUSTOMER_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.common.error.ErrorCode.NOTIFICATION_NOT_FOUND_EXCEPTION;
@@ -9,9 +9,9 @@ import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.exception.BusinessException;
 import gnu.project.backend.customer.entity.Customer;
 import gnu.project.backend.customer.repository.CustomerRepository;
-import gnu.project.backend.notificaiton.dto.response.NotificationResponseDto;
-import gnu.project.backend.notificaiton.entity.Notification;
-import gnu.project.backend.notificaiton.repository.NotificationRepository;
+import gnu.project.backend.notification.dto.response.NotificationResponseDto;
+import gnu.project.backend.notification.entity.Notification;
+import gnu.project.backend.notification.repository.NotificationRepository;
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
 import java.util.List;

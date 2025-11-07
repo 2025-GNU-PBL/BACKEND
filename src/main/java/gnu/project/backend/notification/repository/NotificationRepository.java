@@ -1,6 +1,6 @@
-package gnu.project.backend.notificaiton.repository;
+package gnu.project.backend.notification.repository;
 
-import gnu.project.backend.notificaiton.entity.Notification;
+import gnu.project.backend.notification.entity.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

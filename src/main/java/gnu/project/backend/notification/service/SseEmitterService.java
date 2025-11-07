@@ -1,8 +1,8 @@
-package gnu.project.backend.notificaiton.service;
+package gnu.project.backend.notification.service;
 
 import gnu.project.backend.common.enumerated.UserRole;
-import gnu.project.backend.notificaiton.dto.response.NotificationResponseDto;
-import gnu.project.backend.notificaiton.entity.Notification;
+import gnu.project.backend.notification.dto.response.NotificationResponseDto;
+import gnu.project.backend.notification.entity.Notification;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;

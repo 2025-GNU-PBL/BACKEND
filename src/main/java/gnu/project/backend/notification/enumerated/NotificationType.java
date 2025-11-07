@@ -1,4 +1,4 @@
-package gnu.project.backend.notificaiton.enumerated;
+package gnu.project.backend.notification.enumerated;
 
 public enum NotificationType {
     RESERVATION_APPROVED,

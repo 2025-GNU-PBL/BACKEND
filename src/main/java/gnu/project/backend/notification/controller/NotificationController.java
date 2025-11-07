@@ -1,10 +1,10 @@
-package gnu.project.backend.notificaiton.controller;
+package gnu.project.backend.notification.controller;
 
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
-import gnu.project.backend.notificaiton.controller.docs.NotificationDocs;
-import gnu.project.backend.notificaiton.dto.response.NotificationResponseDto;
-import gnu.project.backend.notificaiton.service.NotificationService;
+import gnu.project.backend.notification.controller.docs.NotificationDocs;
+import gnu.project.backend.notification.dto.response.NotificationResponseDto;
+import gnu.project.backend.notification.service.NotificationService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;

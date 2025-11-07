@@ -1,7 +1,7 @@
-package gnu.project.backend.notificaiton.repository;
+package gnu.project.backend.notification.repository;
 
 import gnu.project.backend.common.enumerated.UserRole;
-import gnu.project.backend.notificaiton.entity.Notification;
+import gnu.project.backend.notification.entity.Notification;
 import java.util.List;
 
 public interface NotificationCustomRepository {

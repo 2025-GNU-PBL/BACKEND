@@ -1,11 +1,11 @@
-package gnu.project.backend.notificaiton.repository.impl;
+package gnu.project.backend.notification.repository.impl;
 
-import static gnu.project.backend.notificaiton.entity.QNotification.notification;
+import static gnu.project.backend.notification.entity.QNotification.notification;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import gnu.project.backend.common.enumerated.UserRole;
-import gnu.project.backend.notificaiton.entity.Notification;
-import gnu.project.backend.notificaiton.repository.NotificationCustomRepository;
+import gnu.project.backend.notification.entity.Notification;
+import gnu.project.backend.notification.repository.NotificationCustomRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

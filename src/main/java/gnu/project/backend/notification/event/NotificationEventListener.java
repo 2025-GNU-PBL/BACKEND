@@ -1,7 +1,7 @@
-package gnu.project.backend.notificaiton.event;
+package gnu.project.backend.notification.event;
 
-import gnu.project.backend.notificaiton.entity.Notification;
-import gnu.project.backend.notificaiton.service.NotificationService;
+import gnu.project.backend.notification.entity.Notification;
+import gnu.project.backend.notification.service.NotificationService;
 import gnu.project.backend.reservation.event.ReservationApprovedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,8 +1,8 @@
-package gnu.project.backend.notificaiton.dto.response;
+package gnu.project.backend.notification.dto.response;
 
 import gnu.project.backend.common.enumerated.UserRole;
-import gnu.project.backend.notificaiton.entity.Notification;
-import gnu.project.backend.notificaiton.enumerated.NotificationType;
+import gnu.project.backend.notification.entity.Notification;
+import gnu.project.backend.notification.enumerated.NotificationType;
 import java.time.LocalDateTime;
 import lombok.Builder;
 

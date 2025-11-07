@@ -1,8 +1,8 @@
-package gnu.project.backend.notificaiton.controller.docs;
+package gnu.project.backend.notification.controller.docs;
 
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
-import gnu.project.backend.notificaiton.dto.response.NotificationResponseDto;
+import gnu.project.backend.notification.dto.response.NotificationResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;

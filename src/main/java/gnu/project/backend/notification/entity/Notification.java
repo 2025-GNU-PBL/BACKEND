@@ -1,13 +1,13 @@
-package gnu.project.backend.notificaiton.entity;
+package gnu.project.backend.notification.entity;
 
 import static gnu.project.backend.common.enumerated.UserRole.CUSTOMER;
-import static gnu.project.backend.notificaiton.enumerated.NotificationType.PAYMENT_REQUIRED;
-import static gnu.project.backend.notificaiton.enumerated.NotificationType.RESERVATION_APPROVED;
-import static gnu.project.backend.notificaiton.enumerated.NotificationType.RESERVATION_CANCELLED;
+import static gnu.project.backend.notification.enumerated.NotificationType.PAYMENT_REQUIRED;
+import static gnu.project.backend.notification.enumerated.NotificationType.RESERVATION_APPROVED;
+import static gnu.project.backend.notification.enumerated.NotificationType.RESERVATION_CANCELLED;
 
 import gnu.project.backend.common.entity.BaseEntity;
 import gnu.project.backend.common.enumerated.UserRole;
-import gnu.project.backend.notificaiton.enumerated.NotificationType;
+import gnu.project.backend.notification.enumerated.NotificationType;
 import gnu.project.backend.reservation.enumerated.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
