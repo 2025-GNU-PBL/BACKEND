@@ -14,7 +14,6 @@ public interface CartItemCustomRepository {
     CartItem findSameItem(
             Long cartId,
             Long productId,
-            Long optionId,
             LocalDateTime desireDate
     );
 }
