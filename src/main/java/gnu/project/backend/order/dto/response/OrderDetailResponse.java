@@ -5,13 +5,19 @@ import gnu.project.backend.order.entity.OrderDetail;
 public record OrderDetailResponse(
         Long productId,
         String productName,
-        Long priceAtPurchase
+        String thumbnailUrl,
+        Long unitPrice,
+        Integer quantity,
+        Long lineTotal
 ) {
-    public static OrderDetailResponse from(OrderDetail orderDetail) {
+    public static OrderDetailResponse from(OrderDetail d) {
         return new OrderDetailResponse(
-                orderDetail.getProduct().getId(),
-                orderDetail.getProduct().getName(),
-                orderDetail.getFinalPrice()
+                d.getProduct().getId(),
+                d.getProductNameSnapshot(),
+                d.getThumbnailSnapshot(),
+                d.getUnitPriceAtPurchase(),
+                d.getQuantity(),
+                d.getLineTotal()
         );
     }
 }

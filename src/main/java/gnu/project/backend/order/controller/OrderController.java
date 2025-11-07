@@ -3,15 +3,16 @@ package gnu.project.backend.order.controller;
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.order.controller.docs.OrderDocs;
+import gnu.project.backend.order.dto.request.CouponPreviewRequest;
 import gnu.project.backend.order.dto.request.OrderCreateRequest;
+import gnu.project.backend.order.dto.response.CouponPreviewResponse;
 import gnu.project.backend.order.dto.response.OrderResponse;
 import gnu.project.backend.order.service.OrderService;
 import io.swagger.v3.oas.annotations.Parameter;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,5 +42,25 @@ public class OrderController implements OrderDocs {
             @RequestBody OrderCreateRequest request
     ) {
         return ResponseEntity.ok(orderService.createFromReservation(accessor, request));
+    }
+
+    @Override
+    @PostMapping("/{orderCode}/coupon/preview")
+    public ResponseEntity<CouponPreviewResponse> previewCoupon(
+            @Parameter(hidden = true) @Auth Accessor accessor,
+            @PathVariable String orderCode,
+            @RequestBody CouponPreviewRequest request
+    ) {
+        return ResponseEntity.ok(orderService.previewCoupon(accessor, orderCode, request));
+    }
+
+    @Override
+    @PostMapping("/{orderCode}/coupon/apply")
+    public ResponseEntity<OrderResponse> applyCoupon(
+            @Parameter(hidden = true) @Auth Accessor accessor,
+            @PathVariable String orderCode,
+            @RequestParam(required = false) Long userCouponId
+    ) {
+        return ResponseEntity.ok(orderService.applyCoupon(accessor, orderCode, userCouponId));
     }
 }

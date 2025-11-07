@@ -26,14 +26,29 @@ public class OrderDetail {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    // 주문 시점 확정 가격
-    @Column(name = "final_price", nullable = false)
-    private Long finalPrice;
+    @Column(name = "product_name_snapshot", nullable = false)
+    private String productNameSnapshot;
 
-    public static OrderDetail of(Product product, Long finalPrice) {
+    @Column(name = "thumbnail_snapshot")
+    private String thumbnailSnapshot;
+
+    @Column(name = "unit_price_at_purchase", nullable = false)
+    private Long unitPriceAtPurchase;
+
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
+
+    @Column(name = "line_total", nullable = false)
+    private Long lineTotal;
+
+    public static OrderDetail of(Product product, int quantity) {
         OrderDetail d = new OrderDetail();
         d.product = product;
-        d.finalPrice = finalPrice != null ? finalPrice : product.getPrice().longValue();
+        d.productNameSnapshot = product.getName();
+        d.thumbnailSnapshot = product.getThumbnailUrl();
+        d.unitPriceAtPurchase = product.getPrice().longValue();
+        d.quantity = Math.max(1, quantity);
+        d.lineTotal = d.unitPriceAtPurchase * d.quantity;
         return d;
     }
 }

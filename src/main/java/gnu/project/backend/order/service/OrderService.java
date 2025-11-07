@@ -1,22 +1,23 @@
 package gnu.project.backend.order.service;
 
+import static gnu.project.backend.common.error.ErrorCode.*;
+
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.exception.BusinessException;
+import gnu.project.backend.order.dto.request.CouponPreviewRequest;
 import gnu.project.backend.order.dto.request.OrderCreateRequest;
+import gnu.project.backend.order.dto.response.CouponPreviewResponse;
 import gnu.project.backend.order.dto.response.OrderResponse;
 import gnu.project.backend.order.entity.Order;
 import gnu.project.backend.order.entity.OrderDetail;
 import gnu.project.backend.order.repository.OrderRepository;
 import gnu.project.backend.reservation.entity.Reservation;
 import gnu.project.backend.reservation.repository.ReservationRepository;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.UUID;
-
-import static gnu.project.backend.common.error.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ReservationRepository reservationRepository;
-    //private final CustomerCouponRepository customerCouponRepository;
+    private final OrderCouponPolicy couponPolicy;
 
     @Transactional(readOnly = true)
     public List<OrderResponse> findMyOrders(Accessor accessor) {
@@ -42,80 +43,84 @@ public class OrderService {
         return OrderResponse.from(order);
     }
 
-    @Transactional
     public OrderResponse createFromReservation(Accessor accessor, OrderCreateRequest request) {
-
-        // 1. 예약 가져오기
         Reservation reservation = reservationRepository.findById(request.reservationId())
                 .orElseThrow(() -> new BusinessException(RESERVATION_NOT_FOUND_EXCEPTION));
 
-        // 2. 예약의 주인과 지금 토큰의 주인이 같은지
         if (!reservation.getCustomer().getOauthInfo().getSocialId().equals(accessor.getSocialId())) {
             throw new BusinessException(CUSTOMER_NOT_FOUND_EXCEPTION);
         }
 
-        // 3. 원가 = 예약된 상품의 가격
-        Long originalPrice = reservation.getProduct().getPrice().longValue();
+        if (orderRepository.existsByReservationId(reservation.getId())) {
+            throw new BusinessException(DUPLICATE_ORDER_RESERVATION);
+        }
 
-        // 4. 쿠폰 적용
-//        Long discount = 0L;
-//        if (request.userCouponId() != null) {
-//            CustomerCoupon customerCoupon = customerCouponRepository.findByIdWithCoupon(request.userCouponId())
-//                    .orElseThrow(() -> new BusinessException(CUSTOMER_COUPON_NOT_FOUND));
-//
-//            // 내 쿠폰인지 검사
-//            if (!customerCoupon.getCustomer().getOauthInfo().getSocialId().equals(accessor.getSocialId())) {
-//                throw new BusinessException(IS_NOT_VALID_CUSTOMER);
-//            }
-//
-//            Coupon coupon = customerCoupon.getCoupon();
-//
-//            // 여기서 쿠폰 조건 검사 (너희 서비스하고 온전히 똑같이 가려면 공통 메서드로 빼도 됨)
-//            if (!coupon.isUsable()) {
-//                throw new BusinessException(COUPON_NOT_AVAILABLE);
-//            }
-//            if (coupon.getProduct() != null
-//                    && !coupon.getProduct().getId().equals(reservation.getProduct().getId())) {
-//                throw new BusinessException(COUPON_NOT_AVAILABLE);
-//            }
-//            if (coupon.getMinPurchaseAmount() != null
-//                    && originalPrice < coupon.getMinPurchaseAmount().longValue()) {
-//                throw new BusinessException(COUPON_NOT_AVAILABLE);
-//            }
-//
-//            // 할인 계산
-//            switch (coupon.getDiscountType()) {
-//                case AMOUNT -> discount = coupon.getDiscountValue().longValue();
-//                case RATE -> {
-//                    long calc = Math.round(originalPrice * coupon.getDiscountValue().doubleValue() / 100.0);
-//                    if (coupon.getMaxDiscountAmount() != null) {
-//                        calc = Math.min(calc, coupon.getMaxDiscountAmount().longValue());
-//                    }
-//                    discount = calc;
-//                }
-//            }
-//
-//            // 쿠폰 사용 처리
-//            customerCoupon.markAsUsed();
-//        }
+        // 수량 1 기준(필요 시 확장)
+        OrderDetail detail = OrderDetail.of(reservation.getProduct(), 1);
+        long original = detail.getLineTotal();
 
-//        Long total = Math.max(0, originalPrice - discount);
+        Long couponId = request.userCouponId();
+        long discount = 0L;
+        if (couponId != null) {
+            discount = couponPolicy.previewDiscount(reservation, original, couponId, accessor.getSocialId());
+        }
+        long total = Math.max(0L, original - discount);
 
-        // 5. 디테일 생성
-        OrderDetail detail = OrderDetail.of(reservation.getProduct(), null); //total);
-
-        // 6. 주문 엔티티 생성
         Order order = Order.fromReservation(
                 reservation,
                 UUID.randomUUID().toString(),
-                originalPrice,
-                null,//discount,
-                null,//total,
+                original,
+                discount,
+                total,
                 List.of(detail)
         );
 
-        Order saved = orderRepository.save(order);
+        if (couponId != null && discount > 0L) {
+            order.applyCoupon(couponId, discount);
+        } else {
+            order.clearCoupon();
+        }
 
+        Order saved = orderRepository.save(order);
         return OrderResponse.from(saved);
+    }
+
+    @Transactional(readOnly = true)
+    public CouponPreviewResponse previewCoupon(Accessor accessor, String orderCode, CouponPreviewRequest req) {
+        Order order = orderRepository.findByOrderCodeWithDetails(orderCode)
+                .orElseThrow(() -> new BusinessException(ORDER_NOT_FOUND)); //존재하지 않는 쿠폰
+        if (!order.getCustomer().getOauthInfo().getSocialId().equals(accessor.getSocialId())) {
+            throw new BusinessException(CUSTOMER_NOT_VALID_EXCEPTION);
+        }
+        long discount = couponPolicy.previewDiscount(
+                order.getReservation(), order.getOriginalPrice(), req.userCouponId(), accessor.getSocialId()
+        );
+        long total = Math.max(0L, order.getOriginalPrice() - discount);
+        return new CouponPreviewResponse(order.getOriginalPrice(), discount, total);
+    }
+
+    public OrderResponse applyCoupon(Accessor accessor, String orderCode, Long userCouponId) {
+        Order order = orderRepository.findByOrderCodeWithDetails(orderCode)
+                .orElseThrow(() -> new BusinessException(ORDER_NOT_FOUND));
+        if (!order.getCustomer().getOauthInfo().getSocialId().equals(accessor.getSocialId())) {
+            throw new BusinessException(CUSTOMER_NOT_VALID_EXCEPTION);
+        }
+        long discount = couponPolicy.previewDiscount(
+                order.getReservation(), order.getOriginalPrice(), userCouponId, accessor.getSocialId()
+        );
+        order.applyCoupon(userCouponId, discount);
+        return OrderResponse.from(order);
+    }
+
+    // Toss confirm 성공 webhook에서 호출
+    public void onPaymentConfirmed(String orderCode) {
+        Order order = orderRepository.findByOrderCodeWithDetails(orderCode)
+                .orElseThrow(() -> new BusinessException(ORDER_NOT_FOUND));
+        order.markPaid();
+
+        Long couponId = order.getAppliedCustomerCouponId();
+        if (couponId != null && order.getDiscountAmount() > 0L) {
+            couponPolicy.markUsed(couponId, order.getCustomer().getOauthInfo().getSocialId());
+        }
     }
 }

@@ -5,12 +5,11 @@ import gnu.project.backend.common.enumerated.OrderStatus;
 import gnu.project.backend.customer.entity.Customer;
 import gnu.project.backend.reservation.entity.Reservation;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -22,7 +21,6 @@ public class Order extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 예약에서 온 주문일 수도 있고 아닐 수도 있음
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
@@ -34,17 +32,17 @@ public class Order extends BaseEntity {
     @Column(name ="order_code", unique = true, nullable = false)
     private String orderCode;
 
-    // 쿠폰 적용 전
     @Column(name = "original_price", nullable = false)
     private Long originalPrice;
 
-    // 쿠폰으로 깎은 금액
     @Column(name = "discount_amount", nullable = false)
     private Long discountAmount;
 
-    // 실제 결제할 금액
     @Column(name ="total_price", nullable = false)
     private Long totalPrice;
+
+    @Column(name = "applied_customer_coupon_id")
+    private Long appliedCustomerCouponId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -65,8 +63,8 @@ public class Order extends BaseEntity {
         this.customer = customer;
         this.orderCode = orderCode;
         this.originalPrice = originalPrice;
-        this.discountAmount = discountAmount;
-        this.totalPrice = totalPrice;
+        this.discountAmount = discountAmount != null ? discountAmount : 0L;
+        this.totalPrice = totalPrice != null ? totalPrice : originalPrice - this.discountAmount;
         this.status = OrderStatus.WAITING_FOR_PAYMENT;
     }
 
@@ -97,5 +95,21 @@ public class Order extends BaseEntity {
 
     public void updateStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public void applyCoupon(Long customerCouponId, long discountAmount) {
+        this.appliedCustomerCouponId = customerCouponId;
+        this.discountAmount = Math.max(0L, discountAmount);
+        this.totalPrice = Math.max(0L, this.originalPrice - this.discountAmount);
+    }
+
+    public void clearCoupon() {
+        this.appliedCustomerCouponId = null;
+        this.discountAmount = 0L;
+        this.totalPrice = this.originalPrice;
+    }
+
+    public void markPaid() {
+        this.status = OrderStatus.PAID;
     }
 }
