@@ -2,6 +2,7 @@ package gnu.project.backend.notificaiton.controller;
 
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
+import gnu.project.backend.notificaiton.controller.docs.NotificationDocs;
 import gnu.project.backend.notificaiton.dto.response.NotificationResponseDto;
 import gnu.project.backend.notificaiton.service.NotificationService;
 import java.util.List;
@@ -19,7 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/notification")
-public class NotificationController {
+public class NotificationController implements NotificationDocs {
 
     private final NotificationService notificationService;
 
