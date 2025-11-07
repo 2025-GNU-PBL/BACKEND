@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public record CartAddRequest(
         @NotNull Long productId,
         LocalDateTime desireDate,
+        @NotNull
         @Min(1)Integer quantity
         // @Size(max = 500) String memo
 ) {
