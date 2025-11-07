@@ -1,7 +1,6 @@
 package gnu.project.backend.product.service;
 
 import static gnu.project.backend.common.error.ErrorCode.DRESS_NOT_FOUND_EXCEPTION;
-import static gnu.project.backend.common.error.ErrorCode.MAKEUP_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.common.error.ErrorCode.OWNER_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.product.constant.ProductConstant.DRESS_DELETE_SUCCESS;
 
@@ -14,12 +13,13 @@ import gnu.project.backend.product.dto.request.DressUpdateRequest;
 import gnu.project.backend.product.dto.response.DressPageResponse;
 import gnu.project.backend.product.dto.response.DressResponse;
 import gnu.project.backend.product.entity.Dress;
-import gnu.project.backend.product.provider.FileProvider;
-import gnu.project.backend.product.provider.OptionProvider;
-import gnu.project.backend.product.provider.TagProvider;
+import gnu.project.backend.product.enumerated.Category;
+import gnu.project.backend.product.enumerated.DressTag;
+import gnu.project.backend.product.enumerated.Region;
+import gnu.project.backend.product.enumerated.SortType;
+import gnu.project.backend.product.helper.ProductHelper;
 import gnu.project.backend.product.repository.DressRepository;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -30,17 +30,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class DressService {
 
     private final DressRepository dressRepository;
     private final OwnerRepository ownerRepository;
-    private final FileProvider fileProvider;
-    private final OptionProvider optionProvider;
-    private final TagProvider tagProvider;
+    private final ProductHelper productHelper;
 
     private static void validOwner(Accessor accessor, Dress dress) {
-        if (!dress.getOwner().getSocialId().equals(accessor.getSocialId())) {
+        if (!dress.validOwner(accessor.getSocialId())) {
             throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
         }
     }
@@ -72,7 +71,7 @@ public class DressService {
     ) {
         final Dress dress = dressRepository.findById(id)
             .orElseThrow(
-                () -> new BusinessException(MAKEUP_NOT_FOUND_EXCEPTION)
+                () -> new BusinessException(DRESS_NOT_FOUND_EXCEPTION)
             );
 
         validOwner(accessor, dress);
@@ -95,26 +94,21 @@ public class DressService {
 
         validOwner(accessor, dress);
 
-        fileProvider.updateImages(
+        productHelper.updateProductEnrichment(
             dress,
             images,
             keepImagesId,
-            dress.getImages()
-        );
-        optionProvider.updateOptions(
-            dress,
-            request.options()
-        );
-        tagProvider.updateTags(
-            dress,
+            request.options(),
             request.tags()
         );
+
         dress.update(
             request.price(),
             request.address(),
             request.detail(),
             request.name(),
-            request.availableTimes()
+            request.availableTimes(),
+            request.region()
         );
         return DressResponse.from(dress);
     }
@@ -132,13 +126,18 @@ public class DressService {
                 request.address(),
                 request.detail(),
                 request.name(),
-                request.availableTimes()
+                request.availableTimes(),
+                request.region()
             )
         );
 
-        fileProvider.uploadAndSaveImages(savedDress, images, new AtomicInteger(0));
-        optionProvider.createOptions(savedDress, request.options());
-        tagProvider.createTag(savedDress, request.tags());
+        productHelper.createProduct(
+            savedDress,
+            images,
+            request.options(),
+            request.tags()
+        );
+
         return DressResponse.from(savedDress);
     }
 
@@ -148,5 +147,20 @@ public class DressService {
             .orElseThrow(() -> new BusinessException(
                 OWNER_NOT_FOUND_EXCEPTION)
             );
+    }
+
+    public Page<DressPageResponse> getDressesByFilters(List<DressTag> tags, Category category,
+        Region region, Integer minPrice, Integer maxPrice, SortType sortType,
+        Integer pageNumber, Integer pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+
+        List<DressPageResponse> results = dressRepository.searchDressByFilter(
+            tags, category, region, minPrice, maxPrice, sortType, pageNumber, pageSize
+        );
+
+        long total = dressRepository.countDressByFilter(tags, category, region, minPrice, maxPrice);
+
+        return new PageImpl<>(results, pageable, total);
     }
 }

@@ -4,17 +4,18 @@ package gnu.project.backend.product.dto.response;
 import gnu.project.backend.product.entity.Image;
 import gnu.project.backend.product.entity.Makeup;
 import gnu.project.backend.product.entity.Option;
+import gnu.project.backend.product.enumerated.Region;
 import java.util.List;
 
 public record MakeupResponse(
     Long id,
     String name,
-    String style,
     String address,
     String detail,
     Integer price,
-    String type,
     String availableTimes,
+    Region region,
+
     List<ImageResponse> images,
     List<OptionResponse> options
 ) {
@@ -23,12 +24,11 @@ public record MakeupResponse(
         return new MakeupResponse(
             makeup.getId(),
             makeup.getName(),
-            makeup.getStyle(),
             makeup.getAddress(),
             makeup.getDetail(),
             makeup.getPrice(),
-            makeup.getType(),
             makeup.getAvailableTimes(),
+            makeup.getRegion(),
             makeup.getImages().stream()
                 .map(ImageResponse::from)
                 .toList(),

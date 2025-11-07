@@ -18,7 +18,7 @@ import gnu.project.backend.coupon.dto.response.CustomerCouponResponseDto;
 import gnu.project.backend.coupon.entity.Coupon;
 import gnu.project.backend.coupon.entity.CustomerCoupon;
 import gnu.project.backend.coupon.enumerated.CouponStatus;
-import gnu.project.backend.coupon.enumerated.UserCouponStatus;
+import gnu.project.backend.coupon.enumerated.CustomerCouponStatus;
 import gnu.project.backend.coupon.repository.CouponRepository;
 import gnu.project.backend.coupon.repository.CustomerCouponRepository;
 import gnu.project.backend.customer.entity.Customer;
@@ -73,7 +73,7 @@ public class CustomerCouponService {
         final CustomerCoupon customerCoupon = CustomerCoupon.ofCreate(
             customer,
             coupon,
-            UserCouponStatus.AVAILABLE
+            CustomerCouponStatus.AVAILABLE
         );
         final CustomerCoupon savedCoupon = customerCouponRepository.save(customerCoupon);
 
@@ -131,7 +131,6 @@ public class CustomerCouponService {
 
         customerCouponRepository.save(customerCoupon);
         couponRepository.save(customerCoupon.getCoupon());
-
         return CustomerCouponResponseDto.from(customerCoupon);
     }
 
@@ -154,7 +153,6 @@ public class CustomerCouponService {
             .collect(Collectors.toList());
     }
 
-
     private void validateCouponForDownload(final Coupon coupon) {
         if (coupon.getStatus() != CouponStatus.ACTIVE) {
             throw new BusinessException(COUPON_NOT_AVAILABLE);
@@ -174,15 +172,15 @@ public class CustomerCouponService {
     }
 
     private void validateCouponForUse(final CustomerCoupon customerCoupon) {
-        if (customerCoupon.getStatus() == UserCouponStatus.USED) {
+        if (customerCoupon.getStatus() == CustomerCouponStatus.USED) {
             throw new BusinessException(COUPON_ALREADY_USED);
         }
 
-        if (customerCoupon.getStatus() == UserCouponStatus.CANCELLED) {
+        if (customerCoupon.getStatus() == CustomerCouponStatus.CANCELLED) {
             throw new BusinessException(COUPON_CANCELLED);
         }
 
-        if (customerCoupon.getStatus() == UserCouponStatus.EXPIRED) {
+        if (customerCoupon.getStatus() == CustomerCouponStatus.EXPIRED) {
             throw new BusinessException(COUPON_EXPIRED);
         }
 

@@ -17,5 +17,9 @@ public class CustomerConstant {
     // address
     public static final String ADDRESS_SIZE_MESSAGE = "주소는 최대 255자까지 허용됩니다.";
 
+    // wedding
+    public static final String SIDO_SIZE_MESSAGE = "시/도는 최대 30자까지 허용됩니다.";
+    public static final String SIGUNGU_SIZE_MESSAGE = "시/군/구는 최대 50자까지 허용됩니다.";
+
 }
 

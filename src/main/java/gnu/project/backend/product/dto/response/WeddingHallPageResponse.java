@@ -1,7 +1,7 @@
 package gnu.project.backend.product.dto.response;
 
+import gnu.project.backend.product.dto.response.WeddingHallResponse.TagResponse;
 import gnu.project.backend.product.enumerated.Region;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,12 +13,11 @@ public record WeddingHallPageResponse(
     String address,
     String detail,
     Integer price,
-    Integer hallType,
     String availableTime,
     LocalDateTime createdAt,
     String thumbnail,
     Region region,
-    List<WeddingHallResponse.TagResponse> tags
+    List<TagResponse> tags
 ) {
 
 }

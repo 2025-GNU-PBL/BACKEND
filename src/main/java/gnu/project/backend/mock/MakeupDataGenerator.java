@@ -3,6 +3,7 @@ package gnu.project.backend.mock;
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
 import gnu.project.backend.product.entity.Makeup;
+import gnu.project.backend.product.enumerated.Region;
 import gnu.project.backend.product.repository.MakeupRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -37,13 +38,8 @@ public class MakeupDataGenerator implements CommandLineRunner {
         "눈썹정리", "웨딩메이크업", "파티메이크업", "졸업사진메이크업",
         "증명사진메이크업", "면접메이크업", "데이트메이크업", "쉐딩/하이라이팅"
     };
-    private static final String[] REGIONS = {
-        "서울특별시 강남구", "서울특별시 서초구", "서울특별시 송파구", "서울특별시 마포구",
-        "서울특별시 용산구", "서울특별시 종로구", "서울특별시 중구", "서울특별시 성동구",
-        "부산광역시 해운대구", "부산광역시 남구", "부산광역시 동래구", "부산광역시 부산진구",
-        "대구광역시 중구", "대구광역시 수성구", "인천광역시 남동구", "인천광역시 연수구",
-        "광주광역시 동구", "대전광역시 서구", "울산광역시 남구", "경기도 수원시",
-        "경기도 성남시", "경기도 고양시", "경기도 용인시", "경기도 부천시"
+    private static final Region[] REGIONS = {
+        Region.BUSAN, Region.GYEONGGI, Region.SEOUL, Region.ETC
     };
     private static final String[] DETAIL_TEMPLATES = {
         "전문 메이크업 아티스트가 고객님의 피부톤과 얼굴형에 맞춘 맞춤형 메이크업을 제공합니다.",
@@ -102,17 +98,15 @@ public class MakeupDataGenerator implements CommandLineRunner {
     }
 
     private Makeup createRandomMakeup(Owner owner) {
-        String style = STYLES[random.nextInt(STYLES.length)];
         String times = TIMES[random.nextInt(TIMES.length)];
-        String type = TYPES[random.nextInt(TYPES.length)];
-        String region = REGIONS[random.nextInt(REGIONS.length)];
+        Region region = REGIONS[random.nextInt(REGIONS.length)];
         String detail = DETAIL_TEMPLATES[random.nextInt(DETAIL_TEMPLATES.length)];
 
         int basePrice = 30000;
         int maxPrice = 200000;
         int price = basePrice + (random.nextInt((maxPrice - basePrice) / 1000) * 1000);
 
-        String name = String.format("%s %s 전문", style, type);
+        String name = String.format("%s %s 전문");
         String address = String.format("%s %d번길 %d",
             region,
             random.nextInt(100) + 1,
@@ -124,9 +118,8 @@ public class MakeupDataGenerator implements CommandLineRunner {
             address,
             detail,
             name,
-            style,
             times,
-            type
+            region
         );
     }
 }

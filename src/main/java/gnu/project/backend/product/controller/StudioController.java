@@ -7,6 +7,10 @@ import gnu.project.backend.product.dto.request.StudioRequest;
 import gnu.project.backend.product.dto.request.StudioUpdateRequest;
 import gnu.project.backend.product.dto.response.StudioPageResponse;
 import gnu.project.backend.product.dto.response.StudioResponse;
+import gnu.project.backend.product.enumerated.Category;
+import gnu.project.backend.product.enumerated.Region;
+import gnu.project.backend.product.enumerated.SortType;
+import gnu.project.backend.product.enumerated.StudioTag;
 import gnu.project.backend.product.service.StudioService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -77,5 +81,22 @@ public class StudioController implements StudioDocs {
         @PathVariable(name = "id") final Long id
     ) {
         return ResponseEntity.ok(studioService.delete(id, accessor));
+    }
+
+    @GetMapping("/filter")
+    public ResponseEntity<Page<StudioPageResponse>> getStudiosByTags(
+        @RequestParam(required = false) List<StudioTag> tags,
+        @RequestParam(required = false) Category category,
+        @RequestParam(required = false) Region region,
+        @RequestParam(required = false) Integer minPrice,
+        @RequestParam(required = false) Integer maxPrice,
+        @RequestParam(required = false, defaultValue = "LATEST") SortType sortType,
+        @RequestParam(required = false, defaultValue = "1") Integer pageNumber,
+        @RequestParam(required = false, defaultValue = "6") Integer pageSize
+    ) {
+        return ResponseEntity.ok(
+            studioService.getStudiosByFilters(tags, category, region, minPrice, maxPrice, sortType,
+                pageNumber, pageSize)
+        );
     }
 }

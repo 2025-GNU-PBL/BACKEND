@@ -32,7 +32,7 @@ public class CustomerService {
         if (!customer.isActive()) {
             throw new BusinessException(CUSTOMER_DELETED_EXCEPTION);
         }
-        return CustomerResponse.from(findCustomerBySocialId(accessor));
+        return CustomerResponse.from(customer);
     }
 
 
@@ -49,7 +49,18 @@ public class CustomerService {
         customer.signUp(
                 request.age(),
                 request.phoneNumber(),
-                request.address()
+                request.address(),
+                request.zipCode(),
+                request.roadAddress(),
+                request.jibunAddress(),
+                request.detailAddress(),
+                request.sido(),
+                request.sigungu(),
+                request.dong(),
+                request.buildingName(),
+                request.weddingSido(),
+                request.weddingSigungu(),
+                request.weddingDate()
         );
 
         return CustomerSignInResponse.from(customer);
@@ -69,7 +80,18 @@ public class CustomerService {
         customer.updateProfile(
                 request.age(),
                 request.phoneNumber(),
-                request.address()
+                request.address(),
+                request.zipCode(),
+                request.roadAddress(),
+                request.jibunAddress(),
+                request.detailAddress(),
+                request.sido(),
+                request.sigungu(),
+                request.dong(),
+                request.buildingName(),
+                request.weddingSido(),
+                request.weddingSigungu(),
+                request.weddingDate()
         );
 
         return CustomerUpdateResponse.from(customer);

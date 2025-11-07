@@ -2,20 +2,33 @@ package gnu.project.backend.cart.entity;
 
 
 import gnu.project.backend.common.entity.BaseEntity;
-import gnu.project.backend.product.entity.Option;
 import gnu.project.backend.product.entity.Product;
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+        name = "cart_item",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_cart_item_merge_key",
+                columnNames = {"cart_id", "product_id", "desire_date"}
+        ),
+        indexes = {
+                @Index(name = "idx_cart_item_cart", columnList = "cart_id"),
+                @Index(name = "idx_cart_item_product", columnList = "product_id"),
+                @Index(name = "idx_cart_item_selected", columnList = "selected")
+        }
+)
 public class CartItem extends BaseEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,47 +39,35 @@ public class CartItem extends BaseEntity {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "option_id")
-    private Option option;   // 옵션 없을 수도 있음
-
     @Column(nullable = false)
     private Integer quantity;
 
     private LocalDateTime desireDate;
 
-    @Column(length = 500)
-    private String memo;
 
     @Column(nullable = false)
-    private boolean selected = true;    // 장바구니 들어오면 기본 선택
+    private boolean selected = true;
 
     private CartItem(
-            Cart cart,
-            Product product,
-            Option option,
-            Integer quantity,
-            LocalDateTime desireDate,
-            String memo
+        Cart cart,
+        Product product,
+        Integer quantity,
+        LocalDateTime desireDate
     ) {
         this.cart = cart;
         this.product = product;
-        this.option = option;
         this.quantity = quantity;
         this.desireDate = desireDate;
-        this.memo = memo;
         this.selected = true;
     }
 
     public static CartItem create(
-            Cart cart,
-            Product product,
-            Option option,
-            Integer quantity,
-            LocalDateTime desireDate,
-            String memo
+        Cart cart,
+        Product product,
+        Integer quantity,
+        LocalDateTime desireDate
     ) {
-        return new CartItem(cart, product, option, quantity, desireDate, memo);
+        return new CartItem(cart, product, quantity, desireDate);
     }
 
     public void updateQuantity(Integer quantity) {
@@ -75,5 +76,9 @@ public class CartItem extends BaseEntity {
 
     public void updateSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public int calculate() {
+        return this.product.getPrice() * this.quantity;
     }
 }

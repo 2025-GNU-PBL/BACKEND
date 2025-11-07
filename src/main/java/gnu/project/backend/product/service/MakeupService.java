@@ -13,12 +13,13 @@ import gnu.project.backend.product.dto.request.MakeupUpdateRequest;
 import gnu.project.backend.product.dto.response.MakeupPageResponse;
 import gnu.project.backend.product.dto.response.MakeupResponse;
 import gnu.project.backend.product.entity.Makeup;
-import gnu.project.backend.product.provider.FileProvider;
-import gnu.project.backend.product.provider.OptionProvider;
-import gnu.project.backend.product.provider.TagProvider;
+import gnu.project.backend.product.enumerated.Category;
+import gnu.project.backend.product.enumerated.MakeupTag;
+import gnu.project.backend.product.enumerated.Region;
+import gnu.project.backend.product.enumerated.SortType;
+import gnu.project.backend.product.helper.ProductHelper;
 import gnu.project.backend.product.repository.MakeupRepository;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -35,9 +36,13 @@ public class MakeupService {
 
     private final MakeupRepository makeupRepository;
     private final OwnerRepository ownerRepository;
-    private final FileProvider fileProvider;
-    private final OptionProvider optionProvider;
-    private final TagProvider tagProvider;
+    private final ProductHelper productHelper;
+
+    private static void validOwner(final Accessor accessor, final Makeup makeup) {
+        if (!makeup.validOwner(accessor.getSocialId())) {
+            throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
+        }
+    }
 
     @Transactional(readOnly = true)
     public MakeupResponse read(
@@ -69,9 +74,8 @@ public class MakeupService {
                 () -> new BusinessException(MAKEUP_NOT_FOUND_EXCEPTION)
             );
 
-        if (!makeup.getOwner().getSocialId().equals(accessor.getSocialId())) {
-            throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
-        }
+        validOwner(accessor, makeup);
+
         makeup.delete();
 
         return MAKEUP_DELETE_SUCCESS;
@@ -89,22 +93,13 @@ public class MakeupService {
                 () -> new BusinessException(MAKEUP_NOT_FOUND_EXCEPTION)
             );
 
-        if (!makeup.getOwner().getSocialId().equals(accessor.getSocialId())) {
-            throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
-        }
-        fileProvider.updateImages(
+        validOwner(accessor, makeup);
+
+        productHelper.updateProductEnrichment(
             makeup,
             images,
             keepImagesId,
-            makeup.getImages()
-        );
-
-        optionProvider.updateOptions(
-            makeup,
-            request.options()
-        );
-        tagProvider.updateTags(
-            makeup,
+            request.options(),
             request.tags()
         );
 
@@ -113,9 +108,8 @@ public class MakeupService {
             request.address(),
             request.detail(),
             request.name(),
-            request.style(),
             request.availableTimes(),
-            request.type()
+            request.region()
         );
         return MakeupResponse.from(makeup);
     }
@@ -133,15 +127,17 @@ public class MakeupService {
                 request.address(),
                 request.detail(),
                 request.name(),
-                request.style(),
                 request.availableTimes(),
-                request.type()
+                request.region()
             )
         );
 
-        fileProvider.uploadAndSaveImages(savedMakeup, images, new AtomicInteger(0));
-        optionProvider.createOptions(savedMakeup, request.options());
-        tagProvider.createTag(savedMakeup, request.tags());
+        productHelper.createProduct(
+            savedMakeup,
+            images,
+            request.options(),
+            request.tags()
+        );
         return MakeupResponse.from(savedMakeup);
     }
 
@@ -151,5 +147,21 @@ public class MakeupService {
             .orElseThrow(() -> new BusinessException(
                 OWNER_NOT_FOUND_EXCEPTION)
             );
+    }
+
+    public Page<MakeupPageResponse> getMakeupsByFilters(List<MakeupTag> tags, Category category,
+        Region region, Integer minPrice, Integer maxPrice, SortType sortType,
+        Integer pageNumber, Integer pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+
+        List<MakeupPageResponse> results = makeupRepository.searchMakeupsByFilter(
+            tags, category, region, minPrice, maxPrice, sortType, pageNumber, pageSize
+        );
+
+        long total = makeupRepository.countMakeupsByFilter(tags, category, region, minPrice,
+            maxPrice);
+
+        return new PageImpl<>(results, pageable, total);
     }
 }
