@@ -29,5 +29,6 @@ public class NotificationEventListener {
             String.format("/payment?reservationId=%d", event.reservationId())
         );
         notificationRepository.save(notification);
+        sseEmitterService.sendNotification(event.customerId(), notification);
     }
 }

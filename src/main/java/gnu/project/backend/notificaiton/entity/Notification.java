@@ -54,8 +54,7 @@ public class Notification extends BaseEntity {
 
     @Column(length = 500)
     private String actionUrl;
-
-    // === 상태 관리 ===
+    
     @Column(nullable = false)
     private Boolean isRead = false;
 
@@ -68,7 +67,6 @@ public class Notification extends BaseEntity {
 
     private LocalDateTime expiresAt;
 
-    // === 생성 메서드 ===
     public static Notification createPaymentNotification(
         Long customerId,
         Long reservationId,

@@ -4,7 +4,7 @@ import static gnu.project.backend.common.error.ErrorCode.CUSTOMER_NOT_FOUND_EXCE
 import static gnu.project.backend.common.error.ErrorCode.IS_NOT_VALID_SOCIAL;
 import static gnu.project.backend.common.error.ErrorCode.OWNER_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.common.error.ErrorCode.PRODUCT_NOT_FOUND_EXCEPTION;
-import static gnu.project.backend.common.error.ErrorCode.STUDIO_NOT_FOUND_EXCEPTION;
+import static gnu.project.backend.common.error.ErrorCode.RESERVATION_NOT_FOUND_EXCEPTION;
 
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.exception.BusinessException;
@@ -72,7 +72,8 @@ public class ReservationService {
     ) {
         final Reservation reservation = reservationRepository.findReservationByIdWithOwner(
                 requestDto.id())
-            .orElseThrow(() -> new BusinessException(STUDIO_NOT_FOUND_EXCEPTION));
+            .orElseThrow(() -> new BusinessException(RESERVATION_NOT_FOUND_EXCEPTION)
+            );
         //TODO : 사장만 해당 상태를 변경할 수 있나? 고객의 단순 변심으로는 변경이 안되나?
         if (!reservation.getOwner().getSocialId().equals(accessor.getSocialId())) {
             throw new BusinessException(IS_NOT_VALID_SOCIAL);
