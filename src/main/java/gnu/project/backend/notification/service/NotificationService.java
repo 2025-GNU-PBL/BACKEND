@@ -38,7 +38,7 @@ public class NotificationService {
         final Notification notification,
         final Long id
     ) {
-        return !notification.getRecipientId().equals(id) && !notification.getRecipientRole()
+        return !notification.getRecipientId().equals(id) || !notification.getRecipientRole()
             .equals(accessor.getUserRole());
     }
 
