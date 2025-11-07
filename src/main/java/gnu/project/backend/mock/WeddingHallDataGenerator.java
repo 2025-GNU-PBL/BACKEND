@@ -8,12 +8,16 @@ import gnu.project.backend.product.entity.Option;
 import gnu.project.backend.product.entity.Tag;
 import gnu.project.backend.product.entity.WeddingHall;
 import gnu.project.backend.product.enumerated.Region;
+import gnu.project.backend.product.enumerated.WeddingHallTag;
 import gnu.project.backend.product.repository.ImageRepository;
 import gnu.project.backend.product.repository.OptionRepository;
 import gnu.project.backend.product.repository.TagRepository;
 import gnu.project.backend.product.repository.WeddingHallRepository;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -35,10 +39,10 @@ public class WeddingHallDataGenerator implements CommandLineRunner {
     private final TagRepository tagRepository;
     private final ImageRepository imageRepository;
 
-    // ✅ 네가 실제 토큰으로 생성한 Owner 정보(로그에서 봤던 값들)
-    private static final String OWNER_EMAIL     = "74r2k@naver.com";
-    private static final String OWNER_NAME      = "김용환";
-    private static final String OWNER_SOCIAL_ID = "sAkPP6of7GjkkwDzncxhXcv5N3A_4NMUDsdso5XbNcs";
+    // ✅ 실제 토큰 기반 Owner 식별 정보
+    private static final String OWNER_EMAIL      = "74r2k@naver.com";
+    private static final String OWNER_NAME       = "김용환";
+    private static final String OWNER_SOCIAL_ID  = "sAkPP6of7GjkkwDzncxhXcv5N3A_4NMUDsdso5XbNcs";
     private static final SocialProvider PROVIDER = SocialProvider.NAVER;
 
     private static final String[] NAMES = {
@@ -68,11 +72,13 @@ public class WeddingHallDataGenerator implements CommandLineRunner {
     @Transactional
     public void run(String... args) {
 
+        // 1) Owner 확보(없으면 OAuth 정보로 생성)
         Owner owner = ownerRepository.findByOauthInfo_SocialId(OWNER_SOCIAL_ID)
                 .orElseGet(() -> ownerRepository.save(
                         Owner.createFromOAuth(OWNER_EMAIL, OWNER_NAME, OWNER_SOCIAL_ID, PROVIDER)
                 ));
 
+        // 2) 이미 충분하면 skip
         long existing = weddingHallRepository.countActiveByOwner(OWNER_SOCIAL_ID);
         if (existing >= 30) {
             log.info("[local seed] wedding halls already >= 30 for {}, skip (existing={})",
@@ -102,13 +108,11 @@ public class WeddingHallDataGenerator implements CommandLineRunner {
                     "뷔페",                                            // cateringType
                     availableTimes,                                   // availableTimes
                     POLICY_TEMPLATES[random.nextInt(POLICY_TEMPLATES.length)], // reservationPolicy
-                    region,                                           // region
-                    (i % 2 == 0),                                     // subwayAccessible
-                    (i % 3 != 0)                                      // diningAvailable
+                    region                                            // region
             );
             hall = weddingHallRepository.save(hall);
 
-            // 썸네일/이미지
+            // 3-1) 이미지(썸네일 + 리스트 2장)
             Image thumb = Image.ofCreate(
                     hall,
                     "https://picsum.photos/seed/hall-" + (i+1) + "-thumb/800/600",
@@ -132,16 +136,21 @@ public class WeddingHallDataGenerator implements CommandLineRunner {
             hall.addImage(img1);
             hall.addImage(img2);
 
-            // 옵션/태그
+            // 3-2) 옵션
             Option opt1 = Option.ofCreate(hall, "생화데코 패키지", 300_000, "신부대기실 포함 / 메인홀 플라워 연출");
             Option opt2 = Option.ofCreate(hall, "기본 음향/조명", 0, "마이크 2대, 기본 스팟 조명 포함");
             optionRepository.saveAll(List.of(opt1, opt2));
             hall.addAllOption(List.of(opt1, opt2));
 
-            Tag tag1 = Tag.ofCreate(hall, "채광좋음");
-            Tag tag2 = Tag.ofCreate(hall, "대형홀");
-            tagRepository.saveAll(List.of(tag1, tag2));
-            hall.addAllTag(List.of(tag1, tag2));
+            // 3-3) 태그(WeddingHallTag enum 기반으로 2~3개 랜덤 부여)
+            List<String> picked = pickRandomWeddingHallTags(2 + random.nextInt(2)); // 2~3개
+            List<Tag> created = new ArrayList<>();
+            for (String t : picked) {
+                Tag createdTag = Tag.ofCreate(hall, t);
+                created.add(createdTag);
+            }
+            tagRepository.saveAll(created);
+            hall.addAllTag(created);
         }
 
         log.info("[local seed] wedding halls seeded (target=30, owner={})", OWNER_SOCIAL_ID);
@@ -150,5 +159,16 @@ public class WeddingHallDataGenerator implements CommandLineRunner {
     private String normalizeAvailableTimes(final String raw) {
         if (raw == null) return null;
         return raw.trim().replaceAll("\\s*,\\s*", ", "); // 쉼표 뒤 한 칸
+    }
+
+    private List<String> pickRandomWeddingHallTags(int n) {
+        WeddingHallTag[] values = WeddingHallTag.values();
+        Set<Integer> pickedIdx = new HashSet<>();
+        while (pickedIdx.size() < Math.min(n, values.length)) {
+            pickedIdx.add(random.nextInt(values.length));
+        }
+        return pickedIdx.stream()
+                .map(idx -> values[idx].name())
+                .toList();
     }
 }

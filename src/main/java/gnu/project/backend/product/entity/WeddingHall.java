@@ -33,13 +33,6 @@ public class WeddingHall extends Product {
     @Column(name = "reservation_policy")
     private String reservationPolicy;
 
-    // ✅ 새 필터 컬럼
-    @Column(name = "subway_accessible", nullable = false)
-    private boolean subwayAccessible;
-
-    @Column(name = "dining_available", nullable = false)
-    private boolean diningAvailable;
-
     private WeddingHall(
             Owner owner,
             Integer price,
@@ -53,9 +46,7 @@ public class WeddingHall extends Product {
             String cateringType,
             String availableTimes,
             String reservationPolicy,
-            Region region,
-            boolean subwayAccessible,
-            boolean diningAvailable
+            Region region
     ) {
         super(owner, Category.WEDDING_HALL, price, address, detail, name, availableTimes, region);
         this.capacity = capacity;
@@ -64,8 +55,6 @@ public class WeddingHall extends Product {
         this.parkingCapacity = parkingCapacity;
         this.cateringType = cateringType;
         this.reservationPolicy = reservationPolicy;
-        this.subwayAccessible = subwayAccessible;
-        this.diningAvailable = diningAvailable;
     }
 
     public static WeddingHall create(
@@ -81,15 +70,12 @@ public class WeddingHall extends Product {
             String cateringType,
             String availableTimes,
             String reservationPolicy,
-            Region region,
-            boolean subwayAccessible,
-            boolean diningAvailable
+            Region region
     ) {
         return new WeddingHall(
                 owner, price, address, detail, name,
                 capacity, minGuest, maxGuest, parkingCapacity,
-                cateringType, availableTimes, reservationPolicy, region,
-                subwayAccessible, diningAvailable
+                cateringType, availableTimes, reservationPolicy, region
         );
     }
 
@@ -105,9 +91,7 @@ public class WeddingHall extends Product {
             String cateringType,
             String availableTimes,
             String reservationPolicy,
-            Region region,
-            boolean subwayAccessible,
-            boolean diningAvailable
+            Region region
     ) {
         super.updateProduct(price, address, detail, name, availableTimes, region);
         this.capacity = capacity;
@@ -116,7 +100,5 @@ public class WeddingHall extends Product {
         this.parkingCapacity = parkingCapacity;
         this.cateringType = cateringType;
         this.reservationPolicy = reservationPolicy;
-        this.subwayAccessible = subwayAccessible;
-        this.diningAvailable = diningAvailable;
     }
 }

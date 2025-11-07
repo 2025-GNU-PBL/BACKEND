@@ -2,16 +2,9 @@ package gnu.project.backend.cart.entity;
 
 
 import gnu.project.backend.common.entity.BaseEntity;
-import gnu.project.backend.product.entity.Option;
 import gnu.project.backend.product.entity.Product;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,6 +13,18 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+        name = "cart_item",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_cart_item_merge_key",
+                columnNames = {"cart_id", "product_id", "desire_date"}
+        ),
+        indexes = {
+                @Index(name = "idx_cart_item_cart", columnList = "cart_id"),
+                @Index(name = "idx_cart_item_product", columnList = "product_id"),
+                @Index(name = "idx_cart_item_selected", columnList = "selected")
+        }
+)
 public class CartItem extends BaseEntity {
 
     @Id
@@ -34,48 +39,35 @@ public class CartItem extends BaseEntity {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "option_id")
-    private Option option;   // 옵션 없을 수도 있음
-    //TODO : 옵션 없애기# N+1
-
     @Column(nullable = false)
     private Integer quantity;
 
     private LocalDateTime desireDate;
 
-    @Column(length = 500)
-    private String memo;
 
     @Column(nullable = false)
-    private boolean selected = true;    // 장바구니 들어오면 기본 선택
+    private boolean selected = true;
 
     private CartItem(
         Cart cart,
         Product product,
-        Option option,
         Integer quantity,
-        LocalDateTime desireDate,
-        String memo
+        LocalDateTime desireDate
     ) {
         this.cart = cart;
         this.product = product;
-        this.option = option;
         this.quantity = quantity;
         this.desireDate = desireDate;
-        this.memo = memo;
         this.selected = true;
     }
 
     public static CartItem create(
         Cart cart,
         Product product,
-        Option option,
         Integer quantity,
-        LocalDateTime desireDate,
-        String memo
+        LocalDateTime desireDate
     ) {
-        return new CartItem(cart, product, option, quantity, desireDate, memo);
+        return new CartItem(cart, product, quantity, desireDate);
     }
 
     public void updateQuantity(Integer quantity) {

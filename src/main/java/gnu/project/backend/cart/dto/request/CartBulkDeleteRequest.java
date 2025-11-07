@@ -1,8 +1,10 @@
 package gnu.project.backend.cart.dto.request;
 
+import jakarta.validation.constraints.NotEmpty;
+
 import java.util.List;
 
 public record CartBulkDeleteRequest(
-        List<Long> cartItemIds
+       @NotEmpty List<Long> cartItemIds
 ) {
 }
