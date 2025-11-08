@@ -96,7 +96,7 @@ public class ProductSearchRepositoryImpl implements ProductSearchCustomRepositor
                     p.availableTime(),
                     p.createdAt(),
                     p.region(),
-                    p.Thumbnail(),
+                    p.thumbnail(),
                     tagsMap.getOrDefault(p.id(), List.of())
                 ))
                 .toList();

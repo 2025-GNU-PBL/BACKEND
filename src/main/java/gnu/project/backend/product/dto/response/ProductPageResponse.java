@@ -15,7 +15,7 @@ public record ProductPageResponse(
     String availableTime,
     LocalDateTime createdAt,
     Region region,
-    String Thumbnail,
+    String thumbnail,
     List<TagResponse> tags
 ) {
 

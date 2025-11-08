@@ -137,7 +137,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
                 studio.availableTime(),
                 studio.createdAt(),
                 studio.region(),
-                studio.Thumbnail(),
+                studio.thumbnail(),
                 tagsMap.getOrDefault(studio.id(), List.of())
             ))
             .toList();
@@ -215,7 +215,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
                 studio.availableTime(),
                 studio.createdAt(),
                 studio.region(),
-                studio.Thumbnail(),
+                studio.thumbnail(),
                 tagsMap.getOrDefault(studio.id(), List.of())
             ))
             .toList();

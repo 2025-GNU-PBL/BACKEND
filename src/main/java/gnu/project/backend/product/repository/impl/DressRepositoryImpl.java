@@ -94,7 +94,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
                 dress.availableTime(),
                 dress.createdAt(),
                 dress.region(),
-                dress.Thumbnail(),
+                dress.thumbnail(),
                 tagsMap.getOrDefault(dress.id(), List.of())
             ))
             .toList();
@@ -170,7 +170,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
                 dress.availableTime(),
                 dress.createdAt(),
                 dress.region(),
-                dress.Thumbnail(),
+                dress.thumbnail(),
                 tagsMap.getOrDefault(dress.id(), List.of())
             ))
             .toList();

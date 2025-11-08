@@ -115,7 +115,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
                 makeup.availableTime(),
                 makeup.createdAt(),
                 makeup.region(),
-                makeup.Thumbnail(),
+                makeup.thumbnail(),
                 tagsMap.getOrDefault(makeup.id(), List.of())
             ))
             .toList();
