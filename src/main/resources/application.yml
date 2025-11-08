@@ -33,7 +33,7 @@ oauth:
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
-  accessToken-expiration-millis: 1800000
+  accessToken-expiration-millis: 18000000000 # 추후 수정
 
 aws:
   s3:
