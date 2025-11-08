@@ -2,6 +2,7 @@ package gnu.project.backend.product.repository.impl;
 
 import static gnu.project.backend.product.entity.QImage.image;
 import static gnu.project.backend.product.entity.QProduct.product;
+import static gnu.project.backend.product.entity.QTag.tag;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.ConstructorExpression;
@@ -9,10 +10,14 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import gnu.project.backend.product.dto.response.DressResponse.TagResponse;
 import gnu.project.backend.product.dto.response.ProductPageResponse;
+import gnu.project.backend.product.entity.Tag;
 import gnu.project.backend.product.enumerated.SortType;
 import gnu.project.backend.product.repository.ProductSearchCustomRepository;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -54,12 +59,49 @@ public class ProductSearchRepositoryImpl implements ProductSearchCustomRepositor
             .select(createProductResponse())
             .from(product)
             .leftJoin(product.images, image).on(imageCondition)
+            .leftJoin(product.tags, tag)
             .where(productCondition)
             .orderBy(toOrder(sortType))
             .offset((long) (pageNumber - 1) * pageSize)
             .limit(pageSize)
-
             .fetch();
+
+        if (!response.isEmpty()) {
+            List<Long> productIds = response.stream()
+                .map(ProductPageResponse::id)
+                .toList();
+
+            List<Tag> allTags = query
+                .selectFrom(tag)
+                .where(tag.product.id.in(productIds))
+                .fetch();
+
+            Map<Long, List<TagResponse>> tagsMap = allTags.stream()
+                .collect(Collectors.groupingBy(
+                    t -> t.getProduct().getId(),
+                    Collectors.mapping(
+                        t -> new TagResponse(t.getId(), t.getName()),
+                        Collectors.toList()
+                    )
+                ));
+
+            response = response.stream()
+                .map(p -> new ProductPageResponse(
+                    p.id(),
+                    p.name(),
+                    p.starCount(),
+                    p.address(),
+                    p.detail(),
+                    p.price(),
+                    p.availableTime(),
+                    p.createdAt(),
+                    p.region(),
+                    p.Thumbnail(),
+                    tagsMap.getOrDefault(p.id(), List.of())
+                ))
+                .toList();
+        }
+
         Long total = query
             .select(product.count())
             .from(product)
