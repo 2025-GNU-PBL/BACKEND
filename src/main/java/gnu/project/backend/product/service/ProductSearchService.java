@@ -1,7 +1,6 @@
 package gnu.project.backend.product.service;
 
 import gnu.project.backend.product.dto.response.ProductPageResponse;
-import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.SortType;
 import gnu.project.backend.product.repository.ProductSearchRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +16,11 @@ public class ProductSearchService {
 
     public Page<ProductPageResponse> search(
         final String keyword,
-        final Category category,
         final SortType sortType,
         final Integer pageNumber,
         final Integer pageSize
     ) {
+        productSearchRepository.searchAll(keyword, sortType, pageNumber, pageSize);
         return null;
     }
 }
