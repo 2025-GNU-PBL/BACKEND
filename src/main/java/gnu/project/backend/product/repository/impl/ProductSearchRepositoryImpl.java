@@ -61,8 +61,8 @@ public class ProductSearchRepositoryImpl implements ProductSearchCustomRepositor
             .leftJoin(product.images, image).on(imageCondition)
             .where(productCondition)
             .orderBy(toOrder(sortType))
-            .offset((long) (pageNumber - 1) * pageSize)
-            .limit(pageSize)
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
             .fetch();
 
         if (!response.isEmpty()) {
