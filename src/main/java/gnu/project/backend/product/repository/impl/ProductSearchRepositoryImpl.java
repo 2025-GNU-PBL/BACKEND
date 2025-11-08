@@ -59,7 +59,6 @@ public class ProductSearchRepositoryImpl implements ProductSearchCustomRepositor
             .select(createProductResponse())
             .from(product)
             .leftJoin(product.images, image).on(imageCondition)
-            .leftJoin(product.tags, tag)
             .where(productCondition)
             .orderBy(toOrder(sortType))
             .offset((long) (pageNumber - 1) * pageSize)
