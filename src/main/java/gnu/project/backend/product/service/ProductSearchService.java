@@ -6,9 +6,11 @@ import gnu.project.backend.product.repository.ProductSearchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ProductSearchService {
 
     private final ProductSearchRepository productSearchRepository;
@@ -20,7 +22,11 @@ public class ProductSearchService {
         final Integer pageNumber,
         final Integer pageSize
     ) {
-        productSearchRepository.searchAll(keyword, sortType, pageNumber, pageSize);
-        return null;
+        return productSearchRepository.searchAll(
+            keyword,
+            sortType,
+            pageNumber,
+            pageSize
+        );
     }
 }
