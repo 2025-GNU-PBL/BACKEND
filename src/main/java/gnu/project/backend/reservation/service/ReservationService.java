@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ReservationService {
 
+    //TODO : 예약 조회 기업명 추가, 페이지로 반환,
     private final ReservationRepository reservationRepository;
     private final OwnerRepository ownerRepository;
     private final CustomerRepository customerRepository;
