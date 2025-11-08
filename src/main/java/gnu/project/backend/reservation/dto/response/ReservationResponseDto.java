@@ -11,6 +11,7 @@ public record ReservationResponseDto(
     Long productId,
     Status status,
     LocalDate reservationTime,
+    String storeName,
     String title,
     String content
 ) {
@@ -25,6 +26,7 @@ public record ReservationResponseDto(
             reservation.getProduct() != null ? reservation.getProduct().getId() : null,
             reservation.getStatus(),
             reservation.getReservationTime(),
+            reservation.getOwner() != null ? reservation.getOwner().getBzName() : null,
             reservation.getTitle(),
             reservation.getContent()
         );
