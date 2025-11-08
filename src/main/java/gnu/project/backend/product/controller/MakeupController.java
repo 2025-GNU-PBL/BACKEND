@@ -1,12 +1,13 @@
 package gnu.project.backend.product.controller;
 
 import gnu.project.backend.auth.aop.Auth;
+import gnu.project.backend.auth.aop.OnlyOwner;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.product.controller.docs.MakeupDocs;
 import gnu.project.backend.product.dto.request.MakeupRequest;
 import gnu.project.backend.product.dto.request.MakeupUpdateRequest;
-import gnu.project.backend.product.dto.response.MakeupPageResponse;
 import gnu.project.backend.product.dto.response.MakeupResponse;
+import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.MakeupTag;
 import gnu.project.backend.product.enumerated.Region;
@@ -37,6 +38,7 @@ public class MakeupController implements MakeupDocs {
     private final MakeupService makeupService;
 
     @Override
+    @OnlyOwner
     @PostMapping
     public ResponseEntity<MakeupResponse> createMakeup(
         @Valid @RequestPart("request") final MakeupRequest request,
@@ -48,6 +50,7 @@ public class MakeupController implements MakeupDocs {
     }
 
     @Override
+    @OnlyOwner
     @PatchMapping("/{id}")
     public ResponseEntity<MakeupResponse> updateMakeup(
         @PathVariable(name = "id") final Long id,
@@ -67,7 +70,7 @@ public class MakeupController implements MakeupDocs {
 
     @Override
     @GetMapping
-    public ResponseEntity<Page<MakeupPageResponse>> readMakeups(
+    public ResponseEntity<Page<ProductPageResponse>> readMakeups(
         @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
         @RequestParam(name = "pageSize", required = false, defaultValue = "6") final Integer pageSize
     ) {
@@ -75,6 +78,7 @@ public class MakeupController implements MakeupDocs {
     }
 
     @Override
+    @OnlyOwner
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteMakeup(
         @Auth final Accessor accessor,
@@ -84,7 +88,7 @@ public class MakeupController implements MakeupDocs {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<Page<MakeupPageResponse>> getMakeupsByTags(
+    public ResponseEntity<Page<ProductPageResponse>> getMakeupsByTags(
         @RequestParam(required = false) List<MakeupTag> tags,
         @RequestParam(required = false) Category category,
         @RequestParam(required = false) Region region,

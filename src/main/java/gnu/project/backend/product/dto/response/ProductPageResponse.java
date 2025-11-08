@@ -5,7 +5,7 @@ import gnu.project.backend.product.enumerated.Region;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record MakeupPageResponse(
+public record ProductPageResponse(
     Long id,
     String name,
     Double starCount,
@@ -15,7 +15,7 @@ public record MakeupPageResponse(
     String availableTime,
     LocalDateTime createdAt,
     Region region,
-    String Thumbnail,
+    String thumbnail,
     List<TagResponse> tags
 ) {
 

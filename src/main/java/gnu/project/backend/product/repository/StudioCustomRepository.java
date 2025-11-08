@@ -1,6 +1,6 @@
 package gnu.project.backend.product.repository;
 
-import gnu.project.backend.product.dto.response.StudioPageResponse;
+import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.dto.response.StudioResponse;
 import gnu.project.backend.product.entity.Studio;
 import gnu.project.backend.product.enumerated.Category;
@@ -16,11 +16,11 @@ public interface StudioCustomRepository {
 
     StudioResponse findByStudioId(final Long id);
 
-    List<StudioPageResponse> searchStudio(final int pageSize, final int pageNumber);
+    List<ProductPageResponse> searchStudio(final int pageSize, final int pageNumber);
 
     Optional<Studio> findStudioWithImagesAndOptionsById(final Long id);
 
-    List<StudioPageResponse> searchStudiosByFilter(List<StudioTag> tags, Category category,
+    List<ProductPageResponse> searchStudiosByFilter(List<StudioTag> tags, Category category,
         Region region, Integer minPrice, Integer maxPrice, SortType sortType, Integer pageNumber,
         Integer pageSize);
 

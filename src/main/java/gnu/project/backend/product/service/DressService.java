@@ -10,8 +10,8 @@ import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
 import gnu.project.backend.product.dto.request.DressRequest;
 import gnu.project.backend.product.dto.request.DressUpdateRequest;
-import gnu.project.backend.product.dto.response.DressPageResponse;
 import gnu.project.backend.product.dto.response.DressResponse;
+import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.entity.Dress;
 import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.DressTag;
@@ -52,7 +52,7 @@ public class DressService {
     }
 
     @Transactional(readOnly = true)
-    public Page<DressPageResponse> readDresses(
+    public Page<ProductPageResponse> readDresses(
         final Integer pageNumber,
         final Integer pageSize
     ) {
@@ -149,13 +149,13 @@ public class DressService {
             );
     }
 
-    public Page<DressPageResponse> getDressesByFilters(List<DressTag> tags, Category category,
+    public Page<ProductPageResponse> getDressesByFilters(List<DressTag> tags, Category category,
         Region region, Integer minPrice, Integer maxPrice, SortType sortType,
         Integer pageNumber, Integer pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
 
-        List<DressPageResponse> results = dressRepository.searchDressByFilter(
+        List<ProductPageResponse> results = dressRepository.searchDressByFilter(
             tags, category, region, minPrice, maxPrice, sortType, pageNumber, pageSize
         );
 

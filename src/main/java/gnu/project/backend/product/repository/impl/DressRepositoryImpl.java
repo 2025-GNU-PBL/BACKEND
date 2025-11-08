@@ -12,9 +12,9 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import gnu.project.backend.product.dto.response.DressPageResponse;
 import gnu.project.backend.product.dto.response.DressResponse;
 import gnu.project.backend.product.dto.response.DressResponse.TagResponse;
+import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.entity.Dress;
 import gnu.project.backend.product.entity.Tag;
 import gnu.project.backend.product.enumerated.Category;
@@ -51,8 +51,8 @@ public class DressRepositoryImpl implements DressCustomRepository {
     }
 
     @Override
-    public List<DressPageResponse> searchDress(int pageSize, int pageNumber) {
-        List<DressPageResponse> dresses = pagination(
+    public List<ProductPageResponse> searchDress(int pageSize, int pageNumber) {
+        List<ProductPageResponse> dresses = pagination(
             query
                 .select(createDressResponse())
                 .from(dress)
@@ -70,7 +70,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
         List<Tag> allTags = query
             .selectFrom(tag)
             .where(tag.product.id.in(dresses.stream()
-                .map(DressPageResponse::id)
+                .map(ProductPageResponse::id)
                 .toList())
             ).fetch();
 
@@ -84,7 +84,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
             ));
 
         return dresses.stream()
-            .map(dress -> new DressPageResponse(
+            .map(dress -> new ProductPageResponse(
                 dress.id(),
                 dress.name(),
                 dress.starCount(),
@@ -93,8 +93,8 @@ public class DressRepositoryImpl implements DressCustomRepository {
                 dress.price(),
                 dress.availableTime(),
                 dress.createdAt(),
-                dress.Thumbnail(),
                 dress.region(),
+                dress.thumbnail(),
                 tagsMap.getOrDefault(dress.id(), List.of())
             ))
             .toList();
@@ -114,7 +114,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
     }
 
     @Override
-    public List<DressPageResponse> searchDressByFilter(List<DressTag> tags,
+    public List<ProductPageResponse> searchDressByFilter(List<DressTag> tags,
         Category category, Region region, Integer minPrice,
         Integer maxPrice, SortType sortType, Integer pageNumber,
         Integer pageSize) {
@@ -126,7 +126,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
             default -> dress.createdAt.desc();
         };
 
-        List<DressPageResponse> dresses = pagination(query
+        List<ProductPageResponse> dresses = pagination(query
             .select(createDressResponse())
             .from(dress)
             .leftJoin(dress.images, image)
@@ -146,7 +146,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
         List<Tag> allTags = query
             .selectFrom(tag)
             .where(tag.product.id.in(dresses.stream()
-                .map(DressPageResponse::id)
+                .map(ProductPageResponse::id)
                 .toList())
             ).fetch();
 
@@ -160,7 +160,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
             ));
 
         return dresses.stream()
-            .map(dress -> new DressPageResponse(
+            .map(dress -> new ProductPageResponse(
                 dress.id(),
                 dress.name(),
                 dress.starCount(),
@@ -169,8 +169,8 @@ public class DressRepositoryImpl implements DressCustomRepository {
                 dress.price(),
                 dress.availableTime(),
                 dress.createdAt(),
-                dress.Thumbnail(),
                 dress.region(),
+                dress.thumbnail(),
                 tagsMap.getOrDefault(dress.id(), List.of())
             ))
             .toList();
@@ -190,9 +190,9 @@ public class DressRepositoryImpl implements DressCustomRepository {
             ).fetchOne();
     }
 
-    private ConstructorExpression<DressPageResponse> createDressResponse() {
+    private ConstructorExpression<ProductPageResponse> createDressResponse() {
         return Projections.constructor(
-            DressPageResponse.class,
+            ProductPageResponse.class,
             dress.id,
             dress.name,
             dress.starCount,
@@ -201,8 +201,8 @@ public class DressRepositoryImpl implements DressCustomRepository {
             dress.price,
             dress.availableTimes,
             dress.createdAt,
-            image.url,
             dress.region,
+            image.url,
             Expressions.nullExpression(List.class)
         );
     }

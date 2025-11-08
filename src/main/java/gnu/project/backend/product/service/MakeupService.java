@@ -10,8 +10,8 @@ import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
 import gnu.project.backend.product.dto.request.MakeupRequest;
 import gnu.project.backend.product.dto.request.MakeupUpdateRequest;
-import gnu.project.backend.product.dto.response.MakeupPageResponse;
 import gnu.project.backend.product.dto.response.MakeupResponse;
+import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.entity.Makeup;
 import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.MakeupTag;
@@ -52,7 +52,7 @@ public class MakeupService {
     }
 
     @Transactional(readOnly = true)
-    public Page<MakeupPageResponse> readMakeups(
+    public Page<ProductPageResponse> readMakeups(
         final Integer pageNumber,
         final Integer pageSize
     ) {
@@ -149,13 +149,13 @@ public class MakeupService {
             );
     }
 
-    public Page<MakeupPageResponse> getMakeupsByFilters(List<MakeupTag> tags, Category category,
+    public Page<ProductPageResponse> getMakeupsByFilters(List<MakeupTag> tags, Category category,
         Region region, Integer minPrice, Integer maxPrice, SortType sortType,
         Integer pageNumber, Integer pageSize) {
 
         Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
 
-        List<MakeupPageResponse> results = makeupRepository.searchMakeupsByFilter(
+        List<ProductPageResponse> results = makeupRepository.searchMakeupsByFilter(
             tags, category, region, minPrice, maxPrice, sortType, pageNumber, pageSize
         );
 

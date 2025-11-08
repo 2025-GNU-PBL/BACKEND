@@ -1,7 +1,7 @@
 package gnu.project.backend.product.repository;
 
-import gnu.project.backend.product.dto.response.DressPageResponse;
 import gnu.project.backend.product.dto.response.DressResponse;
+import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.entity.Dress;
 import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.DressTag;
@@ -16,11 +16,11 @@ public interface DressCustomRepository {
 
     DressResponse findByDressId(final Long id);
 
-    List<DressPageResponse> searchDress(final int pageSize, final int pageNumber);
+    List<ProductPageResponse> searchDress(final int pageSize, final int pageNumber);
 
     Optional<Dress> findDressWithImagesAndOptionsById(final Long id);
 
-    List<DressPageResponse> searchDressByFilter(
+    List<ProductPageResponse> searchDressByFilter(
         final List<DressTag> tags, final Category category,
         final Region region, final Integer minPrice, final Integer maxPrice,
         final SortType sortType, final Integer pageNumber, final Integer pageSize

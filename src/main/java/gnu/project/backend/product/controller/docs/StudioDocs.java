@@ -4,7 +4,7 @@ import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.product.dto.request.StudioRequest;
 import gnu.project.backend.product.dto.request.StudioUpdateRequest;
-import gnu.project.backend.product.dto.response.StudioPageResponse;
+import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.dto.response.StudioResponse;
 import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.Region;
@@ -96,11 +96,11 @@ public interface StudioDocs {
             @ApiResponse(
                 responseCode = "200",
                 description = "조회 성공",
-                content = @Content(schema = @Schema(implementation = StudioPageResponse.class))
+                content = @Content(schema = @Schema(implementation = ProductPageResponse.class))
             )
         }
     )
-    ResponseEntity<Page<StudioPageResponse>> readStudios(
+    ResponseEntity<Page<ProductPageResponse>> readStudios(
         @Parameter(description = "페이지 번호 (기본값 1)")
         @RequestParam(name = "pageNumber", required = false, defaultValue = "1") Integer pageNumber,
 
@@ -134,7 +134,7 @@ public interface StudioDocs {
         }
     )
     @GetMapping("/filter")
-    ResponseEntity<Page<StudioPageResponse>> getStudiosByTags(
+    ResponseEntity<Page<ProductPageResponse>> getStudiosByTags(
         @Parameter(
             description = "스튜디오 태그 목록 (예: PORTRAIT_FOCUSED, VARIED_BACKGROUND 등)",
             schema = @Schema(
