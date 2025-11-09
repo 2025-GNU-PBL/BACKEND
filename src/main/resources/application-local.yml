@@ -1,4 +1,8 @@
 spring:
+  data:
+    redis:
+      port: 6380
+      host: localhost
   config:
     activate:
       on-profile: local
@@ -42,3 +46,4 @@ payment:
     base-url: https://api.tosspayments.com
     secret-key: ${TOSS_SECRET_KEY}
     confirm-url: /v1/payments/confirm
+
