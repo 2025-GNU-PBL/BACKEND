@@ -2,6 +2,7 @@ package gnu.project.backend.product.controller;
 
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
+import gnu.project.backend.product.controller.docs.ProductSearchDocs;
 import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.dto.response.RecentSearchResponse;
 import gnu.project.backend.product.enumerated.SortType;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/search")
-public class ProductSearchController {
+public class ProductSearchController implements ProductSearchDocs {
 
     private final ProductSearchService productSearchService;
 
@@ -51,20 +52,18 @@ public class ProductSearchController {
     }
 
     @DeleteMapping("/recent")
-    public ResponseEntity<Void> deleteSearchKeyword(
+    public ResponseEntity<RecentSearchResponse> deleteSearchKeyword(
         @RequestParam final String keyword,
         @Auth final Accessor accessor
 
     ) {
-        productSearchService.deleteSearchKeyword(accessor, keyword);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(productSearchService.deleteSearchKeyword(accessor, keyword));
     }
 
     @DeleteMapping("/recent/all")
-    public ResponseEntity<Void> deleteAllSearches(
+    public ResponseEntity<RecentSearchResponse> deleteAllSearches(
         @Auth final Accessor accessor
     ) {
-        productSearchService.deleteAllSearches(accessor);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(productSearchService.deleteAllSearches(accessor));
     }
 }
