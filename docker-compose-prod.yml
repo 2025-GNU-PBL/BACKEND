@@ -128,7 +128,7 @@ services:
 
   redis:
     image: redis:7.0-alpine
-    container_name: redis-server
+    container_name: wedding-redis-server
     ports:
       - "6380:6379"
     volumes:
