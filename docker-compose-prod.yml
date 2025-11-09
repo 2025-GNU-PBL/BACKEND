@@ -25,6 +25,9 @@ services:
       DB_PASSWORD: ${DB_PASSWORD}
       TOSS_CLIENT_KEY: ${TOSS_CLIENT_KEY}
       TOSS_SECRET_KEY: ${TOSS_SECRET_KEY}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_HOST: ${REDIS_HOST}
+
     networks:
       - monitoring_net
   prometheus:
@@ -94,7 +97,7 @@ services:
     restart: unless-stopped
     networks:
       - monitoring_net
-      
+
   nginx:
     image: nginx:alpine
     container_name: nginx
@@ -122,11 +125,26 @@ services:
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     networks:
       - monitoring_net
-      
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: redis-server
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+    command: [ "redis-server", "--appendonly", "yes" ]
+    restart: unless-stopped
+    networks:
+      - monitoring_net
+
+
 volumes:
   prometheus_data:
     driver: local
   grafana_data:
+    driver: local
+  redis_data:
     driver: local
 
 networks:
