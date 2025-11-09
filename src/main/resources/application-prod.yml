@@ -1,4 +1,8 @@
 spring:
+  data:
+    redis:
+      port: ${REDIS_PORT}
+      host: ${REDIS_HOST}
   config:
     activate:
       on-profile: prod
