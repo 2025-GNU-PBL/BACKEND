@@ -41,6 +41,8 @@ jobs:
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
           TOSS_CLIENT_KEY: ${{ secrets.TOSS_CLIENT_KEY }}
           TOSS_SECRET_KEY: ${{ secrets.TOSS_SECRET_KEY }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
         run: ./gradlew clean build
 
       - name: Build Docker image
@@ -97,6 +99,8 @@ jobs:
             GF_SECURITY_ADMIN_PASSWORD=${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
             TOSS_CLIENT_KEY=${{ secrets.TOSS_CLIENT_KEY }}
             TOSS_SECRET_KEY=${{ secrets.TOSS_SECRET_KEY }}
+            REDIS_PORT: ${{ secrets.REDIS_PORT }}
+            REDIS_HOST: ${{ secrets.REDIS_HOST }}
             EOF
             
             echo "--- Starting core services (excluding nginx and certbot) ---"
