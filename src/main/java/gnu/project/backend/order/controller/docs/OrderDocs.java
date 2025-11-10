@@ -23,6 +23,7 @@ public interface OrderDocs {
 
     @Operation(summary = "주문 상세", description = "orderCode로 주문 하나를 조회합니다.")
     ResponseEntity<OrderResponse> getOrder(
+            @Parameter(hidden = true) @Auth Accessor accessor,
             @PathVariable String orderCode
     );
 

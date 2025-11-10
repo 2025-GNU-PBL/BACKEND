@@ -31,22 +31,28 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public OrderResponse findByOrderCode(String orderCode) {
+    public OrderResponse findByOrderCode(Accessor accessor, String orderCode) {
         Order order = orderRepository.findByOrderCodeWithDetails(orderCode)
                 .orElseThrow(() -> new BusinessException(ORDER_NOT_FOUND));
+
+        validateOrderOwner(order, accessor.getSocialId());
         return OrderResponse.from(order);
     }
 
     @Transactional(readOnly = true)
     public CouponPreviewResponse previewCoupon(Accessor accessor, String orderCode, CouponPreviewRequest req) {
         Order order = orderRepository.findByOrderCodeWithDetails(orderCode)
-                .orElseThrow(() -> new BusinessException(COUPON_NOT_FOUND_EXCEPTION));
-        if (!order.getCustomer().getOauthInfo().getSocialId().equals(accessor.getSocialId())) {
-            throw new BusinessException(CUSTOMER_NOT_VALID_EXCEPTION);
-        }
+                .orElseThrow(() -> new BusinessException(ORDER_NOT_FOUND));
+
+        validateOrderOwner(order, accessor.getSocialId());
+
         long discount = couponPolicy.previewDiscount(
-                order.getReservation(), order.getOriginalPrice(), req.userCouponId(), accessor.getSocialId()
+                order.getReservation(),
+                order.getOriginalPrice(),
+                req.userCouponId(),
+                accessor.getSocialId()
         );
+
         long total = Math.max(0L, order.getOriginalPrice() - discount);
         return new CouponPreviewResponse(order.getOriginalPrice(), discount, total);
     }
@@ -54,12 +60,16 @@ public class OrderService {
     public OrderResponse applyCoupon(Accessor accessor, String orderCode, Long userCouponId) {
         Order order = orderRepository.findByOrderCodeWithDetails(orderCode)
                 .orElseThrow(() -> new BusinessException(ORDER_NOT_FOUND));
-        if (!order.getCustomer().getOauthInfo().getSocialId().equals(accessor.getSocialId())) {
-            throw new BusinessException(CUSTOMER_NOT_VALID_EXCEPTION);
-        }
+
+        validateOrderOwner(order, accessor.getSocialId());
+
         long discount = couponPolicy.previewDiscount(
-                order.getReservation(), order.getOriginalPrice(), userCouponId, accessor.getSocialId()
+                order.getReservation(),
+                order.getOriginalPrice(),
+                userCouponId,
+                accessor.getSocialId()
         );
+
         order.applyCoupon(userCouponId, discount);
         return OrderResponse.from(order);
     }
@@ -75,4 +85,12 @@ public class OrderService {
             couponPolicy.markUsed(couponId, order.getCustomer().getOauthInfo().getSocialId());
         }
     }
+
+    private void validateOrderOwner(Order order, String socialId) {
+        String ownerSocialId = order.getCustomer().getOauthInfo().getSocialId();
+        if (!ownerSocialId.equals(socialId)) {
+            throw new BusinessException(CUSTOMER_NOT_VALID_EXCEPTION);
+        }
+    }
+
 }

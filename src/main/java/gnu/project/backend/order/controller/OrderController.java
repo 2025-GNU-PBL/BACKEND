@@ -30,8 +30,10 @@ public class OrderController implements OrderDocs {
 
     @Override
     @GetMapping("/{orderCode}")
-    public ResponseEntity<OrderResponse> getOrder(@PathVariable String orderCode) {
-        return ResponseEntity.ok(orderService.findByOrderCode(orderCode));
+    public ResponseEntity<OrderResponse> getOrder(
+            @Parameter(hidden = true) @Auth Accessor accessor,
+            @PathVariable String orderCode) {
+        return ResponseEntity.ok(orderService.findByOrderCode(accessor,orderCode));
     }
 
     @Override
