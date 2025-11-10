@@ -112,4 +112,20 @@ public class Order extends BaseEntity {
     public void markPaid() {
         this.status = OrderStatus.PAID;
     }
+
+    public String getShopName() {
+        return (reservation != null && reservation.getProduct() != null
+                && reservation.getProduct().getOwner() != null)
+                ? reservation.getProduct().getOwner().getBzName()
+                : "알 수 없음";
+    }
+
+    public String getThumbnailUrl() {
+        if (orderDetails != null && !orderDetails.isEmpty()) {
+            return orderDetails.get(0).getDisplayThumbnailUrl();
+        }
+        return null;
+    }
+
+
 }

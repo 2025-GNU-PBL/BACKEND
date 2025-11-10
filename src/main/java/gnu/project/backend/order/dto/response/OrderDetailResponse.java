@@ -12,10 +12,10 @@ public record OrderDetailResponse(
 ) {
     public static OrderDetailResponse from(OrderDetail d) {
         return new OrderDetailResponse(
-                d.getProduct().getId(),
-                d.getProductNameSnapshot(),
-                d.getThumbnailSnapshot(),
-                d.getUnitPriceAtPurchase(),
+                d.getProduct() != null ? d.getProduct().getId() : null,
+                d.getDisplayProductName(),
+                d.getDisplayThumbnailUrl(),
+                d.getDisplayUnitPrice(),
                 d.getQuantity(),
                 d.getLineTotal()
         );

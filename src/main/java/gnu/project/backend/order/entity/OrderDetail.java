@@ -51,4 +51,23 @@ public class OrderDetail {
         d.lineTotal = d.unitPriceAtPurchase * d.quantity;
         return d;
     }
+
+    public String getDisplayProductName() {
+        if (productNameSnapshot != null) return productNameSnapshot;
+        if (product != null) return product.getName();
+        return null;
+    }
+
+    public String getDisplayThumbnailUrl() {
+        if (thumbnailSnapshot != null) return thumbnailSnapshot;
+        if (product != null) return product.getThumbnailUrl();
+        return null;
+    }
+    public Long getDisplayUnitPrice() {
+        if (unitPriceAtPurchase != null) return unitPriceAtPurchase;
+        if (product != null && product.getPrice() != null) {
+            return product.getPrice().longValue();
+        }
+        return null;
+    }
 }
