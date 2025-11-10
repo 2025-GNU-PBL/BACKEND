@@ -1,10 +1,8 @@
 package gnu.project.backend.payment.service;
 
 import gnu.project.backend.auth.entity.Accessor;
-import gnu.project.backend.common.enumerated.OrderStatus;
 import gnu.project.backend.common.enumerated.PaymentStatus;
 import gnu.project.backend.common.exception.BusinessException;
-import gnu.project.backend.order.repository.OrderRepository;
 import gnu.project.backend.payment.dto.request.PaymentCancelRequest;
 import gnu.project.backend.payment.dto.response.PaymentCancelResponse;
 import gnu.project.backend.payment.dto.response.TossPaymentCancelReponse;
@@ -13,7 +11,6 @@ import gnu.project.backend.payment.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,8 +29,7 @@ import static gnu.project.backend.common.error.ErrorCode.*;
 public class PaymentCancelService {
 
     private final PaymentRepository paymentRepository;
-    private final OrderRepository orderRepository;
-    private final PaymentRefundService refundService;
+    private final PaymentRefundService paymentRefundService;
 
     @Value("${payment.toss.secret-key}")
     private String tossSecretKey;
@@ -41,92 +37,74 @@ public class PaymentCancelService {
     @Value("${payment.toss.base-url}")
     private String tossBaseUrl;
 
-
     @Transactional
     public PaymentCancelResponse requestCancel(String socialId, PaymentCancelRequest request) {
-        Payment payment = paymentRepository.findByPaymentKey(request.getPaymentKey())
+        Payment payment = paymentRepository.findByPaymentKey(request.paymentKey())
                 .orElseThrow(() -> new BusinessException(PAYMENT_NOT_FOUND));
 
-        if (!payment.getOrder().getCustomer().getOauthInfo().getSocialId().equals(socialId))
+        if (!payment.getOrder().getCustomer().getOauthInfo().getSocialId().equals(socialId)) {
             throw new BusinessException(PAYMENT_ACCESS_DENIED);
+        }
 
-        payment.requestCancel(request.getCancelReason());
+        payment.requestCancel(request.cancelReason());
         paymentRepository.save(payment);
 
-        log.info("고객 취소 요청 완료 - 주문번호: {}, 상태: {}", payment.getOrder().getOrderCode(), payment.getStatus());
-        return new PaymentCancelResponse(payment);
+        return PaymentCancelResponse.from(payment);
     }
 
-
-    public PaymentCancelResponse approveCancel(String paymentKey, Accessor accessor) {
-
+    public PaymentCancelResponse approveCancel(Accessor accessor, String paymentKey) {
         Payment payment = paymentRepository.findByPaymentKey(paymentKey)
                 .orElseThrow(() -> new BusinessException(PAYMENT_NOT_FOUND));
 
-        if (!accessor.isOwner()) {
-            throw new BusinessException(AUTH_FORBIDDEN);
-        }
-        String ownerSocialId = payment.getOrder().getOrderDetails().get(0).getProduct().getOwner().getOauthInfo().getSocialId();
-
-        if (!ownerSocialId.equals(accessor.getSocialId())) {
+        // 사장 권한 체크
+        String ownerSocialId = payment.getOrder().getOrderDetails().get(0)
+                .getProduct().getOwner().getOauthInfo().getSocialId();
+        if (!accessor.isOwner() || !ownerSocialId.equals(accessor.getSocialId())) {
             throw new BusinessException(PAYMENT_ACCESS_DENIED);
         }
 
-        if (payment.getStatus() != PaymentStatus.CANCEL_REQUESTED)
-            throw new BusinessException(PAYMENT_REFUND_NOT_ALLOWED);
+        if (payment.getStatus() != PaymentStatus.CANCEL_REQUESTED) {
+            // 이미 처리된 케이스는 그냥 성공 응답
+            return PaymentCancelResponse.from(payment);
+        }
 
-        //(트랜잭션 밖)
-        TossPaymentCancelReponse tossResponse = requestTossPaymentCancel(
-                payment.getPaymentKey(),
-                payment.getCancelReason(),
-                payment.getAmount()
-        );
+        // 1) PG 취소 호출
+        TossPaymentCancelReponse toss = callTossCancel(paymentKey, payment.getCancelReason(), payment.getAmount());
 
-        //트랜잭션 안에서
-        approveCancelAndRefund(payment, tossResponse);
+        // 2) 내부 상태 변경 + 정산
+        approveAndRefund(payment, toss);
 
-        log.info("취소 승인 완료 - 주문번호: {}, 상태: {}", payment.getOrder().getOrderCode(), payment.getStatus());
-        return new PaymentCancelResponse(payment);
+        return PaymentCancelResponse.from(payment);
     }
 
-    // 트랜잭션 안에서 내부 상태 변경 및 정산 처리
     @Transactional
-    protected void approveCancelAndRefund(Payment payment, TossPaymentCancelReponse tossResponse) {
-        payment.approveCancel(tossResponse.getCancelReason(), LocalDateTime.now());
-        refundService.processRefund(payment.getPaymentKey());
+    protected void approveAndRefund(Payment payment, TossPaymentCancelReponse toss) {
+        payment.approveCancel(toss.getCancelReason(), LocalDateTime.now());
         paymentRepository.save(payment);
+
+        // 내부 정산은 따로
+        paymentRefundService.processRefund(payment.getPaymentKey());
     }
 
-
-    private TossPaymentCancelReponse requestTossPaymentCancel(String paymentKey, String reason, Long amount) {
-        Map<String, Object> cancelBody = Map.of(
-                "cancelReason", reason,
-                "cancelAmount", amount
-        );
-
+    private TossPaymentCancelReponse callTossCancel(String paymentKey, String reason, Long amount) {
         String encodedKey = Base64.getEncoder()
                 .encodeToString((tossSecretKey + ":").getBytes(StandardCharsets.UTF_8));
 
-        try {
-            TossPaymentCancelReponse response = WebClient.builder()
-                    .baseUrl(tossBaseUrl)
-                    .build()
-                    .post()
-                    .uri("/v1/payments/" + paymentKey + "/cancel")
-                    .header(HttpHeaders.AUTHORIZATION, "Basic " + encodedKey)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(cancelBody)
-                    .retrieve()
-                    .bodyToMono(TossPaymentCancelReponse.class)
-                    .block();
-
-            log.info("[Toss 결제 취소 성공] paymentKey={}, reason={}", paymentKey, reason);
-            return response;
-
-        } catch (Exception e) {
-            log.error("[Toss 결제 취소 실패] paymentKey={}, reason={}, error={}", paymentKey, reason, e.getMessage());
-            throw new BusinessException(PAYMENT_GATEWAY_ERROR);
-        }
+        return WebClient.builder()
+                .baseUrl(tossBaseUrl)
+                .build()
+                .post()
+                .uri("/v1/payments/" + paymentKey + "/cancel")
+                .headers(h -> {
+                    h.add("Authorization", "Basic " + encodedKey);
+                    h.setContentType(MediaType.APPLICATION_JSON);
+                })
+                .bodyValue(Map.of(
+                        "cancelReason", reason,
+                        "cancelAmount", amount
+                ))
+                .retrieve()
+                .bodyToMono(TossPaymentCancelReponse.class)
+                .block();
     }
 }
-

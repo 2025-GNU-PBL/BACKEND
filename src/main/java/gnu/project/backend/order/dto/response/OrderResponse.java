@@ -2,25 +2,34 @@ package gnu.project.backend.order.dto.response;
 
 import gnu.project.backend.common.enumerated.OrderStatus;
 import gnu.project.backend.order.entity.Order;
-import lombok.Getter;
-
 import java.util.List;
 
-@Getter
-public class OrderResponse {
-    private final Long orderId;
-    private final String orderCode;
-    private final Long totalAmount;
-    private final OrderStatus status;
-    private final List<OrderDetailResponse> orderDetails;
-
-    public OrderResponse(Order order) {
-        this.orderId = order.getId();
-        this.orderCode = order.getOrderCode();
-        this.totalAmount = order.getTotalPrice();
-        this.status = order.getStatus();
-        this.orderDetails = order.getOrderDetails().stream()
-                .map(OrderDetailResponse::new)
-                .toList();
+public record OrderResponse(
+        Long orderId,
+        String orderCode,
+        Long originalPrice,
+        Long discountAmount,
+        Long totalAmount,
+        OrderStatus status,
+        String shopName,
+        String thumbnailUrl,
+        Long appliedCustomerCouponId,
+        List<OrderDetailResponse> orderDetails
+) {
+    public static OrderResponse from(Order order) {
+        return new OrderResponse(
+                order.getId(),
+                order.getOrderCode(),
+                order.getOriginalPrice(),
+                order.getDiscountAmount(),
+                order.getTotalPrice(),
+                order.getStatus(),
+                order.getShopName(),
+                order.getThumbnailUrl(),
+                order.getAppliedCustomerCouponId(),
+                order.getOrderDetails().stream()
+                        .map(OrderDetailResponse::from)
+                        .toList()
+        );
     }
 }

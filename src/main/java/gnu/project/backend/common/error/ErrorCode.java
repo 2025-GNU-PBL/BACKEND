@@ -33,6 +33,7 @@ public enum ErrorCode {
     // Customer EXCEPTION ADD.
     CUSTOMER_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "CUSTOMER001", "고객을 찾을 수 없습니다."),
     CUSTOMER_DELETED_EXCEPTION(HttpStatus.BAD_REQUEST, "CUSTOMER002", "탈퇴한 회원입니다."),
+    CUSTOMER_NOT_VALID_EXCEPTION(HttpStatus.BAD_REQUEST, "CUSTOMER003", "고객의 요청이 유효하지 않습니다."),
     // Image
     IMAGE_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "IMAGE5001", "이미지 파일 업로드에 실패했습니다."),
     IMAGE_FILE_READ_FAILED(HttpStatus.BAD_REQUEST, "IMAGE4001", "업로드된 이미지 파일의 바이트 읽기에 실패했습니다."),
@@ -56,6 +57,7 @@ public enum ErrorCode {
         "해당 웨딩홀 상품을 찾을 수 없습니다."),
     //Order
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "PAYMENT001", "존재하지 않는 주문입니다."),
+    DUPLICATE_ORDER_RESERVATION(HttpStatus.BAD_REQUEST,"ORDER001", "중복 주문 요청입니다."),
     // 결제 승인 관련
     PAYMENT_ACCESS_DENIED(HttpStatus.FORBIDDEN, "PAYMENT002", "결제에 대한 접근 권한이 없습니다."),
     PAYMENT_AMOUNT_MISMATCH(HttpStatus.BAD_REQUEST, "PAYMENT003", "결제 요청 금액이 주문 금액과 일치하지 않습니다."),

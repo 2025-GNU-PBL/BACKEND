@@ -20,105 +20,100 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Payment extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 주문 1 : 결제 1
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false, unique = true)
     private Order order;
 
     @Column(nullable = false)
-    private String paymentKey; // 토스페이먼츠의 결제 키
+    private String paymentKey;
 
     @Column(nullable = false)
-    private String pgProvider; // 결제 대행사 (예: "tosspayments")
+    private String pgProvider;
 
     @Column(nullable = false)
-    private String paymentMethod; // 결제 수단 (예: "카드")
+    private String paymentMethod;
 
     @Column(nullable = false)
-    private Long amount; // 결제 금액
+    private Long amount;
 
     @Setter
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private PaymentStatus status; // 결제 상태 (예: "DONE", "CANCELED")
+    private PaymentStatus status;
 
-    private String transactionKey; // PG사 거래 키
+    private String transactionKey;
 
-    @Column(columnDefinition = "TEXT") // JSON 형태의 문자열을 저장하기 위해
-    private String paymentDetails; // 결제 수단별 상세 정보
+    @Column(columnDefinition = "TEXT")
+    private String paymentDetails;
 
-    private String failureCode; // 결제 실패 시 에러 코드
-    private String failureMessage; // 결제 실패 시 에러 메시지
+    private String failureCode;
+    private String failureMessage;
 
-    private LocalDateTime requestedAt; // 결제 요청 시각
-    @Setter
-    private LocalDateTime approvedAt; // 결제 승인 시각
-
-    private String receiptUrl; // 영수증 URL
-
-    //결제 취소 관련 필드
-    @Setter
-    private String cancelReason; // 취소 사유
+    private LocalDateTime requestedAt;
 
     @Setter
-    private LocalDateTime canceledAt; // 취소 시각
+    private LocalDateTime approvedAt;
 
+    private String receiptUrl;
 
-    public static Payment create(Order order, TossPaymentConfirmResponse tossResponse) {
-        Payment payment = new Payment();
-        payment.order = order;
-        payment.paymentKey = tossResponse.getPaymentKey();
-        payment.pgProvider = "tosspayments";
-        payment.paymentMethod = tossResponse.getMethod();
-        payment.amount = tossResponse.getTotalAmount();
-        payment.status = PaymentStatus.fromString(String.valueOf(tossResponse.getStatus()));
+    @Setter
+    private String cancelReason;
 
-        if (tossResponse.getApprovedAt() != null) {
-            ZonedDateTime zdt = ZonedDateTime.parse(tossResponse.getApprovedAt(), DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-            payment.approvedAt = zdt.withZoneSameInstant(ZoneId.of("Asia/Seoul")).toLocalDateTime();
+    @Setter
+    private LocalDateTime canceledAt;
+
+    public static Payment create(Order order, TossPaymentConfirmResponse toss) {
+        Payment p = new Payment();
+        p.order = order;
+        p.paymentKey = toss.getPaymentKey();
+        p.pgProvider = "tosspayments";
+        p.paymentMethod = toss.getMethod();
+        p.amount = toss.getTotalAmount();
+        p.status = PaymentStatus.fromString(String.valueOf(toss.getStatus()));
+
+        if (toss.getApprovedAt() != null) {
+            ZonedDateTime zdt = ZonedDateTime.parse(
+                    toss.getApprovedAt(),
+                    DateTimeFormatter.ISO_OFFSET_DATE_TIME
+            );
+            p.approvedAt = zdt.withZoneSameInstant(ZoneId.of("Asia/Seoul")).toLocalDateTime();
         }
-        payment.receiptUrl = tossResponse.getReceipt() != null ? tossResponse.getReceipt().getUrl() : null;
-        return payment;
+        p.receiptUrl = toss.getReceipt() != null ? toss.getReceipt().getUrl() : null;
+        return p;
     }
-
 
     public void requestCancel(String reason) {
-        if (status != PaymentStatus.DONE)
-            throw new IllegalStateException("결제 완료 상태에서만 취소 요청이 가능합니다.");
-
+        if (this.status != PaymentStatus.DONE) {
+            throw new IllegalStateException("결제 완료 상태에서만 취소 요청 가능");
+        }
         this.status = PaymentStatus.CANCEL_REQUESTED;
         this.cancelReason = reason;
-        order.updateStatus(OrderStatus.REFUND_REQUESTED);
+        this.order.updateStatus(OrderStatus.REFUND_REQUESTED);
     }
 
-
     public void approveCancel(String reason, LocalDateTime canceledAt) {
-        if (status != PaymentStatus.CANCEL_REQUESTED)
-            throw new IllegalStateException("취소 요청 상태에서만 승인 가능합니다.");
-
+        if (this.status != PaymentStatus.CANCEL_REQUESTED) {
+            throw new IllegalStateException("취소 요청 상태에서만 승인 가능");
+        }
         this.status = PaymentStatus.CANCELED;
         this.cancelReason = reason;
         this.canceledAt = canceledAt;
-        order.updateStatus(OrderStatus.CANCELED);
+        this.order.updateStatus(OrderStatus.CANCELED);
     }
 
-
     public void refund(String reason, LocalDateTime refundedAt) {
-        if (status != PaymentStatus.CANCELED && status != PaymentStatus.CANCEL_REQUESTED)
-            throw new IllegalStateException("환불은 취소 요청 또는 취소 완료 상태에서만 가능합니다.");
-
+        if (this.status != PaymentStatus.CANCELED && this.status != PaymentStatus.CANCEL_REQUESTED) {
+            throw new IllegalStateException("환불은 취소 상태에서만 가능");
+        }
         this.status = PaymentStatus.REFUND_COMPLETED;
         this.cancelReason = reason;
         this.canceledAt = refundedAt;
-        order.updateStatus(OrderStatus.REFUNDED);
+        this.order.updateStatus(OrderStatus.REFUNDED);
     }
-
-
-
 }
-
-
-
