@@ -6,7 +6,6 @@ import gnu.project.backend.cart.controller.docs.CartDocs;
 import gnu.project.backend.cart.dto.request.CartAddRequest;
 import gnu.project.backend.cart.dto.request.CartBulkDeleteRequest;
 import gnu.project.backend.cart.dto.request.CartItemUpdateRequest;
-import gnu.project.backend.cart.dto.response.CartItemResponse;
 import gnu.project.backend.cart.dto.response.CartSummaryResponse;
 import gnu.project.backend.cart.service.CartService;
 import gnu.project.backend.reservation.prefill.dto.response.CreateDraftsResponse;
@@ -16,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

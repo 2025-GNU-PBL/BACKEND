@@ -10,7 +10,6 @@ import gnu.project.backend.product.entity.QProduct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -51,13 +50,12 @@ public class CartItemRepositoryImpl implements CartItemCustomRepository {
     }
 
     @Override
-    public CartItem findSameItem(Long cartId, Long productId, LocalDateTime desireDate) {
+    public CartItem findSameItem(Long cartId, Long productId) {
         return queryFactory
                 .selectFrom(cartItem)
                 .where(
                         cartItem.cart.id.eq(cartId),
-                        cartItem.product.id.eq(productId),
-                        desireDate != null ? cartItem.desireDate.eq(desireDate) : cartItem.desireDate.isNull()
+                        cartItem.product.id.eq(productId)
                 )
                 .fetchFirst();
     }

@@ -4,7 +4,6 @@ import gnu.project.backend.common.entity.BaseEntity;
 import gnu.project.backend.customer.entity.Customer;
 import gnu.project.backend.product.entity.Product;
 import jakarta.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -32,9 +31,6 @@ public class ReservationPrefill extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column
-    private LocalDate desiredDate;
-
     @Column(nullable = false)
     private Integer quantity;
 
@@ -47,13 +43,11 @@ public class ReservationPrefill extends BaseEntity {
     private ReservationPrefill(
             Customer customer,
             Product product,
-            LocalDate desiredDate,
             Integer quantity,
             LocalDateTime expiresAt
     ) {
         this.customer = customer;
         this.product = product;
-        this.desiredDate = desiredDate;
         this.quantity = (quantity != null && quantity > 0) ? quantity : 1;
         this.expiresAt = expiresAt;
     }
@@ -61,11 +55,10 @@ public class ReservationPrefill extends BaseEntity {
     public static ReservationPrefill create(
             Customer customer,
             Product product,
-            LocalDate desiredDate,
             Integer quantity,
             LocalDateTime expiresAt
     ) {
-        return new ReservationPrefill(customer, product, desiredDate, quantity, expiresAt);
+        return new ReservationPrefill(customer, product, quantity, expiresAt);
     }
 
     public void consume() { this.consumed = true; }
