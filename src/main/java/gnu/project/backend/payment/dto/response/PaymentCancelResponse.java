@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 
 public record PaymentCancelResponse(
         String orderCode,
+        String shopName,
+        String productName,
         PaymentStatus status,
         String cancelReason,
         LocalDateTime canceledAt
@@ -14,6 +16,8 @@ public record PaymentCancelResponse(
     public static PaymentCancelResponse from(Payment p) {
         return new PaymentCancelResponse(
                 p.getOrder().getOrderCode(),
+                p.getOrder().getShopName(),
+                p.getOrder().getMainProductName(),
                 p.getStatus(),
                 p.getCancelReason(),
                 p.getCanceledAt()

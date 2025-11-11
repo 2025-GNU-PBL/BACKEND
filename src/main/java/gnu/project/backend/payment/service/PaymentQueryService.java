@@ -1,20 +1,23 @@
 package gnu.project.backend.payment.service;
 
 import gnu.project.backend.auth.entity.Accessor;
+import gnu.project.backend.common.enumerated.PaymentStatus;
 import gnu.project.backend.common.exception.BusinessException;
-import gnu.project.backend.payment.dto.response.PaymentDetailResponse;
-import gnu.project.backend.payment.dto.response.PaymentListResponse;
-import gnu.project.backend.payment.dto.response.PaymentSettlementResponse;
+import gnu.project.backend.order.entity.Order;
+import gnu.project.backend.owner.entity.Owner;
+import gnu.project.backend.owner.repository.OwnerRepository;
+import gnu.project.backend.payment.dto.response.*;
 import gnu.project.backend.payment.entity.Payment;
 import gnu.project.backend.payment.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Stream;
 
-import static gnu.project.backend.common.error.ErrorCode.PAYMENT_ACCESS_DENIED;
-import static gnu.project.backend.common.error.ErrorCode.PAYMENT_NOT_FOUND;
+import static gnu.project.backend.common.error.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -22,45 +25,57 @@ import static gnu.project.backend.common.error.ErrorCode.PAYMENT_NOT_FOUND;
 public class PaymentQueryService {
 
     private final PaymentRepository paymentRepository;
+    private final OwnerRepository ownerRepository;
 
     public List<PaymentListResponse> getMyPayments(String socialId) {
-        return paymentRepository.findByOrder_Customer_OauthInfo_SocialId(socialId)
+        return paymentRepository.findAllWithOrderAndDetailsByCustomerSocialId(socialId)
                 .stream()
-                .map(p -> new PaymentListResponse(
-                        p.getOrder().getOrderCode(),
-                        p.getOrder().getOrderDetails().isEmpty()
-                                ? "상품 없음"
-                                : p.getOrder().getOrderDetails().get(0).getProduct().getName(),
-                        p.getAmount(),
-                        p.getStatus(),
-                        p.getApprovedAt()
-                ))
+                .map(p -> {
+                    Order order = p.getOrder();
+                    return new PaymentListResponse(
+                            order.getOrderCode(),
+                            order.getShopName(),
+                            order.getMainProductName(),
+                            order.getThumbnailUrl(),
+                            p.getAmount(),
+                            p.getStatus(),
+                            p.getApprovedAt()
+                    );
+                })
                 .toList();
     }
 
     public PaymentDetailResponse getDetail(String paymentKey, Accessor accessor) {
-        Payment p = paymentRepository.findByPaymentKey(paymentKey)
+        Payment p = paymentRepository.findWithOrderAndDetailsByPaymentKey(paymentKey)
                 .orElseThrow(() -> new BusinessException(PAYMENT_NOT_FOUND));
 
-        boolean isCustomer = p.getOrder().getCustomer().getOauthInfo().getSocialId()
-                .equals(accessor.getSocialId());
+        Order order = p.getOrder();
 
-        String ownerSocialId = p.getOrder().getOrderDetails().get(0).getProduct()
-                .getOwner().getOauthInfo().getSocialId();
-        boolean isOwner = ownerSocialId.equals(accessor.getSocialId());
+        String customerSocialId = order.getCustomerSocialId();
+        boolean isCustomer = customerSocialId != null && customerSocialId.equals(accessor.getSocialId());
+
+        String ownerSocialId = order.getMainProductOwnerSocialId();
+        boolean isOwner = ownerSocialId != null && ownerSocialId.equals(accessor.getSocialId());
 
         if (!isCustomer && !isOwner) {
             throw new BusinessException(PAYMENT_ACCESS_DENIED);
         }
 
-        String productName = p.getOrder().getOrderDetails().isEmpty()
-                ? "상품 없음"
-                : p.getOrder().getOrderDetails().get(0).getProduct().getName();
-
         return new PaymentDetailResponse(
-                p.getOrder().getOrderCode(),
-                productName,
+                order.getOrderCode(),
+
+                // 상품 정보
+                order.getShopName(),
+                order.getMainProductName(),
+                order.getThumbnailUrl(),
+
+                // 결제 내역
+                order.getOriginalPrice(),
+                order.getDiscountAmount(),
+                order.getTotalPrice(),
                 p.getAmount(),
+
+                // 상태/메타
                 p.getStatus(),
                 p.getApprovedAt(),
                 p.getCanceledAt(),
@@ -71,7 +86,82 @@ public class PaymentQueryService {
         );
     }
 
-    public List<PaymentSettlementResponse> getMySettlement(Long ownerId) {
-        return paymentRepository.findSettlementByOwnerId(ownerId);
+    public PaymentSettlementResponse getMySettlement(
+            Accessor accessor,
+            Integer year,
+            Integer month,
+            PaymentStatus status
+    ) {
+        Owner owner = ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
+                .orElseThrow(() -> new BusinessException(OWNER_NOT_FOUND_EXCEPTION));
+
+        List<Payment> payments = paymentRepository.findAllWithOrderAndDetailsByOwnerId(owner.getId());
+
+        Stream<Payment> stream = payments.stream();
+
+        // 년/월 필터
+        if (year != null && month != null) {
+            stream = stream.filter(p -> {
+                LocalDateTime approvedAt = p.getApprovedAt();
+                return approvedAt != null
+                        && approvedAt.getYear() == year
+                        && approvedAt.getMonthValue() == month;
+            });
+        }
+
+        // 상태 필터
+        if (status != null) {
+            stream = stream.filter(p -> p.getStatus() == status);
+        }
+
+        List<Payment> filtered = stream.toList();
+
+        long totalSales = 0L;
+        long expectedSettlement = 0L;
+        int completedCount = 0;
+        int cancelCount = 0;
+
+        for (Payment p : filtered) {
+            if (p.getStatus() == PaymentStatus.DONE) {
+                totalSales += p.getAmount();
+                expectedSettlement += p.getAmount();
+                completedCount++;
+            } else if (p.getStatus() == PaymentStatus.CANCELED) {
+                totalSales -= p.getAmount();
+                expectedSettlement -= p.getAmount();
+                cancelCount++;
+            }
+        }
+
+        PaymentSettlementSummaryResponse summary = new PaymentSettlementSummaryResponse(
+                owner.getBzName(),
+                Math.max(0L, totalSales),
+                Math.max(0L, expectedSettlement),
+                completedCount,
+                cancelCount
+        );
+
+        List<PaymentSettlementSummaryItemResponse> items = filtered.stream()
+                .map(p -> new PaymentSettlementSummaryItemResponse(
+                        p.getOrder().getOrderCode(),
+                        p.getOrder().getCustomer().getName(),
+                        p.getAmount(),
+                        p.getStatus(),
+                        p.getApprovedAt()
+                ))
+                .toList();
+
+        return new PaymentSettlementResponse(summary, items);
     }
+
+    public List<PaymentCancelResponse> getMyCancelRequests(Accessor accessor) {
+        Owner owner = ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
+                .orElseThrow(() -> new BusinessException(OWNER_NOT_FOUND_EXCEPTION));
+
+        return paymentRepository.findAllCancelRequestedWithOrderAndDetailsByOwnerId(owner.getId())
+                .stream()
+                .map(PaymentCancelResponse::from)
+                .toList();
+    }
+
 }

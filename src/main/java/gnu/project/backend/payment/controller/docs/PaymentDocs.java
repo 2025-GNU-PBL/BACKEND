@@ -1,6 +1,7 @@
 package gnu.project.backend.payment.controller.docs;
 
 import gnu.project.backend.auth.entity.Accessor;
+import gnu.project.backend.common.enumerated.PaymentStatus;
 import gnu.project.backend.payment.dto.request.PaymentCancelRequest;
 import gnu.project.backend.payment.dto.request.PaymentConfirmRequest;
 import gnu.project.backend.payment.dto.response.*;
@@ -45,8 +46,17 @@ public interface PaymentDocs {
             @PathVariable String paymentKey
     );
 
-    @Operation(summary = "내 정산 내역(사장)", description = "사장 계정으로 자신의 정산 목록 조회")
-    ResponseEntity<List<PaymentSettlementResponse>> getMySettlements(
+    @Operation(summary = "내 정산 내역(사장)", description = "사장 계정으로 자신의 정산 요약 + 결제 리스트 조회 (월/상태 필터 가능)")
+    ResponseEntity<PaymentSettlementResponse> getMySettlements(
+            @Parameter(hidden = true) Accessor accessor,
+            @Parameter(description = "연도 (예: 2025)", required = false) Integer year,
+            @Parameter(description = "월 (1~12)", required = false) Integer month,
+            @Parameter(description = "결제 상태 (DONE, CANCELED, REFUND_COMPLETED 등)", required = false)
+            PaymentStatus status
+    );
+
+    @Operation(summary = "결제 취소 요청 목록(사장)", description = "CANCEL_REQUESTED 상태의 결제들만 조회")
+    ResponseEntity<List<PaymentCancelResponse>> getMyCancelRequests(
             @Parameter(hidden = true) Accessor accessor
     );
 }

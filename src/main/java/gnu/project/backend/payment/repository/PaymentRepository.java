@@ -7,8 +7,4 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PaymentRepository extends JpaRepository<Payment, Long>, PaymentRepositoryCustom {
-
-    Optional<Payment> findByPaymentKey(String paymentKey);
-
-    List<Payment> findByOrder_Customer_OauthInfo_SocialId(String socialId);
 }

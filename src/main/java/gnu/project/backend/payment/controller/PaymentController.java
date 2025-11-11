@@ -2,6 +2,7 @@ package gnu.project.backend.payment.controller;
 
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
+import gnu.project.backend.common.enumerated.PaymentStatus;
 import gnu.project.backend.payment.controller.docs.PaymentDocs;
 import gnu.project.backend.payment.dto.request.PaymentCancelRequest;
 import gnu.project.backend.payment.dto.request.PaymentConfirmRequest;
@@ -43,6 +44,14 @@ public class PaymentController implements PaymentDocs {
     }
 
     @Override
+    @GetMapping("/cancel-requests/me")
+    public ResponseEntity<List<PaymentCancelResponse>> getMyCancelRequests(
+            @Auth Accessor accessor
+    ) {
+        return ResponseEntity.ok(paymentQueryService.getMyCancelRequests(accessor));
+    }
+
+    @Override
     @PostMapping("/{paymentKey}/cancel-approve")
     public ResponseEntity<PaymentCancelResponse> approveCancel(
             @Auth Accessor accessor,
@@ -70,10 +79,14 @@ public class PaymentController implements PaymentDocs {
 
     @Override
     @GetMapping("/settlements/me")
-    public ResponseEntity<List<PaymentSettlementResponse>> getMySettlements(
-            @Auth Accessor accessor
+    public ResponseEntity<PaymentSettlementResponse> getMySettlements(
+            @Auth Accessor accessor,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) PaymentStatus status
     ) {
-        // 사장 socialId -> ownerId 변환은 나중에
-        return ResponseEntity.ok(paymentQueryService.getMySettlement(Long.valueOf(accessor.getSocialId())));
+        return ResponseEntity.ok(paymentQueryService.getMySettlement(accessor, year, month, status));
     }
+
+
 }

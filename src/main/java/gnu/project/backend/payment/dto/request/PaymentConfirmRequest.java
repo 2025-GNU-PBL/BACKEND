@@ -1,7 +1,9 @@
 package gnu.project.backend.payment.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public record PaymentConfirmRequest(
         String paymentKey,
-        String orderId,
+        @JsonProperty("orderId")String orderCode,
         Long amount
 ) {}
