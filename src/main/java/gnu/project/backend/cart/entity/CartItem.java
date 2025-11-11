@@ -5,7 +5,6 @@ import gnu.project.backend.common.entity.BaseEntity;
 import gnu.project.backend.product.entity.Product;
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,7 @@ import lombok.NoArgsConstructor;
         name = "cart_item",
         uniqueConstraints = @UniqueConstraint(
                 name = "uk_cart_item_merge_key",
-                columnNames = {"cart_id", "product_id", "desire_date"}
+                columnNames = {"cart_id", "product_id"}
         ),
         indexes = {
                 @Index(name = "idx_cart_item_cart", columnList = "cart_id"),
@@ -42,8 +41,6 @@ public class CartItem extends BaseEntity {
     @Column(nullable = false)
     private Integer quantity;
 
-    private LocalDateTime desireDate;
-
 
     @Column(nullable = false)
     private boolean selected = true;
@@ -51,23 +48,20 @@ public class CartItem extends BaseEntity {
     private CartItem(
         Cart cart,
         Product product,
-        Integer quantity,
-        LocalDateTime desireDate
+        Integer quantity
     ) {
         this.cart = cart;
         this.product = product;
         this.quantity = quantity;
-        this.desireDate = desireDate;
         this.selected = true;
     }
 
     public static CartItem create(
         Cart cart,
         Product product,
-        Integer quantity,
-        LocalDateTime desireDate
+        Integer quantity
     ) {
-        return new CartItem(cart, product, quantity, desireDate);
+        return new CartItem(cart, product, quantity);
     }
 
     public void updateQuantity(Integer quantity) {
@@ -78,7 +72,4 @@ public class CartItem extends BaseEntity {
         this.selected = selected;
     }
 
-    public int calculate() {
-        return this.product.getPrice() * this.quantity;
-    }
 }

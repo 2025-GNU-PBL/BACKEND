@@ -4,7 +4,6 @@ import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.reservation.dto.response.ReservationResponseDto;
 import gnu.project.backend.reservation.prefill.dto.request.ReservationFromDraftRequest;
-import gnu.project.backend.reservation.prefill.dto.response.ReservationDraftBatchResponse;
 import gnu.project.backend.reservation.prefill.dto.response.ReservationPrefillResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,14 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Inquiry Prefill API", description = "문의 작성 프리필(draft) 조회/확정 API")
 public interface ReservationPrefillDocs {
-    @Operation(
-            summary = "선택된 카트 아이템들로 프리필 일괄 생성",
-            description = "장바구니에서 selected=true 인 항목들을 바탕으로 문의 프리필 여러 개를 생성하고, 생성된 draftIds를 반환합니다."
-    )
-    @PostMapping("/api/v1/inquiries/prefill-from-cart/selected")
-    ResponseEntity<ReservationDraftBatchResponse> createDraftsFromSelected(
-            @Parameter(hidden = true) @Auth Accessor accessor
-    );
 
     @Operation(
             summary = "프리필 조회",

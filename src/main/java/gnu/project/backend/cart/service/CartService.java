@@ -58,8 +58,7 @@ public class CartService {
 
         final CartItem existing = cartItemRepository.findSameItem(
                 cart.getId(),
-                request.productId(),
-                request.desireDate()
+                request.productId()
         );
 
         if (existing != null) {
@@ -70,8 +69,7 @@ public class CartService {
         final CartItem cartItem = CartItem.create(
                 cart,
                 product,
-                qty,
-                request.desireDate()
+                qty
         );
         cartItemRepository.save(cartItem);
     }
@@ -133,26 +131,20 @@ public class CartService {
                 cartItemRepository.findSelectedByCustomerSocialId(accessor.getSocialId());
 
         if (selectedItems.isEmpty()) {
-            // 전용 에러코드가 있으면 바꿔도 됨
             throw new BusinessException(CART_ITEM_NOT_FOUND);
         }
 
         final List<Product> products = new ArrayList<>(selectedItems.size());
         final List<Integer> quantities = new ArrayList<>(selectedItems.size());
-        final List<java.time.LocalDate> desiredDates = new ArrayList<>(selectedItems.size());
 
         for (CartItem item : selectedItems) {
             products.add(item.getProduct());
             quantities.add(item.getQuantity());
-            java.time.LocalDate date = (item.getDesireDate() != null)
-                    ? item.getDesireDate().toLocalDate()
-                    : null;
-            desiredDates.add(date);
         }
 
         // expiresAt 등 메타를 포함한 DTO로 반환 (프런트에서 만료 타이머/안내 처리 용이)
         return prefillService.createFromCartItems(
-                customer, products, quantities, desiredDates
+                customer, products, quantities
         );
     }
 

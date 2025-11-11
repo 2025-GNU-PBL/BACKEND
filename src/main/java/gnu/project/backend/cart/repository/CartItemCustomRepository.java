@@ -2,7 +2,6 @@ package gnu.project.backend.cart.repository;
 
 import gnu.project.backend.cart.entity.CartItem;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CartItemCustomRepository {
@@ -13,7 +12,6 @@ public interface CartItemCustomRepository {
 
     CartItem findSameItem(
             Long cartId,
-            Long productId,
-            LocalDateTime desireDate
+            Long productId
     );
 }

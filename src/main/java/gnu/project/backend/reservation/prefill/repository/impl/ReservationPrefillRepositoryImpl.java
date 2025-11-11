@@ -5,7 +5,6 @@ import gnu.project.backend.reservation.prefill.entity.QReservationPrefill;
 import gnu.project.backend.reservation.prefill.entity.ReservationPrefill;
 import gnu.project.backend.reservation.prefill.repository.ReservationPrefillCustomRepository;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -29,18 +28,5 @@ public class ReservationPrefillRepositoryImpl implements ReservationPrefillCusto
                 )
                 .fetchFirst();
         return Optional.ofNullable(hit);
-    }
-
-    @Override
-    public List<ReservationPrefill> findAllActiveByIdsAndCustomerId(List<Long> ids, Long customerId, LocalDateTime now) {
-        return query
-                .selectFrom(prefill)
-                .where(
-                        prefill.id.in(ids),
-                        prefill.customer.id.eq(customerId),
-                        prefill.consumed.isFalse(),
-                        prefill.expiresAt.gt(now)
-                )
-                .fetch();
     }
 }
