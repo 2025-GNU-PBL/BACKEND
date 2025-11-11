@@ -39,9 +39,6 @@ public class Owner extends BaseEntity implements OauthUser {
     private String bzName;
 
     @Column
-    private Short age;
-
-    @Column
     private String phoneNumber;
 
     @Column
@@ -49,6 +46,21 @@ public class Owner extends BaseEntity implements OauthUser {
 
     @Column
     private String bankAccount;
+
+    @Column
+    private String zipCode;
+
+    @Column
+    private String roadAddress;
+
+    @Column
+    private String jibunAddress;
+
+    @Column
+    private String detailAddress;
+
+    @Column
+    private String buildingName;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -65,39 +77,56 @@ public class Owner extends BaseEntity implements OauthUser {
         final SocialProvider provider
     ) {
         final OauthInfo oauthInfo = OauthInfo.of(email, name, socialId, provider);
-        return new Owner(null, null, null, null, null, null, null, UserRole.OWNER, oauthInfo);
+        return new Owner(null, null, null, null, null, null, null, null, null, null,
+            null, UserRole.OWNER, oauthInfo);
     }
 
     public void signUp(
         final String profileImage,
-        final Short age,
         final String phoneNumber,
         final String bzNumber,
         final String bankAccount,
-        final String bzName
+        final String bzName,
+        final String zipCode,
+        final String roadAddress,
+        final String jibunAddress,
+        final String detailAddress,
+        final String buildingName
     ) {
         this.bzName = bzName;
         this.profileImage = profileImage;
-        this.age = age;
         this.phoneNumber = phoneNumber;
         this.bzNumber = bzNumber;
         this.bankAccount = bankAccount;
+        this.zipCode = zipCode;
+        this.roadAddress = roadAddress;
+        this.jibunAddress = jibunAddress;
+        this.detailAddress = detailAddress;
+        this.buildingName = buildingName;
     }
 
     public void updateProfile(
         final String profileImage,
-        final Short age,
         final String phoneNumber,
         final String bzNumber,
         final String bankAccount,
-        final String bzName
+        final String bzName,
+        final String zipCode,
+        final String roadAddress,
+        final String jibunAddress,
+        final String detailAddress,
+        final String buildingName
     ) {
         this.bzName = bzName;
         this.profileImage = profileImage;
-        this.age = age;
         this.phoneNumber = phoneNumber;
         this.bzNumber = bzNumber;
         this.bankAccount = bankAccount;
+        this.zipCode = zipCode;
+        this.roadAddress = roadAddress;
+        this.jibunAddress = jibunAddress;
+        this.detailAddress = detailAddress;
+        this.buildingName = buildingName;
     }
 
     public String getDisplayName() {

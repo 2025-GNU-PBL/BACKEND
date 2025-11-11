@@ -54,11 +54,15 @@ public class OwnerService {
         final Owner owner = findOwnerBySocialId(accessor);
         owner.signUp(
             signInRequest.profileImage(),
-            signInRequest.age(),
             signInRequest.phoneNumber(),
             signInRequest.bzNumber(),
             signInRequest.bankAccount(),
-            signInRequest.bzName()
+            signInRequest.bzName(),
+            signInRequest.zipCode(),
+            signInRequest.roadAddress(),
+            signInRequest.jibunAddress(),
+            signInRequest.detailAddress(),
+            signInRequest.buildingName()
         );
         return OwnerSignInResponse.from(owner);
     }
@@ -70,11 +74,15 @@ public class OwnerService {
         final Owner owner = findOwnerBySocialId(accessor);
         owner.updateProfile(
             updateRequest.profileImage(),
-            updateRequest.age(),
             updateRequest.phoneNumber(),
             updateRequest.bzNumber(),
             updateRequest.bankAccount(),
-            updateRequest.bzName()
+            updateRequest.bzName(),
+            updateRequest.zipCode(),
+            updateRequest.roadAddress(),
+            updateRequest.jibunAddress(),
+            updateRequest.detailAddress(),
+            updateRequest.buildingName()
         );
 
         return OwnerUpdateResponse.from(owner);
