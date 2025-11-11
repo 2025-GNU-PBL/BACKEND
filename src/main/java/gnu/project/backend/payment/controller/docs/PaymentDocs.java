@@ -60,7 +60,7 @@ public interface PaymentDocs {
             @Parameter(description = "연도 (예: 2025)", required = false) Integer year,
             @Parameter(description = "월 (1~12)", required = false) Integer month,
             @Parameter(description = "결제 상태 (DONE, CANCELED 등)", required = false)
-            PaymentStatus status,
+            @RequestParam(required = false) PaymentStatus status,
             @Parameter(description = "페이지 번호(0-base)", required = false)
             @RequestParam(required = false, defaultValue = "0") Integer page,
             @Parameter(description = "페이지 크기", required = false)

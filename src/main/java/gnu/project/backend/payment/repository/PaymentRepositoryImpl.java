@@ -25,7 +25,39 @@ public class PaymentRepositoryImpl implements PaymentRepositoryCustom {
 
     @Override
     public List<Payment> findAllWithOrderAndDetailsByCustomerSocialId(String socialId, int page, int size) {
-        JPAQuery<Payment> base = query
+        if (size <= 0) {
+            return query
+                    .selectFrom(payment)
+                    .distinct()
+                    .join(payment.order, order).fetchJoin()
+                    .join(order.customer, customer).fetchJoin()
+                    .leftJoin(order.orderDetails, orderDetail).fetchJoin()
+                    .leftJoin(orderDetail.product, product).fetchJoin()
+                    .leftJoin(product.owner, owner).fetchJoin()
+                    .where(order.customer.oauthInfo.socialId.eq(socialId))
+                    .orderBy(payment.approvedAt.desc())
+                    .fetch();
+        }
+
+        int safePage = Math.max(page, 0);
+        long offset = (long) safePage * size;
+
+        List<Long> ids = query
+                .select(payment.id)
+                .from(payment)
+                .join(payment.order, order)
+                .join(order.customer, customer)
+                .where(order.customer.oauthInfo.socialId.eq(socialId))
+                .orderBy(payment.approvedAt.desc())
+                .offset(offset)
+                .limit(size)
+                .fetch();
+
+        if (ids.isEmpty()) {
+            return List.of();
+        }
+
+        return query
                 .selectFrom(payment)
                 .distinct()
                 .join(payment.order, order).fetchJoin()
@@ -33,10 +65,9 @@ public class PaymentRepositoryImpl implements PaymentRepositoryCustom {
                 .leftJoin(order.orderDetails, orderDetail).fetchJoin()
                 .leftJoin(orderDetail.product, product).fetchJoin()
                 .leftJoin(product.owner, owner).fetchJoin()
-                .where(order.customer.oauthInfo.socialId.eq(socialId))
-                .orderBy(payment.approvedAt.desc());
-
-        return applyPagination(base, page, size).fetch();
+                .where(payment.id.in(ids))
+                .orderBy(payment.approvedAt.desc())
+                .fetch();
     }
 
     @Override
@@ -88,14 +119,4 @@ public class PaymentRepositoryImpl implements PaymentRepositoryCustom {
                 .fetch();
     }
 
-    private <T> JPAQuery<T> applyPagination(JPAQuery<T> query, int page, int size) {
-        if (size <= 0) {
-            return query;
-        }
-        int safePage = Math.max(page, 0); // page < 0 보호
-        long offset = (long) safePage * size;
-        return query
-                .offset(offset)
-                .limit(size);
-    }
 }
