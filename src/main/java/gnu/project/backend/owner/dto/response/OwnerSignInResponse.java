@@ -7,25 +7,32 @@ public record OwnerSignInResponse(
     String email,
     String name,
     String profileImage,
-    Short age,
     String phoneNumber,
     String bzNumber,
     String bankAccount,
-    String bzName
+    String bzName,
+    String zipCode,
+    String roadAddress,
+    String jibunAddress,
+    String detailAddress,
+    String buildingName
 ) {
 
     public static OwnerSignInResponse from(Owner owner) {
         return new OwnerSignInResponse(
             owner.getId(),
-            owner.getEmail(),
-            owner.getName(),
+            owner.getOauthInfo() != null ? owner.getOauthInfo().getEmail() : null,
+            owner.getOauthInfo() != null ? owner.getOauthInfo().getName() : null,
             owner.getProfileImage(),
-            owner.getAge(),
             owner.getPhoneNumber(),
             owner.getBzNumber(),
             owner.getBankAccount(),
-            owner.getBzName()
+            owner.getBzName(),
+            owner.getZipCode(),
+            owner.getRoadAddress(),
+            owner.getJibunAddress(),
+            owner.getDetailAddress(),
+            owner.getBuildingName()
         );
     }
-
 }
