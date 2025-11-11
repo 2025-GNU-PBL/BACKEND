@@ -120,7 +120,6 @@ public class PaymentQueryService {
 
         List<Payment> filtered = stream.toList();
 
-        // ✅ 상단 summary는 "필터링된 전체" 기준으로 계산
         long totalSales = 0L;
         long expectedSettlement = 0L;
         int completedCount = 0;
@@ -152,7 +151,6 @@ public class PaymentQueryService {
                 cancelCount
         );
 
-        // ✅ 리스트만 페이징
         List<PaymentSettlementSummaryItemResponse> allItems = filtered.stream()
                 .map(p -> new PaymentSettlementSummaryItemResponse(
                         p.getOrder().getOrderCode(),
