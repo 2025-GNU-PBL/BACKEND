@@ -2,7 +2,6 @@
 INSERT INTO owner (id,
                    profile_image,
                    bz_name,
-                   age,
                    phone_number,
                    bz_number,
                    bank_account,
@@ -13,23 +12,23 @@ INSERT INTO owner (id,
                    social_provider,
                    created_at,
                    updated_at)
-VALUES (5, 'https://cdn.example.com/owner1.jpg', '청담 뷰티샵', 35, '010-1234-5678', '111-22-33333',
+VALUES (5, 'https://cdn.example.com/owner1.jpg', '청담 뷰티샵', '010-1234-5678', '111-22-33333',
         '110-123-456789', 'OWNER',
         'owner1@example.com', '홍길동', 'social-123', 'KAKAO', NOW(), NOW()),
 
-       (6, 'https://cdn.example.com/owner2.jpg', '서초 메이크업 스튜디오', 32, '010-2345-6789',
+       (6, 'https://cdn.example.com/owner2.jpg', '서초 메이크업 스튜디오', '010-2345-6789',
         '222-33-44444', '110-987-654321', 'OWNER',
         'owner2@example.com', '김서연', 'social-456', 'GOOGLE', NOW(), NOW()),
 
-       (7, 'https://cdn.example.com/owner3.jpg', '송파 뷰티살롱', 29, '010-3456-7890', '333-44-55555',
+       (7, 'https://cdn.example.com/owner3.jpg', '송파 뷰티살롱', '010-3456-7890', '333-44-55555',
         '110-555-666777', 'OWNER',
         'owner3@example.com', '박지훈', 'social-789', 'NAVER', NOW(), NOW()),
 
-       (8, 'https://cdn.example.com/owner4.jpg', '해운대 스타일', 40, '010-4567-8901', '444-55-66666',
+       (8, 'https://cdn.example.com/owner4.jpg', '해운대 스타일', '010-4567-8901', '444-55-66666',
         '110-111-222333', 'OWNER',
         'owner4@example.com', '정유진', 'social-101', 'KAKAO', NOW(), NOW()),
 
-       (9, 'https://cdn.example.com/owner5.jpg', '수영구 메이크업', 37, '010-5678-9012', '555-66-77777',
+       (9, 'https://cdn.example.com/owner5.jpg', '수영구 메이크업', '010-5678-9012', '555-66-77777',
         '110-888-999000', 'OWNER',
         'owner5@example.com', '최현우', 'social-202', 'GOOGLE', NOW(), NOW());
 
@@ -252,26 +251,23 @@ VALUES (401, '서울 강남구 역삼동 123', '09:00~22:00', 4.5, 'WEDDING_HALL
         '제주하모니홀', 5, 9000000, 'SEOUL', 5.0, NOW(), 'WEDDING_HALL');
 
 -- wedding_hall 테이블에 상세 컬럼 삽입 (subway_accessible, dining_available 추가)
-INSERT INTO wedding_hall (
-    id,
-    capacity,
-    min_guest,
-    max_guest,
-    parking_capacity,
-    catering_type,
-    reservation_policy
-)
-VALUES
-    (401, 300, 50, 500, 100, '뷔페', '예약 후 7일 내 계약금 10%'),
-    (402, 250, 40, 400, 80, '코스식', '계약 후 취소 시 위약금 20%'),
-    (403, 350, 60, 600, 120, '뷔페', '날짜 변경은 1회 가능'),
-    (404, 200, 30, 300, 50, '한식', '3개월 전 취소 시 전액 환불'),
-    (405, 280, 40, 500, 70, '뷔페', '예약금 환불 불가'),
-    (406, 220, 30, 350, 60, '코스식', '예식 2주 전 변경 불가'),
-    (407, 260, 40, 450, 75, '뷔페', '야외 예식은 날씨에 따라 조정'),
-    (408, 180, 20, 300, 40, '코스식', '예약금 10% 선입금'),
-    (409, 500, 100, 800, 150, '뷔페', 'VIP룸 제공, 일정 조율 가능'),
-    (410, 320, 60, 550, 90, '한식', '자연 속 예식장으로 일정 조정 가능');
+INSERT INTO wedding_hall (id,
+                          capacity,
+                          min_guest,
+                          max_guest,
+                          parking_capacity,
+                          catering_type,
+                          reservation_policy)
+VALUES (401, 300, 50, 500, 100, '뷔페', '예약 후 7일 내 계약금 10%'),
+       (402, 250, 40, 400, 80, '코스식', '계약 후 취소 시 위약금 20%'),
+       (403, 350, 60, 600, 120, '뷔페', '날짜 변경은 1회 가능'),
+       (404, 200, 30, 300, 50, '한식', '3개월 전 취소 시 전액 환불'),
+       (405, 280, 40, 500, 70, '뷔페', '예약금 환불 불가'),
+       (406, 220, 30, 350, 60, '코스식', '예식 2주 전 변경 불가'),
+       (407, 260, 40, 450, 75, '뷔페', '야외 예식은 날씨에 따라 조정'),
+       (408, 180, 20, 300, 40, '코스식', '예약금 10% 선입금'),
+       (409, 500, 100, 800, 150, '뷔페', 'VIP룸 제공, 일정 조율 가능'),
+       (410, 320, 60, 550, 90, '한식', '자연 속 예식장으로 일정 조정 가능');
 
 
 INSERT INTO tags (product_id, name)

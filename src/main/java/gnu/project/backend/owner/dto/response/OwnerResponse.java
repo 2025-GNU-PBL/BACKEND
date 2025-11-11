@@ -8,26 +8,28 @@ import java.time.LocalDateTime;
 public record OwnerResponse(
     Long id,
     String profileImage,
-    Short age,
     String phoneNumber,
     String bzNumber,
     String bankAccount,
     UserRole userRole,
-
     String email,
     String name,
     String socialId,
     SocialProvider socialProvider,
-
     LocalDateTime createdAt,
-    LocalDateTime updatedAt
+    LocalDateTime updatedAt,
+    String bzName,
+    String zipCode,
+    String roadAddress,
+    String jibunAddress,
+    String detailAddress,
+    String buildingName
 ) {
 
     public static OwnerResponse from(Owner owner) {
         return new OwnerResponse(
             owner.getId(),
             owner.getProfileImage(),
-            owner.getAge(),
             owner.getPhoneNumber(),
             owner.getBzNumber(),
             owner.getBankAccount(),
@@ -37,7 +39,13 @@ public record OwnerResponse(
             owner.getOauthInfo().getSocialId(),
             owner.getOauthInfo().getSocialProvider(),
             owner.getCreatedAt(),
-            owner.getUpdatedAt()
+            owner.getUpdatedAt(),
+            owner.getBzName(),
+            owner.getZipCode(),
+            owner.getRoadAddress(),
+            owner.getJibunAddress(),
+            owner.getDetailAddress(),
+            owner.getBuildingName()
         );
     }
 }
