@@ -3,7 +3,7 @@ package gnu.project.backend.payment.dto.response;
 import gnu.project.backend.payment.entity.Payment;
 
 public record PaymentConfirmResponse(
-        String orderId,
+        String orderCode,
         String paymentMethod,
         Long amount,
         String receiptUrl

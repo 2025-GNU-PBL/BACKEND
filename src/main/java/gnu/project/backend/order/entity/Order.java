@@ -127,5 +127,34 @@ public class Order extends BaseEntity {
         return null;
     }
 
+    public String getMainProductName() {
+        if (orderDetails == null || orderDetails.isEmpty()) {
+            return "상품 없음";
+        }
+        OrderDetail first = orderDetails.get(0);
+        return first.getDisplayProductName();
+    }
+
+    public String getMainProductOwnerSocialId() {
+        if (reservation == null
+                || reservation.getProduct() == null
+                || reservation.getProduct().getOwner() == null
+                || reservation.getProduct().getOwner().getOauthInfo() == null) {
+            return null;
+        }
+        return reservation.getProduct().getOwner().getOauthInfo().getSocialId();
+    }
+
+    public String getCustomerSocialId() {
+        if (customer == null || customer.getOauthInfo() == null) {
+            return null;
+        }
+        return customer.getOauthInfo().getSocialId();
+    }
+
+    public String getCustomerName() {
+        return customer != null ? customer.getName() : null;
+    }
+
 
 }
