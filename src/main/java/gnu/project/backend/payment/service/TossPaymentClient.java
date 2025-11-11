@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Base64;
 import java.util.Map;
 
@@ -49,7 +50,7 @@ public class TossPaymentClient {
                 ))
                 .retrieve()
                 .bodyToMono(TossPaymentConfirmResponse.class)
-                .block();
+                .block(Duration.ofSeconds(10));
     }
 
     public TossPaymentCancelReponse cancelPayment(String paymentKey, String reason, Long amount) {
@@ -70,6 +71,6 @@ public class TossPaymentClient {
                 ))
                 .retrieve()
                 .bodyToMono(TossPaymentCancelReponse.class)
-                .block();
+                .block(Duration.ofSeconds(10));
     }
 }

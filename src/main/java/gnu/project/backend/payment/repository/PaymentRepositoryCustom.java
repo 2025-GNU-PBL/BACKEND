@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface PaymentRepositoryCustom {
 
     // 고객 기준 결제 목록
-    List<Payment> findAllWithOrderAndDetailsByCustomerSocialId(String socialId);
+    List<Payment> findAllWithOrderAndDetailsByCustomerSocialId(String socialId, int page, int size);
 
     // paymentKey 기준 단건 (웹훅/취소/상세 조회)
     Optional<Payment> findWithOrderAndDetailsByPaymentKey(String paymentKey);

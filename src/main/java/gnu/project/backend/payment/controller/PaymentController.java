@@ -63,9 +63,13 @@ public class PaymentController implements PaymentDocs {
     @Override
     @GetMapping("/me")
     public ResponseEntity<List<PaymentListResponse>> getMyPayments(
-            @Auth Accessor accessor
+            @Auth Accessor accessor,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer size
     ) {
-        return ResponseEntity.ok(paymentQueryService.getMyPayments(accessor.getSocialId()));
+        return ResponseEntity.ok(
+                paymentQueryService.getMyPayments(accessor.getSocialId(), page, size)
+        );
     }
 
     @Override
@@ -83,9 +87,13 @@ public class PaymentController implements PaymentDocs {
             @Auth Accessor accessor,
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) Integer month,
-            @RequestParam(required = false) PaymentStatus status
+            @RequestParam(required = false) PaymentStatus status,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "10") Integer size
     ) {
-        return ResponseEntity.ok(paymentQueryService.getMySettlement(accessor, year, month, status));
+        return ResponseEntity.ok(
+                paymentQueryService.getMySettlement(accessor, year, month, status, page, size)
+        );
     }
 
 

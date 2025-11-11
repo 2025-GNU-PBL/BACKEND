@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -27,9 +28,11 @@ public class PaymentQueryService {
     private final PaymentRepository paymentRepository;
     private final OwnerRepository ownerRepository;
 
-    public List<PaymentListResponse> getMyPayments(String socialId) {
-        return paymentRepository.findAllWithOrderAndDetailsByCustomerSocialId(socialId)
-                .stream()
+    public List<PaymentListResponse> getMyPayments(String socialId, int page, int size) {
+        List<Payment> payments =
+                paymentRepository.findAllWithOrderAndDetailsByCustomerSocialId(socialId, page, size);
+
+        return payments.stream()
                 .map(p -> {
                     Order order = p.getOrder();
                     return new PaymentListResponse(
@@ -90,16 +93,18 @@ public class PaymentQueryService {
             Accessor accessor,
             Integer year,
             Integer month,
-            PaymentStatus status
+            PaymentStatus status,
+            int page,
+            int size
     ) {
         Owner owner = ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
                 .orElseThrow(() -> new BusinessException(OWNER_NOT_FOUND_EXCEPTION));
 
         List<Payment> payments = paymentRepository.findAllWithOrderAndDetailsByOwnerId(owner.getId());
 
+        // 필터링
         Stream<Payment> stream = payments.stream();
 
-        // 년/월 필터
         if (year != null && month != null) {
             stream = stream.filter(p -> {
                 LocalDateTime approvedAt = p.getApprovedAt();
@@ -109,27 +114,33 @@ public class PaymentQueryService {
             });
         }
 
-        // 상태 필터
         if (status != null) {
             stream = stream.filter(p -> p.getStatus() == status);
         }
 
         List<Payment> filtered = stream.toList();
 
+        // ✅ 상단 summary는 "필터링된 전체" 기준으로 계산
         long totalSales = 0L;
         long expectedSettlement = 0L;
         int completedCount = 0;
         int cancelCount = 0;
 
         for (Payment p : filtered) {
-            if (p.getStatus() == PaymentStatus.DONE) {
-                totalSales += p.getAmount();
-                expectedSettlement += p.getAmount();
-                completedCount++;
-            } else if (p.getStatus() == PaymentStatus.CANCELED) {
-                totalSales -= p.getAmount();
-                expectedSettlement -= p.getAmount();
-                cancelCount++;
+            switch (p.getStatus()) {
+                case DONE -> {
+                    totalSales += p.getAmount();
+                    expectedSettlement += p.getAmount();
+                    completedCount++;
+                }
+                case CANCELED -> {
+                    totalSales -= p.getAmount();
+                    expectedSettlement -= p.getAmount();
+                    cancelCount++;
+                }
+                default -> {
+                    // 나머지 상태는 정산/취소 집계에서 제외
+                }
             }
         }
 
@@ -141,7 +152,8 @@ public class PaymentQueryService {
                 cancelCount
         );
 
-        List<PaymentSettlementSummaryItemResponse> items = filtered.stream()
+        // ✅ 리스트만 페이징
+        List<PaymentSettlementSummaryItemResponse> allItems = filtered.stream()
                 .map(p -> new PaymentSettlementSummaryItemResponse(
                         p.getOrder().getOrderCode(),
                         p.getOrder().getCustomer().getName(),
@@ -151,7 +163,9 @@ public class PaymentQueryService {
                 ))
                 .toList();
 
-        return new PaymentSettlementResponse(summary, items);
+        List<PaymentSettlementSummaryItemResponse> pagedItems = applyPaging(allItems, page, size);
+
+        return new PaymentSettlementResponse(summary, pagedItems);
     }
 
     public List<PaymentCancelResponse> getMyCancelRequests(Accessor accessor) {
@@ -162,6 +176,18 @@ public class PaymentQueryService {
                 .stream()
                 .map(PaymentCancelResponse::from)
                 .toList();
+    }
+
+    private <T> List<T> applyPaging(List<T> list, int page, int size) {
+        if (size <= 0) return list;
+
+        int safePage = Math.max(page, 0);
+        int fromIndex = safePage * size;
+        if (fromIndex >= list.size()) {
+            return Collections.emptyList();
+        }
+        int toIndex = Math.min(fromIndex + size, list.size());
+        return list.subList(fromIndex, toIndex);
     }
 
 }

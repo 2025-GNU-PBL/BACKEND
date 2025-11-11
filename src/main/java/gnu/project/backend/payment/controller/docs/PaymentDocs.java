@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -35,9 +36,13 @@ public interface PaymentDocs {
             @PathVariable String paymentKey
     );
 
-    @Operation(summary = "내 결제 내역", description = "로그인한 고객의 결제 목록 조회")
+    @Operation(summary = "내 결제 내역", description = "로그인한 고객의 결제 목록 조회 (페이징 지원)")
     ResponseEntity<List<PaymentListResponse>> getMyPayments(
-            @Parameter(hidden = true) Accessor accessor
+            @Parameter(hidden = true) Accessor accessor,
+            @Parameter(description = "페이지 번호(0-base)", required = false)
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @Parameter(description = "페이지 크기", required = false)
+            @RequestParam(required = false, defaultValue = "10") Integer size
     );
 
     @Operation(summary = "결제 상세", description = "고객/사장만 접근 가능한 결제 상세 조회")
@@ -46,13 +51,20 @@ public interface PaymentDocs {
             @PathVariable String paymentKey
     );
 
-    @Operation(summary = "내 정산 내역(사장)", description = "사장 계정으로 자신의 정산 요약 + 결제 리스트 조회 (월/상태 필터 가능)")
+    @Operation(
+            summary = "내 정산 내역(사장)",
+            description = "사장 계정으로 자신의 정산 요약 + 결제 리스트 조회 (월/상태 필터 + 페이징 가능)"
+    )
     ResponseEntity<PaymentSettlementResponse> getMySettlements(
             @Parameter(hidden = true) Accessor accessor,
             @Parameter(description = "연도 (예: 2025)", required = false) Integer year,
             @Parameter(description = "월 (1~12)", required = false) Integer month,
-            @Parameter(description = "결제 상태 (DONE, CANCELED, REFUND_COMPLETED 등)", required = false)
-            PaymentStatus status
+            @Parameter(description = "결제 상태 (DONE, CANCELED 등)", required = false)
+            PaymentStatus status,
+            @Parameter(description = "페이지 번호(0-base)", required = false)
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @Parameter(description = "페이지 크기", required = false)
+            @RequestParam(required = false, defaultValue = "10") Integer size
     );
 
     @Operation(summary = "결제 취소 요청 목록(사장)", description = "CANCEL_REQUESTED 상태의 결제들만 조회")

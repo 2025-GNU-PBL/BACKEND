@@ -1,5 +1,6 @@
 package gnu.project.backend.payment.repository;
 
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import gnu.project.backend.common.enumerated.PaymentStatus;
 import gnu.project.backend.payment.entity.Payment;
@@ -23,8 +24,8 @@ public class PaymentRepositoryImpl implements PaymentRepositoryCustom {
     private final JPAQueryFactory query;
 
     @Override
-    public List<Payment> findAllWithOrderAndDetailsByCustomerSocialId(String socialId) {
-        return query
+    public List<Payment> findAllWithOrderAndDetailsByCustomerSocialId(String socialId, int page, int size) {
+        JPAQuery<Payment> base = query
                 .selectFrom(payment)
                 .distinct()
                 .join(payment.order, order).fetchJoin()
@@ -33,8 +34,9 @@ public class PaymentRepositoryImpl implements PaymentRepositoryCustom {
                 .leftJoin(orderDetail.product, product).fetchJoin()
                 .leftJoin(product.owner, owner).fetchJoin()
                 .where(order.customer.oauthInfo.socialId.eq(socialId))
-                .orderBy(payment.approvedAt.desc())
-                .fetch();
+                .orderBy(payment.approvedAt.desc());
+
+        return applyPagination(base, page, size).fetch();
     }
 
     @Override
@@ -80,9 +82,20 @@ public class PaymentRepositoryImpl implements PaymentRepositoryCustom {
                 .join(product.owner, owner).fetchJoin()
                 .where(
                         owner.id.eq(ownerId),
-                        payment.status.eq(PaymentStatus.CANCEL_REQUESTED) 
+                        payment.status.eq(PaymentStatus.CANCEL_REQUESTED)
                 )
                 .orderBy(payment.approvedAt.desc())
                 .fetch();
+    }
+
+    private <T> JPAQuery<T> applyPagination(JPAQuery<T> query, int page, int size) {
+        if (size <= 0) {
+            return query;
+        }
+        int safePage = Math.max(page, 0); // page < 0 보호
+        long offset = (long) safePage * size;
+        return query
+                .offset(offset)
+                .limit(size);
     }
 }
