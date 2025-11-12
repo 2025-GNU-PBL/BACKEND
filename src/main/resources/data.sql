@@ -1,96 +1,34 @@
 -- OWNER 데이터 삽입
-INSERT INTO owner (id,
-                   profile_image,
-                   bz_name,
-                   phone_number,
-                   bz_number,
-                   bank_account,
-                   user_role,
-                   email,
-                   name,
-                   social_id,
-                   social_provider,
-                   created_at,
-                   updated_at)
+INSERT INTO owner (id, profile_image, bz_name, phone_number, bz_number, bank_account, user_role,
+                   email, name, social_id, social_provider, created_at, updated_at)
 VALUES (5, 'https://cdn.example.com/owner1.jpg', '청담 뷰티샵', '010-1234-5678', '111-22-33333',
-        '110-123-456789', 'OWNER',
-        'owner1@example.com', '홍길동', 'social-123', 'KAKAO', NOW(), NOW()),
-
-       (6, 'https://cdn.example.com/owner2.jpg', '서초 메이크업 스튜디오', '010-2345-6789',
-        '222-33-44444', '110-987-654321', 'OWNER',
-        'owner2@example.com', '김서연', 'social-456', 'GOOGLE', NOW(), NOW()),
-
+        '110-123-456789', 'OWNER', 'owner1@example.com', '홍길동', 'social-123', 'KAKAO', NOW(),
+        NOW()),
+       (6, 'https://cdn.example.com/owner2.jpg', '서초 메이크업 스튜디오', '010-2345-6789', '222-33-44444',
+        '110-987-654321', 'OWNER', 'owner2@example.com', '김서연', 'social-456', 'GOOGLE', NOW(),
+        NOW()),
        (7, 'https://cdn.example.com/owner3.jpg', '송파 뷰티살롱', '010-3456-7890', '333-44-55555',
-        '110-555-666777', 'OWNER',
-        'owner3@example.com', '박지훈', 'social-789', 'NAVER', NOW(), NOW()),
-
+        '110-555-666777', 'OWNER', 'owner3@example.com', '박지훈', 'social-789', 'NAVER', NOW(),
+        NOW()),
        (8, 'https://cdn.example.com/owner4.jpg', '해운대 스타일', '010-4567-8901', '444-55-66666',
-        '110-111-222333', 'OWNER',
-        'owner4@example.com', '정유진', 'social-101', 'KAKAO', NOW(), NOW()),
-
+        '110-111-222333', 'OWNER', 'owner4@example.com', '정유진', 'social-101', 'KAKAO', NOW(),
+        NOW()),
        (9, 'https://cdn.example.com/owner5.jpg', '수영구 메이크업', '010-5678-9012', '555-66-77777',
-        '110-888-999000', 'OWNER',
-        'owner5@example.com', '최현우', 'social-202', 'GOOGLE', NOW(), NOW()),
-       (11,
-        NULL,
-        '웨딩픽',
-        '010-1234-1234',
-        '12341234',
-        '농협 123412341234',
-        'OWNER',
-        'sojinee56@gmail.com',
-        '하진',
-        '4512155917',
-        'KAKAO',
-        '2025-11-12 13:01:10.706312',
+        '110-888-999000', 'OWNER', 'owner5@example.com', '최현우', 'social-202', 'GOOGLE', NOW(),
+        NOW()),
+       (11, NULL, '웨딩픽', '010-1234-1234', '12341234', '농협 123412341234', 'OWNER',
+        'sojinee56@gmail.com', '하진', '4512155917', 'KAKAO', '2025-11-12 13:01:10.706312',
         '2025-11-12 13:01:48.475545');
 
-INSERT INTO customer (id,
-                      name,
-                      phone_number,
-                      email,
-                      social_id,
-                      social_provider,
-                      user_role,
-                      is_deleted,
-                      wedding_date,
-                      created_at,
-                      updated_at,
-                      zip_code,
-                      sido,
-                      sigungu,
-                      dong,
-                      building_name,
-                      address,
-                      detail_address,
-                      road_address,
-                      jibun_address,
-                      wedding_sido,
-                      wedding_sigungu)
-VALUES (1,
-        '하진',
-        '010-1234-1234',
-        'sojinee56@gmail.com',
-        '4512155917',
-        'KAKAO',
-        'CUSTOMER',
-        FALSE,
-        '2025-11-20',
-        '2025-11-12 13:39:41.04218',
-        '2025-11-12 13:40:05.108486',
-        '52827',
-        NULL,
-        NULL,
-        '가좌동',
-        NULL,
-        '경남 진주시 진주대로 502',
-        '1층',
-        '경남 진주시 진주대로 502',
-        NULL,
-        '서울특별시',
-        '강남구');
+INSERT INTO customer (id, name, phone_number, email, social_id, social_provider, user_role,
+                      is_deleted, wedding_date, created_at, updated_at, zip_code, sido, sigungu,
+                      dong, building_name, address, detail_address, road_address, jibun_address,
+                      wedding_sido, wedding_sigungu)
+VALUES (1, '하진', '010-1234-1234', 'sojinee56@gmail.com', '4512155917', 'KAKAO', 'CUSTOMER', FALSE,
+        '2025-11-20', '2025-11-12 13:39:41.04218', '2025-11-12 13:40:05.108486', '52827', NULL,
+        NULL, '가좌동', NULL, '경남 진주시 진주대로 502', '1층', '경남 진주시 진주대로 502', NULL, '서울특별시', '강남구');
 
--- 💍 DRESS MOCK DATA (총 20개)
+-- DRESS MOCK DATA (21개)
 INSERT INTO product (id, owner_id, product_type, category, price, address, detail, star_count,
                      average_rating, name, created_at, updated_at, available_times, region)
 VALUES (101, 5, 'DRESS', 'DRESS', 300000, '서울 강남구 청담동', '우아한 A라인 웨딩드레스', 4.8, 52,
@@ -134,9 +72,10 @@ VALUES (101, 5, 'DRESS', 'DRESS', 300000, '서울 강남구 청담동', '우아�
        (120, 9, 'DRESS', 'DRESS', 350000, '서울 은평구 불광동', '트렌디한 셀럽 스타일', 4.9, 57,
         'Celebrity Trend Dress', NOW(), NOW(), '09:30, 12:30, 15:30', 'SEOUL'),
        (121, 11, 'DRESS', 'DRESS', 1800000, '경남 진주시 진주대로 502',
-        '하진 웨딩픽 전용 A라인 드레스 세트. 깔끔하고 우아한 본식용 드레스.',
-        4.9, 58, '웨딩드레스 A라인 세트', NOW(), NOW(), '10:00, 13:00, 16:00', 'SEOUL');
+        '하진 웨딩픽 전용 A라인 드레스 세트. 깔끔하고 우아한 본식용 드레스.', 4.9, 58, '웨딩드레스 A라인 세트', NOW(), NOW(),
+        '10:00, 13:00, 16:00', 'SEOUL');
 
+-- dress 테이블 (122 제거!)
 INSERT INTO dress (id)
 VALUES (101),
        (102),
@@ -159,6 +98,8 @@ VALUES (101),
        (119),
        (120),
        (121);
+
+-- DRESS 태그
 INSERT INTO tags (product_id, name)
 VALUES (101, 'SILK'),
        (101, 'CEREMONY'),
@@ -196,6 +137,59 @@ VALUES (101, 'SILK'),
        (120, 'IMPORTED'),
        (120, 'CEREMONY');
 
+-- STUDIO 상품 (122 → STUDIO, 311 → 추가)
+INSERT INTO product (id, owner_id, product_type, category, price, address, detail, star_count,
+                     average_rating, name, created_at, updated_at, available_times, region)
+VALUES (122, 11, 'STUDIO', 'STUDIO', 1200000, '경남 진주시 진주대로 502', '자연광을 활용한 감성적인 웨딩 스냅 전용 스튜디오.',
+        4.7, 53, '감성 스튜디오 촬영', NOW(), NOW(), '10:00, 13:00, 16:00', 'BUSAN'),
+       (301, 5, 'STUDIO', 'STUDIO', 500000, '서울 강남구 청담동', '인물 중심 프리미엄 스튜디오', 4.8, 53,
+        'Portrait Focused Studio', NOW(), NOW(), '09:00, 12:00, 15:00', 'SEOUL'),
+       (302, 5, 'STUDIO', 'STUDIO', 520000, '서울 서초구 반포동', '배경이 다양한 실내 스튜디오', 4.7, 49,
+        'Varied Background Studio', NOW(), NOW(), '09:30, 12:30, 15:30', 'SEOUL'),
+       (303, 6, 'STUDIO', 'STUDIO', 550000, '서울 송파구 잠실동', '인물과 배경을 조화시킨 촬영', 4.9, 55,
+        'Portrait & Background Studio', NOW(), NOW(), '10:00, 13:00, 16:00', 'SEOUL'),
+       (304, 6, 'STUDIO', 'STUDIO', 480000, '서울 강동구 천호동', '한옥 콘셉트 스튜디오', 4.6, 45,
+        'Hanok Wedding Studio', NOW(), NOW(), '09:00, 12:00, 15:00', 'SEOUL'),
+       (305, 7, 'STUDIO', 'STUDIO', 600000, '부산 해운대구', '야외 정원 배경 촬영', 4.7, 47,
+        'Garden Wedding Studio', NOW(), NOW(), '10:00, 13:00, 17:00', 'BUSAN'),
+       (306, 7, 'STUDIO', 'STUDIO', 650000, '부산 수영구 광안동', '야경 중심 스튜디오', 4.8, 50,
+        'Night Scene Studio', NOW(), NOW(), '09:30, 12:30, 15:30', 'BUSAN'),
+       (307, 8, 'STUDIO', 'STUDIO', 580000, '서울 마포구 서교동', '도로 위 컨셉 촬영', 4.5, 43,
+        'Road Concept Studio', NOW(), NOW(), '09:00, 12:00, 15:00', 'SEOUL'),
+       (308, 8, 'STUDIO', 'STUDIO', 700000, '서울 영등포구 문래동', '수중 촬영 스튜디오', 4.9, 55,
+        'Underwater Studio', NOW(), NOW(), '09:00, 11:30, 14:30', 'SEOUL'),
+       (309, 9, 'STUDIO', 'STUDIO', 620000, '서울 용산구 한남동', '반려동물과 함께 촬영 가능', 4.8, 52,
+        'Pet Friendly Studio', NOW(), NOW(), '09:00, 11:00, 14:00', 'SEOUL'),
+       (310, 9, 'STUDIO', 'STUDIO', 590000, '서울 종로구 인사동', '다양한 배경 촬영 패키지', 4.6, 46,
+        'Varied Theme Studio', NOW(), NOW(), '10:00, 13:00, 16:00', 'SEOUL');
+
+INSERT INTO studio (id)
+VALUES (122),
+       (301),
+       (302),
+       (303),
+       (304),
+       (305),
+       (306),
+       (307),
+       (308),
+       (309),
+       (310);
+
+-- STUDIO 태그
+INSERT INTO tags (product_id, name)
+VALUES (301, 'PORTRAIT_FOCUSED'),
+       (302, 'VARIED_BACKGROUND'),
+       (303, 'PORTRAIT_AND_BACKGROUND'),
+       (304, 'HANOK'),
+       (305, 'GARDEN'),
+       (306, 'NIGHT'),
+       (307, 'ROAD'),
+       (308, 'UNDERWATER'),
+       (309, 'PET_FRIENDLY'),
+       (310, 'VARIED_BACKGROUND');
+
+-- MAKEUP 상품
 INSERT INTO product (id, owner_id, product_type, category, price, address, detail, star_count,
                      average_rating, name, created_at, updated_at, available_times, region)
 VALUES (201, 5, 'MAKEUP', 'MAKEUP', 150000, '서울 강남구 논현동', '내추럴 촬영용 메이크업', 4.6, 42,
@@ -218,9 +212,9 @@ VALUES (201, 5, 'MAKEUP', 'MAKEUP', 150000, '서울 강남구 논현동', '내�
         'Calm Ceremony Makeup', NOW(), NOW(), '09:00, 11:00, 14:00', 'SEOUL'),
        (210, 11, 'MAKEUP', 'MAKEUP', 200000, '서울 중구 을지로동', '감독/부원장급 스페셜', 4.9, 50,
         'Executive Director Makeup', NOW(), NOW(), '10:00, 13:00, 16:00', 'SEOUL'),
-       (211, 11, 'MAKEUP', 'MAKEUP', 750000, '경남 진주시 진주대로 502',
-        '자연스러운 윤광 베이스와 브라이덜 헤어 포함.',
-        4.8, 55, '클래식 메이크업 패키지', NOW(), NOW(), '09:00, 11:00, 15:00', 'SEOUL');
+       (211, 11, 'MAKEUP', 'MAKEUP', 750000, '경남 진주시 진주대로 502', '자연스러운 윤광 베이스와 브라이덜 헤어 포함.', 4.8,
+        55, '클래식 메이크업 패키지', NOW(), NOW(), '09:00, 11:00, 15:00', 'SEOUL');
+
 INSERT INTO makeup (id)
 VALUES (201),
        (202),
@@ -234,56 +228,7 @@ VALUES (201),
        (210),
        (211);
 
-INSERT INTO product (id, owner_id, product_type, category, price, address, detail, star_count,
-                     average_rating, name, created_at, updated_at, available_times, region)
-VALUES (301, 5, 'STUDIO', 'STUDIO', 500000, '서울 강남구 청담동', '인물 중심 프리미엄 스튜디오', 4.8, 53,
-        'Portrait Focused Studio', NOW(), NOW(), '09:00, 12:00, 15:00', 'SEOUL'),
-       (302, 5, 'STUDIO', 'STUDIO', 520000, '서울 서초구 반포동', '배경이 다양한 실내 스튜디오', 4.7, 49,
-        'Varied Background Studio', NOW(), NOW(), '09:30, 12:30, 15:30', 'SEOUL'),
-       (303, 6, 'STUDIO', 'STUDIO', 550000, '서울 송파구 잠실동', '인물과 배경을 조화시킨 촬영', 4.9, 55,
-        'Portrait & Background Studio', NOW(), NOW(), '10:00, 13:00, 16:00', 'SEOUL'),
-       (304, 6, 'STUDIO', 'STUDIO', 480000, '서울 강동구 천호동', '한옥 콘셉트 스튜디오', 4.6, 45,
-        'Hanok Wedding Studio', NOW(), NOW(), '09:00, 12:00, 15:00', 'SEOUL'),
-       (305, 7, 'STUDIO', 'STUDIO', 600000, '부산 해운대구', '야외 정원 배경 촬영', 4.7, 47,
-        'Garden Wedding Studio', NOW(), NOW(), '10:00, 13:00, 17:00', 'BUSAN'),
-       (306, 7, 'STUDIO', 'STUDIO', 650000, '부산 수영구 광안동', '야경 중심 스튜디오', 4.8, 50,
-        'Night Scene Studio', NOW(), NOW(), '09:30, 12:30, 15:30', 'BUSAN'),
-       (307, 8, 'STUDIO', 'STUDIO', 580000, '서울 마포구 서교동', '도로 위 컨셉 촬영', 4.5, 43,
-        'Road Concept Studio', NOW(), NOW(), '09:00, 12:00, 15:00', 'SEOUL'),
-       (308, 8, 'STUDIO', 'STUDIO', 700000, '서울 영등포구 문래동', '수중 촬영 스튜디오', 4.9, 55,
-        'Underwater Studio', NOW(), NOW(), '09:00, 11:30, 14:30', 'SEOUL'),
-       (309, 9, 'STUDIO', 'STUDIO', 620000, '서울 용산구 한남동', '반려동물과 함께 촬영 가능', 4.8, 52,
-        'Pet Friendly Studio', NOW(), NOW(), '09:00, 11:00, 14:00', 'SEOUL'),
-       (310, 9, 'STUDIO', 'STUDIO', 590000, '서울 종로구 인사동', '다양한 배경 촬영 패키지', 4.6, 46,
-        'Varied Theme Studio', NOW(), NOW(), '10:00, 13:00, 16:00', 'SEOUL'),
-       (311, 11, 'STUDIO', 'STUDIO', 1200000, '경남 진주시 진주대로 502',
-        '자연광을 활용한 감성적인 웨딩 스냅 전용 스튜디오.',
-        4.7, 53, '감성 스튜디오 촬영', NOW(), NOW(), '10:00, 13:00, 16:00', 'BUSAN');;
-INSERT INTO studio (id)
-VALUES (301),
-       (302),
-       (303),
-       (304),
-       (305),
-       (306),
-       (307),
-       (308),
-       (309),
-       (310),
-       (311);
-
-INSERT INTO tags (product_id, name)
-VALUES (301, 'PORTRAIT_FOCUSED'),
-       (302, 'VARIED_BACKGROUND'),
-       (303, 'PORTRAIT_AND_BACKGROUND'),
-       (304, 'HANOK'),
-       (305, 'GARDEN'),
-       (306, 'NIGHT'),
-       (307, 'ROAD'),
-       (308, 'UNDERWATER'),
-       (309, 'PET_FRIENDLY'),
-       (310, 'VARIED_BACKGROUND');
-
+-- MAKEUP 태그
 INSERT INTO tags (product_id, name)
 VALUES (201, 'SHOOTING'),
        (201, 'CLEAN_AND_BRIGHT'),
@@ -296,6 +241,8 @@ VALUES (201, 'SHOOTING'),
        (208, 'TEAM_LEADER_OR_DESIGNER'),
        (209, 'CEREMONY'),
        (210, 'DEPUTY_DIRECTOR');
+
+-- WEDDING_HALL
 INSERT INTO product (id, address, available_times, average_rating, category, created_at, detail,
                      is_deleted, name, owner_id, price, region, star_count, updated_at,
                      product_type)
@@ -319,13 +266,8 @@ VALUES (401, '서울 강남구 역삼동 123', '09:00~22:00', 4.5, 'WEDDING_HALL
         5, 11000000, 'SEOUL', 4.9, NOW(), 'WEDDING_HALL'),
        (410, '제주 제주시 애월읍 55', '09:00~22:00', 4.9, 'WEDDING_HALL', NOW(), '자연 속 웨딩홀', false,
         '제주하모니홀', 11, 9000000, 'SEOUL', 5.0, NOW(), 'WEDDING_HALL');
--- wedding_hall 테이블에 상세 컬럼 삽입 (subway_accessible, dining_available 추가)
-INSERT INTO wedding_hall (id,
-                          capacity,
-                          min_guest,
-                          max_guest,
-                          parking_capacity,
-                          catering_type,
+
+INSERT INTO wedding_hall (id, capacity, min_guest, max_guest, parking_capacity, catering_type,
                           reservation_policy)
 VALUES (401, 300, 50, 500, 100, '뷔페', '예약 후 7일 내 계약금 10%'),
        (402, 250, 40, 400, 80, '코스식', '계약 후 취소 시 위약금 20%'),
@@ -337,7 +279,6 @@ VALUES (401, 300, 50, 500, 100, '뷔페', '예약 후 7일 내 계약금 10%'),
        (408, 180, 20, 300, 40, '코스식', '예약금 10% 선입금'),
        (409, 500, 100, 800, 150, '뷔페', 'VIP룸 제공, 일정 조율 가능'),
        (410, 320, 60, 550, 90, '한식', '자연 속 예식장으로 일정 조정 가능');
-
 
 INSERT INTO tags (product_id, name)
 VALUES (401, 'GENERAL'),
@@ -351,208 +292,71 @@ VALUES (401, 'GENERAL'),
        (409, 'SMALL'),
        (410, 'OUTDOOR_GARDEN');
 
-
--- 1. APPROVE (승인된 예약) - 웨딩드레스 A라인 세트 (121)
+-- RESERVATION (311 제거)
 INSERT INTO reservation (owner_id, customer_id, product_id, status, reservation_time, title,
                          content, created_at, updated_at)
-VALUES (11,
-        1,
-        121,
-        'APPROVE',
-        '2025-11-18',
-        '본식용 A라인 드레스 대여 예약',
-        '2025년 11월 20일 본식에 사용할 A라인 드레스 세트 예약합니다. 피팅은 11월 15일 오후 2시 희망.',
-        NOW(),
-        NOW()),
-       (11,
-        1,
-        122,
-        'PENDING',
-        '2025-11-16',
-        '스튜디오 스냅 촬영 예약 요청',
-        '자연광 감성 스튜디오에서 웨딩 스냅 촬영 원합니다. 11월 16일 오전 10시 가능 여부 확인 부탁드립니다.',
-        NOW(),
-        NOW()),
-       (11,
-        1,
-        311,
-        'DENY',
-        '2025-11-19',
-        '클래식 메이크업 예약 (거절됨)',
-        '본식 당일 메이크업 예약 시도했으나, 해당 일정은 이미 예약 완료되어 거절되었습니다.',
-        NOW(),
-        NOW()),
-       (11,
-        1,
-        121,
-        'APPROVE',
-        '2025-11-15',
-        '피팅 및 최종 드레스 확정',
-        'A라인 드레스 피팅 후 최종 확정. 사이즈 조정 필요 시 말씀 부탁드립니다.',
-        NOW(),
-        NOW()),
-       (11,
-        1,
-        122,
-        'PENDING',
-        '2025-11-16',
-        '스튜디오 촬영 시간 조정 요청',
-        '오전 10시 불가 시 오후 1시로 조정 가능 여부 확인 부탁드립니다.',
-        NOW(),
-        NOW());
+VALUES (11, 1, 121, 'APPROVE', '2025-11-18', '본식용 A라인 드레스 대여 예약',
+        '2025년 11월 20일 본식에 사용할 A라인 드레스 세트 예약합니다. 피팅은 11월 15일 오후 2시 희망.', NOW(), NOW()),
+       (11, 1, 122, 'PENDING', '2025-11-16', '스튜디오 스냅 촬영 예약 요청',
+        '자연광 감성 스튜디오에서 웨딩 스냅 촬영 원합니다. 11월 16일 오전 10시 가능 여부 확인 부탁드립니다.', NOW(), NOW()),
+       (11, 1, 121, 'APPROVE', '2025-11-15', '피팅 및 최종 드레스 확정',
+        'A라인 드레스 피팅 후 최종 확정. 사이즈 조정 필요 시 말씀 부탁드립니다.', NOW(), NOW()),
+       (11, 1, 122, 'PENDING', '2025-11-16', '스튜디오 촬영 시간 조정 요청',
+        '오전 10시 불가 시 오후 1시로 조정 가능 여부 확인 부탁드립니다.', NOW(), NOW());
 
+-- COUPON (311 제거)
+INSERT INTO coupon (product_id, owner_id, coupon_code, discount_type, discount_value, start_date,
+                    expiration_date, coupon_name, coupon_detail, category, max_discount_amount,
+                    min_purchase_amount, current_usage_count, version, parent_coupon_id,
+                    is_latest_version, current_download_count, status)
+VALUES (121, 11, 'WEDDINGPICK-001', 'RATE', 20.00, '2025-11-13', '2025-12-31', 'A라인 드레스 20% 할인',
+        '본식용 A라인 드레스 세트 20% 할인 쿠폰', 'DRESS', 500000, 1000000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+       (121, 11, 'WEDDINGPICK-002', 'AMOUNT', 300000, '2025-11-13', '2025-12-31', '드레스 30만원 즉시할인',
+        'A라인 드레스 구매 시 30만원 즉시 차감', 'DRESS', 300000, 1500000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+       (122, 11, 'WEDDINGPICK-003', 'RATE', 15.00, '2025-11-13', '2025-12-31', '감성 스튜디오 15% 할인',
+        '자연광 스튜디오 촬영 15% 할인', 'STUDIO', 200000, 800000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+       (NULL, 11, 'WEDDINGPICK-005', 'RATE', 5.00, '2025-11-13', '2025-12-31', '웨딩픽 전품목 5% 추가할인',
+        '웨딩픽 모든 서비스 5% 추가 할인', NULL, 100000, 500000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+       (121, 11, 'WEDDINGPICK-006', 'AMOUNT', 250000, '2025-11-13', '2025-12-31', '드레스+메이크업 패키지 할인',
+        'A라인 드레스 + 메이크업 동시 예약 시 25만원 할인', 'DRESS', 250000, 2000000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+       (122, 11, 'WEDDINGPICK-007', 'AMOUNT', 200000, '2025-11-13', '2025-12-31', '스튜디오 프리미엄 업그레이드',
+        '기본 → 프리미엄 촬영 무료 업그레이드 (20만원 상당)', 'STUDIO', 200000, 1000000, 0, 1, NULL, TRUE, 0,
+        'ACTIVE'),
+       (NULL, 11, 'WEDDINGPICK-008', 'RATE', 10.00, '2025-11-13', '2025-12-31', '웨딩픽 첫 구매 10% 할인',
+        '웨딩픽 첫 예약 시 사용 가능한 10% 할인', NULL, 150000, 300000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+       (NULL, 11, 'WEDDINGPICK-009', 'AMOUNT', 50000, '2025-11-13', '2025-12-31',
+        '하진님 생일 축하 5만원 쿠폰', '고객님 생일 기념 5만원 즉시 할인 쿠폰', NULL, 50000, 100000, 0, 1, NULL, TRUE, 0,
+        'ACTIVE'),
+       (NULL, 11, 'WEDDINGPICK-010', 'RATE', 10.00, '2025-11-13', '2025-11-20', '결혼 D-7 특전 10% 할인',
+        '결혼 7일 전 예약 시 10% 추가 할인', NULL, 200000, 500000, 0, 1, NULL, TRUE, 0, 'ACTIVE');
 
-INSERT INTO coupon (product_id, owner_id, coupon_code, discount_type, discount_value,
-                    start_date, expiration_date, coupon_name, coupon_detail, category,
-                    max_discount_amount, min_purchase_amount, current_usage_count,
-                    version, parent_coupon_id, is_latest_version, current_download_count, status)
-VALUES
--- 1. 드레스 20% 할인
-(121, 11, 'WEDDINGPICK-001', 'RATE', 20.00,
- '2025-11-13', '2025-12-31', 'A라인 드레스 20% 할인', '본식용 A라인 드레스 세트 20% 할인 쿠폰', 'DRESS',
- 500000, 1000000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
-
--- 2. 드레스 30만원 정액 할인
-(121, 11, 'WEDDINGPICK-002', 'AMOUNT', 300000,
- '2025-11-13', '2025-12-31', '드레스 30만원 즉시할인', 'A라인 드레스 구매 시 30만원 즉시 차감', 'DRESS',
- 300000, 1500000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
-
--- 3. 스튜디오 15% 할인
-(122, 11, 'WEDDINGPICK-003', 'RATE', 15.00,
- '2025-11-13', '2025-12-31', '감성 스튜디오 15% 할인', '자연광 스튜디오 촬영 15% 할인', 'STUDIO',
- 200000, 800000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
-
--- 4. 메이크업 10만원 할인
-(311, 11, 'WEDDINGPICK-004', 'AMOUNT', 100000,
- '2025-11-13', '2025-12-31', '클래식 메이크업 10만원 할인', '본식 메이크업 패키지 10만원 할인', 'MAKEUP',
- 100000, 500000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
-
--- 5. 전체 상품 5% 추가 할인 (카테고리 전체)
-(NULL, 11, 'WEDDINGPICK-005', 'RATE', 5.00,
- '2025-11-13', '2025-12-31', '웨딩픽 전품목 5% 추가할인', '웨딩픽 모든 서비스 5% 추가 할인', NULL,
- 100000, 500000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
-
--- 6. 드레스 + 메이크업 패키지 25만원 할인
-(121, 11, 'WEDDINGPICK-006', 'AMOUNT', 250000,
- '2025-11-13', '2025-12-31', '드레스+메이크업 패키지 할인', 'A라인 드레스 + 메이크업 동시 예약 시 25만원 할인', 'DRESS',
- 250000, 2000000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
-
--- 7. 스튜디오 무료 업그레이드 동등가치 할인
-(122, 11, 'WEDDINGPICK-007', 'AMOUNT', 200000,
- '2025-11-13', '2025-12-31', '스튜디오 프리미엄 업그레이드', '기본 → 프리미엄 촬영 무료 업그레이드 (20만원 상당)', 'STUDIO',
- 200000, 1000000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
-
--- 8. 첫 구매 전용 10% 할인
-(NULL, 11, 'WEDDINGPICK-008', 'RATE', 10.00,
- '2025-11-13', '2025-12-31', '웨딩픽 첫 구매 10% 할인', '웨딩픽 첫 예약 시 사용 가능한 10% 할인', NULL,
- 150000, 300000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
-
--- 9. 생일 특전 5만원 쿠폰
-(NULL, 11, 'WEDDINGPICK-009', 'AMOUNT', 50000,
- '2025-11-13', '2025-12-31', '하진님 생일 축하 5만원 쿠폰', '고객님 생일 기념 5만원 즉시 할인 쿠폰', NULL,
- 50000, 100000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
-
--- 10. 결혼기념일 D-7 특전 10% 할인
-(NULL, 11, 'WEDDINGPICK-010', 'RATE', 10.00,
- '2025-11-13', '2025-11-20', '결혼 D-7 특전 10% 할인', '결혼 7일 전 예약 시 10% 추가 할인', NULL,
- 200000, 500000, 0, 1, NULL, TRUE, 0, 'ACTIVE');
-
-INSERT INTO customer_coupon (id,
-                             customer_id,
-                             coupon_id,
-                             status,
-                             downloaded_at,
-                             used_at,
-                             created_at,
-                             updated_at,
-                             is_deleted)
-VALUES
--- 1. WEDDINGPICK-001 (드레스 20% 할인)
-(1, 1,
- (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-001'),
- 'AVAILABLE',
- '2025-11-12 14:31:10.899996', NULL,
- '2025-11-12 14:31:10.899996',
- '2025-11-12 14:31:10.899996',
- FALSE),
-
--- 2. WEDDINGPICK-002 (30만원 정액)
-(2, 1,
- (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-002'),
- 'AVAILABLE',
- '2025-11-12 14:31:10.899996', NULL,
- '2025-11-12 14:31:10.899996',
- '2025-11-12 14:31:10.899996',
- FALSE),
-
--- 3. WEDDINGPICK-003 (스튜디오 15%)
-(3, 1,
- (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-003'),
- 'AVAILABLE',
- '2025-11-12 14:31:10.899996', NULL,
- '2025-11-12 14:31:10.899996',
- '2025-11-12 14:31:10.899996',
- FALSE),
-
--- 4. WEDDINGPICK-004 (메이크업 10만원)
-(4, 1,
- (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-004'),
- 'AVAILABLE',
- '2025-11-12 14:31:10.899996', NULL,
- '2025-11-12 14:31:10.899996',
- '2025-11-12 14:31:10.899996',
- FALSE),
-
--- 5. WEDDINGPICK-005 (전품목 5%)
-(5, 1,
- (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-005'),
- 'AVAILABLE',
- '2025-11-12 14:31:10.899996', NULL,
- '2025-11-12 14:31:10.899996',
- '2025-11-12 14:31:10.899996',
- FALSE),
-
--- 6. WEDDINGPICK-006 (패키지 25만원)
-(6, 1,
- (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-006'),
- 'AVAILABLE',
- '2025-11-12 14:31:10.899996', NULL,
- '2025-11-12 14:31:10.899996',
- '2025-11-12 14:31:10.899996',
- FALSE),
-
--- 7. WEDDINGPICK-007 (스튜디오 업그레이드)
-(7, 1,
- (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-007'),
- 'AVAILABLE',
- '2025-11-12 14:31:10.899996', NULL,
- '2025-11-12 14:31:10.899996',
- '2025-11-12 14:31:10.899996',
- FALSE),
-
--- 8. WEDDINGPICK-008 (첫 구매 10%)
-(8, 1,
- (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-008'),
- 'AVAILABLE',
- '2025-11-12 14:31:10.899996', NULL,
- '2025-11-12 14:31:10.899996',
- '2025-11-12 14:31:10.899996',
- FALSE),
-
--- 9. WEDDINGPICK-009 (생일 5만원)
-(9, 1,
- (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-009'),
- 'AVAILABLE',
- '2025-11-12 14:31:10.899996', NULL,
- '2025-11-12 14:31:10.899996',
- '2025-11-12 14:31:10.899996',
- FALSE),
-
--- 10. WEDDINGPICK-010 (D-7 특전 10%)
-(10, 1,
- (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-010'),
- 'AVAILABLE',
- '2025-11-12 14:31:10.899996', NULL,
- '2025-11-12 14:31:10.899996',
- '2025-11-12 14:31:10.899996',
- FALSE);
+-- CUSTOMER_COUPON (WEDDINGPICK-004 제거)
+INSERT INTO customer_coupon (id, customer_id, coupon_id, status, downloaded_at, used_at, created_at,
+                             updated_at, is_deleted)
+VALUES (1, 1, (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-001'), 'AVAILABLE',
+        '2025-11-12 14:31:10.899996', NULL, '2025-11-12 14:31:10.899996',
+        '2025-11-12 14:31:10.899996', FALSE),
+       (2, 1, (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-002'), 'AVAILABLE',
+        '2025-11-12 14:31:10.899996', NULL, '2025-11-12 14:31:10.899996',
+        '2025-11-12 14:31:10.899996', FALSE),
+       (3, 1, (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-003'), 'AVAILABLE',
+        '2025-11-12 14:31:10.899996', NULL, '2025-11-12 14:31:10.899996',
+        '2025-11-12 14:31:10.899996', FALSE),
+       (5, 1, (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-005'), 'AVAILABLE',
+        '2025-11-12 14:31:10.899996', NULL, '2025-11-12 14:31:10.899996',
+        '2025-11-12 14:31:10.899996', FALSE),
+       (6, 1, (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-006'), 'AVAILABLE',
+        '2025-11-12 14:31:10.899996', NULL, '2025-11-12 14:31:10.899996',
+        '2025-11-12 14:31:10.899996', FALSE),
+       (7, 1, (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-007'), 'AVAILABLE',
+        '2025-11-12 14:31:10.899996', NULL, '2025-11-12 14:31:10.899996',
+        '2025-11-12 14:31:10.899996', FALSE),
+       (8, 1, (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-008'), 'AVAILABLE',
+        '2025-11-12 14:31:10.899996', NULL, '2025-11-12 14:31:10.899996',
+        '2025-11-12 14:31:10.899996', FALSE),
+       (9, 1, (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-009'), 'AVAILABLE',
+        '2025-11-12 14:31:10.899996', NULL, '2025-11-12 14:31:10.899996',
+        '2025-11-12 14:31:10.899996', FALSE),
+       (10, 1, (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-010'), 'AVAILABLE',
+        '2025-11-12 14:31:10.899996', NULL, '2025-11-12 14:31:10.899996',
+        '2025-11-12 14:31:10.899996', FALSE);
