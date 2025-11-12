@@ -6,6 +6,7 @@ import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.reservation.controller.docs.ReservationDocs;
 import gnu.project.backend.reservation.dto.request.ReservationRequestDto;
 import gnu.project.backend.reservation.dto.request.ReservationStatusChangeRequestDto;
+import gnu.project.backend.reservation.dto.response.ReservationDetailResponseDto;
 import gnu.project.backend.reservation.dto.response.ReservationResponseDto;
 import gnu.project.backend.reservation.service.ReservationService;
 import java.util.List;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,5 +49,13 @@ public class ReservationController implements ReservationDocs {
         @Auth final Accessor accessor
     ) {
         return ResponseEntity.ok(reservationService.findReservations(accessor));
+    }
+
+    @GetMapping("/{reservationId}")
+    public ResponseEntity<ReservationDetailResponseDto> findReservationDetail(
+        @Auth final Accessor accessor,
+        @PathVariable(name = "reservationId") final Long reservationId
+    ) {
+        return ResponseEntity.ok(reservationService.findReservationDetail(accessor, reservationId));
     }
 }
