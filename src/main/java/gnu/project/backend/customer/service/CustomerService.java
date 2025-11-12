@@ -47,7 +47,6 @@ public class CustomerService {
         }
 
         customer.signUp(
-                request.age(),
                 request.phoneNumber(),
                 request.address(),
                 request.zipCode(),
@@ -78,7 +77,6 @@ public class CustomerService {
         }
 
         customer.updateProfile(
-                request.age(),
                 request.phoneNumber(),
                 request.address(),
                 request.zipCode(),
