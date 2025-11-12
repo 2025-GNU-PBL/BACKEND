@@ -1,6 +1,5 @@
 package gnu.project.backend.product.repository.impl;
 
-import static gnu.project.backend.product.entity.QDress.dress;
 import static gnu.project.backend.product.entity.QImage.image;
 import static gnu.project.backend.product.entity.QOption.option;
 import static gnu.project.backend.product.entity.QStudio.studio;
@@ -226,9 +225,9 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
     @Override
     public Long countStudiosByFilter(List<StudioTag> tags, Category category, Region region,
         Integer minPrice, Integer maxPrice) {
-        return query.select(dress.countDistinct())
-            .from(dress)
-            .leftJoin(dress.tags, tag)
+        return query.select(studio.countDistinct())
+            .from(studio)
+            .leftJoin(studio.tags, tag)
             .where(
                 categoryEq(category),
                 regionEq(region),
@@ -238,7 +237,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
     }
 
     private BooleanExpression categoryEq(Category category) {
-        return category != null ? dress.category.eq(category) : null;
+        return category != null ? studio.category.eq(category) : null;
     }
 
     private ConstructorExpression<ProductPageResponse> createStudioResponse() {
