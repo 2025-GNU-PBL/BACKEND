@@ -13,8 +13,8 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import gnu.project.backend.product.dto.response.DressResponse;
-import gnu.project.backend.product.dto.response.DressResponse.TagResponse;
 import gnu.project.backend.product.dto.response.ProductPageResponse;
+import gnu.project.backend.product.dto.response.TagResponse;
 import gnu.project.backend.product.entity.Dress;
 import gnu.project.backend.product.entity.Tag;
 import gnu.project.backend.product.enumerated.Category;
@@ -95,6 +95,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
                 dress.createdAt(),
                 dress.region(),
                 dress.thumbnail(),
+                dress.category(),
                 tagsMap.getOrDefault(dress.id(), List.of())
             ))
             .toList();
@@ -171,6 +172,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
                 dress.createdAt(),
                 dress.region(),
                 dress.thumbnail(),
+                dress.category(),
                 tagsMap.getOrDefault(dress.id(), List.of())
             ))
             .toList();
@@ -203,6 +205,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
             dress.createdAt,
             dress.region,
             image.url,
+            dress.category,
             Expressions.nullExpression(List.class)
         );
     }

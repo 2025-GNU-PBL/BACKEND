@@ -11,9 +11,9 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import gnu.project.backend.product.dto.response.DressResponse.TagResponse;
 import gnu.project.backend.product.dto.response.MakeupResponse;
 import gnu.project.backend.product.dto.response.ProductPageResponse;
+import gnu.project.backend.product.dto.response.TagResponse;
 import gnu.project.backend.product.entity.Makeup;
 import gnu.project.backend.product.entity.Tag;
 import gnu.project.backend.product.enumerated.Category;
@@ -116,6 +116,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
                 makeup.createdAt(),
                 makeup.region(),
                 makeup.thumbnail(),
+                makeup.category(),
                 tagsMap.getOrDefault(makeup.id(), List.of())
             ))
             .toList();
@@ -180,6 +181,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
             makeup.createdAt,
             makeup.region,
             image.url,
+            makeup.category,
             Expressions.nullExpression(List.class)
         );
     }

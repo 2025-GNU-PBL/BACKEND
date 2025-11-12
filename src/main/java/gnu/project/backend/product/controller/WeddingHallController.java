@@ -6,7 +6,7 @@ import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.product.controller.docs.WeddingHallDocs;
 import gnu.project.backend.product.dto.request.WeddingHallRequest;
 import gnu.project.backend.product.dto.request.WeddingHallUpdateRequest;
-import gnu.project.backend.product.dto.response.WeddingHallPageResponse;
+import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.dto.response.WeddingHallResponse;
 import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.Region;
@@ -84,7 +84,7 @@ public class WeddingHallController implements WeddingHallDocs {
 
     @Override
     @GetMapping("/me")
-    public ResponseEntity<Page<WeddingHallPageResponse>> readMyWeddingHalls(
+    public ResponseEntity<Page<ProductPageResponse>> readMyWeddingHalls(
         @Parameter(hidden = true) @Auth final Accessor accessor,
         @RequestParam(name = "pageNumber", defaultValue = "1") final Integer pageNumber,
         @RequestParam(name = "pageSize", defaultValue = "6") final Integer pageSize
@@ -96,7 +96,7 @@ public class WeddingHallController implements WeddingHallDocs {
 
     @Override
     @GetMapping("/filter")
-    public ResponseEntity<Page<WeddingHallPageResponse>> getWeddingHallsByTags(
+    public ResponseEntity<Page<ProductPageResponse>> getWeddingHallsByTags(
         @RequestParam(required = false) final List<WeddingHallTag> tags,
         @RequestParam(required = false) final Category category,
         @RequestParam(required = false) final Region region,

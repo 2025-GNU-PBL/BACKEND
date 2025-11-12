@@ -17,16 +17,17 @@ public class ReservationPrefillRepositoryImpl implements ReservationPrefillCusto
     private final JPAQueryFactory query;
 
     @Override
-    public Optional<ReservationPrefill> findActiveByIdAndCustomerId(Long id, Long customerId, LocalDateTime now) {
+    public Optional<ReservationPrefill> findActiveByIdAndCustomerId(Long id, Long customerId,
+        LocalDateTime now) {
         ReservationPrefill hit = query
-                .selectFrom(prefill)
-                .where(
-                        prefill.id.eq(id),
-                        prefill.customer.id.eq(customerId),
-                        prefill.consumed.isFalse(),
-                        prefill.expiresAt.gt(now)
-                )
-                .fetchFirst();
+            .selectFrom(prefill)
+            .where(
+                prefill.id.eq(id),
+                prefill.customer.id.eq(customerId),
+                prefill.consumed.isFalse(),
+                prefill.expiresAt.gt(now)
+            )
+            .fetchFirst();
         return Optional.ofNullable(hit);
     }
 }

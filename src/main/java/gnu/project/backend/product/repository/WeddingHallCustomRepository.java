@@ -1,6 +1,6 @@
 package gnu.project.backend.product.repository;
 
-import gnu.project.backend.product.dto.response.WeddingHallPageResponse;
+import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.dto.response.WeddingHallResponse;
 import gnu.project.backend.product.entity.WeddingHall;
 import gnu.project.backend.product.enumerated.Category;
@@ -17,7 +17,7 @@ public interface WeddingHallCustomRepository {
     WeddingHallResponse findByWeddingHallId(final Long id);
 
 
-    Page<WeddingHallPageResponse> searchWeddingHallByOwner(
+    Page<ProductPageResponse> searchWeddingHallByOwner(
         final String ownerSocialId,
         final Pageable pageable
     );
@@ -28,7 +28,7 @@ public interface WeddingHallCustomRepository {
 
     long countActiveByOwner(final String ownerSocialId);
 
-    List<WeddingHallPageResponse> searchWeddingHallByFilter(
+    List<ProductPageResponse> searchWeddingHallByFilter(
         List<WeddingHallTag> tags, Category category, Region region,
         Integer minPrice, Integer maxPrice, SortType sortType,
         Integer pageNumber, Integer pageSize

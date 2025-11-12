@@ -4,7 +4,7 @@ import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.product.dto.request.WeddingHallRequest;
 import gnu.project.backend.product.dto.request.WeddingHallUpdateRequest;
-import gnu.project.backend.product.dto.response.WeddingHallPageResponse;
+import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.dto.response.WeddingHallResponse;
 import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.Region;
@@ -71,7 +71,7 @@ public interface WeddingHallDocs {
     @ApiResponse(responseCode = "200", description = "조회 성공",
         content = @Content(schema = @Schema(implementation = Page.class)))
     @GetMapping("/me")
-    ResponseEntity<Page<WeddingHallPageResponse>> readMyWeddingHalls(
+    ResponseEntity<Page<ProductPageResponse>> readMyWeddingHalls(
         @Parameter(hidden = true) @Auth Accessor accessor,
         @RequestParam(name = "pageNumber", defaultValue = "1") Integer pageNumber,
         @RequestParam(name = "pageSize", defaultValue = "6") Integer pageSize
@@ -89,7 +89,7 @@ public interface WeddingHallDocs {
         }
     )
     @GetMapping("/filter")
-    ResponseEntity<Page<WeddingHallPageResponse>> getWeddingHallsByTags(
+    ResponseEntity<Page<ProductPageResponse>> getWeddingHallsByTags(
         @Parameter(
             description = "웨딩홀 태그 목록",
             schema = @Schema(

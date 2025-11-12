@@ -13,9 +13,9 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import gnu.project.backend.product.dto.response.DressResponse.TagResponse;
 import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.dto.response.StudioResponse;
+import gnu.project.backend.product.dto.response.TagResponse;
 import gnu.project.backend.product.entity.Studio;
 import gnu.project.backend.product.entity.Tag;
 import gnu.project.backend.product.enumerated.Category;
@@ -138,6 +138,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
                 studio.createdAt(),
                 studio.region(),
                 studio.thumbnail(),
+                studio.category(),
                 tagsMap.getOrDefault(studio.id(), List.of())
             ))
             .toList();
@@ -195,7 +196,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
                 .toList())
             ).fetch();
 
-        Map<Long, List<TagResponse>> tagsMap = allTags.stream()
+        Map<Long, List<gnu.project.backend.product.dto.response.TagResponse>> tagsMap = allTags.stream()
             .collect(Collectors.groupingBy(
                 t -> t.getProduct().getId(),
                 Collectors.mapping(
@@ -216,6 +217,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
                 studio.createdAt(),
                 studio.region(),
                 studio.thumbnail(),
+                studio.category(),
                 tagsMap.getOrDefault(studio.id(), List.of())
             ))
             .toList();
@@ -252,6 +254,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
             studio.createdAt,
             studio.region,
             image.url,
+            studio.category,
             Expressions.nullExpression(List.class)
         );
     }
