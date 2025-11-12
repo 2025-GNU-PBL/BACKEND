@@ -227,8 +227,9 @@ public class WeddingHallRepositoryImpl implements WeddingHallCustomRepository {
             weddingHall.price,
             weddingHall.availableTimes,
             weddingHall.createdAt,
-            image.url,
             weddingHall.region,
+            image.url,
+            weddingHall.category,
             Expressions.nullExpression(List.class)
         );
     }
