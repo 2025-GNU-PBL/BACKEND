@@ -1,6 +1,6 @@
 package gnu.project.backend.product.dto.response;
 
-import gnu.project.backend.product.dto.response.DressResponse.TagResponse;
+import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.Region;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +16,7 @@ public record ProductPageResponse(
     LocalDateTime createdAt,
     Region region,
     String thumbnail,
+    Category category,
     List<TagResponse> tags
 ) {
 

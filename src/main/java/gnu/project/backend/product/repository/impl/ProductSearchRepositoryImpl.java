@@ -10,8 +10,8 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import gnu.project.backend.product.dto.response.DressResponse.TagResponse;
 import gnu.project.backend.product.dto.response.ProductPageResponse;
+import gnu.project.backend.product.dto.response.TagResponse;
 import gnu.project.backend.product.entity.Tag;
 import gnu.project.backend.product.enumerated.SortType;
 import gnu.project.backend.product.repository.ProductSearchCustomRepository;
@@ -96,6 +96,7 @@ public class ProductSearchRepositoryImpl implements ProductSearchCustomRepositor
                     p.createdAt(),
                     p.region(),
                     p.thumbnail(),
+                    p.category(),
                     tagsMap.getOrDefault(p.id(), List.of())
                 ))
                 .toList();
@@ -138,6 +139,7 @@ public class ProductSearchRepositoryImpl implements ProductSearchCustomRepositor
             product.createdAt,
             product.region,
             image.url,
+            product.category,
             Expressions.nullExpression(List.class)
         );
     }
