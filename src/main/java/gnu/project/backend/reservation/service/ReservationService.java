@@ -16,6 +16,7 @@ import gnu.project.backend.product.entity.Product;
 import gnu.project.backend.product.repository.ProductRepository;
 import gnu.project.backend.reservation.dto.request.ReservationRequestDto;
 import gnu.project.backend.reservation.dto.request.ReservationStatusChangeRequestDto;
+import gnu.project.backend.reservation.dto.response.ReservationDetailResponseDto;
 import gnu.project.backend.reservation.dto.response.ReservationResponseDto;
 import gnu.project.backend.reservation.entity.Reservation;
 import gnu.project.backend.reservation.enumerated.Status;
@@ -132,5 +133,37 @@ public class ReservationService {
         return reservations.stream()
             .map(ReservationResponseDto::from)
             .toList();
+    }
+
+    public ReservationDetailResponseDto findReservationDetail(
+        final Accessor accessor,
+        final Long reservationId
+    ) {
+        final ReservationDetailResponseDto detail =
+            reservationRepository.findReservationDetailById(reservationId)
+                .orElseThrow(() -> new BusinessException(RESERVATION_NOT_FOUND_EXCEPTION));
+
+        switch (accessor.getUserRole()) {
+            case CUSTOMER -> {
+                final Customer customer = customerRepository
+                    .findByOauthInfo_SocialId(accessor.getSocialId())
+                    .orElseThrow(() -> new BusinessException(CUSTOMER_NOT_FOUND_EXCEPTION));
+
+                if (!detail.customerId().equals(customer.getId())) {
+                    throw new BusinessException(IS_NOT_VALID_SOCIAL);
+                }
+            }
+            case OWNER -> {
+                final Owner owner = ownerRepository
+                    .findByOauthInfo_SocialId(accessor.getSocialId())
+                    .orElseThrow(() -> new BusinessException(OWNER_NOT_FOUND_EXCEPTION));
+
+                if (!detail.ownerId().equals(owner.getId())) {
+                    throw new BusinessException(IS_NOT_VALID_SOCIAL);
+                }
+            }
+            default -> throw new BusinessException(IS_NOT_VALID_SOCIAL);
+        }
+        return detail;
     }
 }
