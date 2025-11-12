@@ -24,9 +24,6 @@ public class Customer extends BaseEntity implements OauthUser {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "age")
-    private Short age;
-
     @Column(name = "phone_number")
     private String phoneNumber;
 
@@ -90,7 +87,6 @@ public class Customer extends BaseEntity implements OauthUser {
             null,
             null,
             null,
-            null,
             false,
             null,
             null,
@@ -110,7 +106,6 @@ public class Customer extends BaseEntity implements OauthUser {
     }
 
     public void signUp(
-        final Short age,
         final String phoneNumber,
         final String address,
 
@@ -127,7 +122,6 @@ public class Customer extends BaseEntity implements OauthUser {
         final String weddingSigungu,
         final LocalDate weddingDate
     ) {
-        this.age = age;
         this.phoneNumber = phoneNumber;
         this.address = address;
 
@@ -146,7 +140,6 @@ public class Customer extends BaseEntity implements OauthUser {
     }
 
     public void updateProfile(
-        final Short age,
         final String phoneNumber,
         final String address,
 
@@ -163,7 +156,6 @@ public class Customer extends BaseEntity implements OauthUser {
         final String weddingSigungu,
         final LocalDate weddingDate
     ) {
-        if (age != null) this.age = age;
         if (phoneNumber != null) this.phoneNumber = phoneNumber;
         if (address != null) this.address = address;
 
@@ -185,7 +177,6 @@ public class Customer extends BaseEntity implements OauthUser {
         this.isDeleted = true;
         this.phoneNumber = null;
         this.address = null;
-        this.age = null;
 
         this.zipCode = null;
         this.roadAddress = null;

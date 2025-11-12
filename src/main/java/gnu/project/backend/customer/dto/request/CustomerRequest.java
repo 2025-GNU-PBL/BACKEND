@@ -8,10 +8,6 @@ import static gnu.project.backend.customer.constant.CustomerConstant.*;
 
 public record CustomerRequest(
 
-        @NotNull(message = AGE_REQUIRED_MESSAGE)
-        @Max(value = 120, message = AGE_MAX_MESSAGE)
-        Short age,
-
         @NotBlank(message = PHONE_NUMBER_REQUIRED_MESSAGE)
         @Pattern(
                 regexp = "^010-\\d{4}-\\d{4}$",
