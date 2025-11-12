@@ -406,3 +406,159 @@ VALUES (11,
         '오전 10시 불가 시 오후 1시로 조정 가능 여부 확인 부탁드립니다.',
         NOW(),
         NOW());
+
+
+INSERT INTO coupon (product_id, owner_id, coupon_code, discount_type, discount_value,
+                    start_date, expiration_date, coupon_name, coupon_detail, category,
+                    max_discount_amount, min_purchase_amount, current_usage_count,
+                    version, parent_coupon_id, is_latest_version, current_download_count, status)
+VALUES
+-- 1. 드레스 20% 할인
+(121, 11, 'WEDDINGPICK-001', 'RATE', 20.00,
+ '2025-11-13', '2025-12-31', 'A라인 드레스 20% 할인', '본식용 A라인 드레스 세트 20% 할인 쿠폰', 'DRESS',
+ 500000, 1000000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+
+-- 2. 드레스 30만원 정액 할인
+(121, 11, 'WEDDINGPICK-002', 'AMOUNT', 300000,
+ '2025-11-13', '2025-12-31', '드레스 30만원 즉시할인', 'A라인 드레스 구매 시 30만원 즉시 차감', 'DRESS',
+ 300000, 1500000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+
+-- 3. 스튜디오 15% 할인
+(122, 11, 'WEDDINGPICK-003', 'RATE', 15.00,
+ '2025-11-13', '2025-12-31', '감성 스튜디오 15% 할인', '자연광 스튜디오 촬영 15% 할인', 'STUDIO',
+ 200000, 800000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+
+-- 4. 메이크업 10만원 할인
+(311, 11, 'WEDDINGPICK-004', 'AMOUNT', 100000,
+ '2025-11-13', '2025-12-31', '클래식 메이크업 10만원 할인', '본식 메이크업 패키지 10만원 할인', 'MAKEUP',
+ 100000, 500000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+
+-- 5. 전체 상품 5% 추가 할인 (카테고리 전체)
+(NULL, 11, 'WEDDINGPICK-005', 'RATE', 5.00,
+ '2025-11-13', '2025-12-31', '웨딩픽 전품목 5% 추가할인', '웨딩픽 모든 서비스 5% 추가 할인', NULL,
+ 100000, 500000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+
+-- 6. 드레스 + 메이크업 패키지 25만원 할인
+(121, 11, 'WEDDINGPICK-006', 'AMOUNT', 250000,
+ '2025-11-13', '2025-12-31', '드레스+메이크업 패키지 할인', 'A라인 드레스 + 메이크업 동시 예약 시 25만원 할인', 'DRESS',
+ 250000, 2000000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+
+-- 7. 스튜디오 무료 업그레이드 동등가치 할인
+(122, 11, 'WEDDINGPICK-007', 'AMOUNT', 200000,
+ '2025-11-13', '2025-12-31', '스튜디오 프리미엄 업그레이드', '기본 → 프리미엄 촬영 무료 업그레이드 (20만원 상당)', 'STUDIO',
+ 200000, 1000000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+
+-- 8. 첫 구매 전용 10% 할인
+(NULL, 11, 'WEDDINGPICK-008', 'RATE', 10.00,
+ '2025-11-13', '2025-12-31', '웨딩픽 첫 구매 10% 할인', '웨딩픽 첫 예약 시 사용 가능한 10% 할인', NULL,
+ 150000, 300000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+
+-- 9. 생일 특전 5만원 쿠폰
+(NULL, 11, 'WEDDINGPICK-009', 'AMOUNT', 50000,
+ '2025-11-13', '2025-12-31', '하진님 생일 축하 5만원 쿠폰', '고객님 생일 기념 5만원 즉시 할인 쿠폰', NULL,
+ 50000, 100000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+
+-- 10. 결혼기념일 D-7 특전 10% 할인
+(NULL, 11, 'WEDDINGPICK-010', 'RATE', 10.00,
+ '2025-11-13', '2025-11-20', '결혼 D-7 특전 10% 할인', '결혼 7일 전 예약 시 10% 추가 할인', NULL,
+ 200000, 500000, 0, 1, NULL, TRUE, 0, 'ACTIVE');
+
+INSERT INTO customer_coupon (id,
+                             customer_id,
+                             coupon_id,
+                             status,
+                             downloaded_at,
+                             used_at,
+                             created_at,
+                             updated_at,
+                             is_deleted)
+VALUES
+-- 1. WEDDINGPICK-001 (드레스 20% 할인)
+(1, 1,
+ (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-001'),
+ 'AVAILABLE',
+ '2025-11-12 14:31:10.899996', NULL,
+ '2025-11-12 14:31:10.899996',
+ '2025-11-12 14:31:10.899996',
+ FALSE),
+
+-- 2. WEDDINGPICK-002 (30만원 정액)
+(2, 1,
+ (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-002'),
+ 'AVAILABLE',
+ '2025-11-12 14:31:10.899996', NULL,
+ '2025-11-12 14:31:10.899996',
+ '2025-11-12 14:31:10.899996',
+ FALSE),
+
+-- 3. WEDDINGPICK-003 (스튜디오 15%)
+(3, 1,
+ (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-003'),
+ 'AVAILABLE',
+ '2025-11-12 14:31:10.899996', NULL,
+ '2025-11-12 14:31:10.899996',
+ '2025-11-12 14:31:10.899996',
+ FALSE),
+
+-- 4. WEDDINGPICK-004 (메이크업 10만원)
+(4, 1,
+ (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-004'),
+ 'AVAILABLE',
+ '2025-11-12 14:31:10.899996', NULL,
+ '2025-11-12 14:31:10.899996',
+ '2025-11-12 14:31:10.899996',
+ FALSE),
+
+-- 5. WEDDINGPICK-005 (전품목 5%)
+(5, 1,
+ (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-005'),
+ 'AVAILABLE',
+ '2025-11-12 14:31:10.899996', NULL,
+ '2025-11-12 14:31:10.899996',
+ '2025-11-12 14:31:10.899996',
+ FALSE),
+
+-- 6. WEDDINGPICK-006 (패키지 25만원)
+(6, 1,
+ (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-006'),
+ 'AVAILABLE',
+ '2025-11-12 14:31:10.899996', NULL,
+ '2025-11-12 14:31:10.899996',
+ '2025-11-12 14:31:10.899996',
+ FALSE),
+
+-- 7. WEDDINGPICK-007 (스튜디오 업그레이드)
+(7, 1,
+ (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-007'),
+ 'AVAILABLE',
+ '2025-11-12 14:31:10.899996', NULL,
+ '2025-11-12 14:31:10.899996',
+ '2025-11-12 14:31:10.899996',
+ FALSE),
+
+-- 8. WEDDINGPICK-008 (첫 구매 10%)
+(8, 1,
+ (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-008'),
+ 'AVAILABLE',
+ '2025-11-12 14:31:10.899996', NULL,
+ '2025-11-12 14:31:10.899996',
+ '2025-11-12 14:31:10.899996',
+ FALSE),
+
+-- 9. WEDDINGPICK-009 (생일 5만원)
+(9, 1,
+ (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-009'),
+ 'AVAILABLE',
+ '2025-11-12 14:31:10.899996', NULL,
+ '2025-11-12 14:31:10.899996',
+ '2025-11-12 14:31:10.899996',
+ FALSE),
+
+-- 10. WEDDINGPICK-010 (D-7 특전 10%)
+(10, 1,
+ (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-010'),
+ 'AVAILABLE',
+ '2025-11-12 14:31:10.899996', NULL,
+ '2025-11-12 14:31:10.899996',
+ '2025-11-12 14:31:10.899996',
+ FALSE);
