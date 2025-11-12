@@ -5,7 +5,6 @@ import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.cart.dto.request.CartAddRequest;
 import gnu.project.backend.cart.dto.request.CartBulkDeleteRequest;
 import gnu.project.backend.cart.dto.request.CartItemUpdateRequest;
-import gnu.project.backend.cart.dto.response.CartItemResponse;
 import gnu.project.backend.cart.dto.response.CartSummaryResponse;
 import gnu.project.backend.reservation.prefill.dto.response.CreateDraftsResponse;
 import io.swagger.v3.oas.annotations.Operation;

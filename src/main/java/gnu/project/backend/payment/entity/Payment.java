@@ -68,23 +68,25 @@ public class Payment extends BaseEntity {
     @Setter
     private LocalDateTime canceledAt;
 
-    public static Payment create(Order order, TossPaymentConfirmResponse toss) {
+    public static Payment create(
+            Order order,
+            String paymentKey,
+            String pgProvider,
+            String paymentMethod,
+            Long amount,
+            PaymentStatus status,
+            LocalDateTime approvedAt,
+            String receiptUrl
+    ) {
         Payment p = new Payment();
         p.order = order;
-        p.paymentKey = toss.getPaymentKey();
-        p.pgProvider = "tosspayments";
-        p.paymentMethod = toss.getMethod();
-        p.amount = toss.getTotalAmount();
-        p.status = PaymentStatus.fromString(String.valueOf(toss.getStatus()));
-
-        if (toss.getApprovedAt() != null) {
-            ZonedDateTime zdt = ZonedDateTime.parse(
-                    toss.getApprovedAt(),
-                    DateTimeFormatter.ISO_OFFSET_DATE_TIME
-            );
-            p.approvedAt = zdt.withZoneSameInstant(ZoneId.of("Asia/Seoul")).toLocalDateTime();
-        }
-        p.receiptUrl = toss.getReceipt() != null ? toss.getReceipt().getUrl() : null;
+        p.paymentKey = paymentKey;
+        p.pgProvider = pgProvider;
+        p.paymentMethod = paymentMethod;
+        p.amount = amount;
+        p.status = status;
+        p.approvedAt = approvedAt;
+        p.receiptUrl = receiptUrl;
         return p;
     }
 
@@ -94,7 +96,7 @@ public class Payment extends BaseEntity {
         }
         this.status = PaymentStatus.CANCEL_REQUESTED;
         this.cancelReason = reason;
-        this.order.updateStatus(OrderStatus.REFUND_REQUESTED);
+        this.order.updateStatus(OrderStatus.CANCEL_REQUESTED);
     }
 
     public void approveCancel(String reason, LocalDateTime canceledAt) {
@@ -105,15 +107,8 @@ public class Payment extends BaseEntity {
         this.cancelReason = reason;
         this.canceledAt = canceledAt;
         this.order.updateStatus(OrderStatus.CANCELED);
+
     }
 
-    public void refund(String reason, LocalDateTime refundedAt) {
-        if (this.status != PaymentStatus.CANCELED && this.status != PaymentStatus.CANCEL_REQUESTED) {
-            throw new IllegalStateException("환불은 취소 상태에서만 가능");
-        }
-        this.status = PaymentStatus.REFUND_COMPLETED;
-        this.cancelReason = reason;
-        this.canceledAt = refundedAt;
-        this.order.updateStatus(OrderStatus.REFUNDED);
-    }
+
 }

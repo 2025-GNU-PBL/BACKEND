@@ -8,7 +8,6 @@ import gnu.project.backend.customer.repository.CustomerRepository;
 import gnu.project.backend.reservation.dto.response.ReservationResponseDto;
 import gnu.project.backend.reservation.prefill.controller.docs.ReservationPrefillDocs;
 import gnu.project.backend.reservation.prefill.dto.request.ReservationFromDraftRequest;
-import gnu.project.backend.reservation.prefill.dto.response.ReservationDraftBatchResponse;
 import gnu.project.backend.reservation.prefill.dto.response.ReservationPrefillResponse;
 import gnu.project.backend.reservation.prefill.service.ReservationPrefillService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -54,12 +53,5 @@ public class ReservationPrefillController implements ReservationPrefillDocs {
         );
     }
 
-    @Override
-    @PostMapping("/prefill-from-cart/selected")
-    public ResponseEntity<ReservationDraftBatchResponse> createDraftsFromSelected(
-            @Parameter(hidden = true) @Auth Accessor accessor
-    ) {
-        ReservationDraftBatchResponse body = prefillService.createDraftsFromSelectedCart(accessor);
-        return ResponseEntity.ok(body);
-    }
+
 }

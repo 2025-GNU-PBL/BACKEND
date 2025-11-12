@@ -3,7 +3,6 @@ package gnu.project.backend.cart.dto.response;
 import gnu.project.backend.cart.entity.CartItem;
 import gnu.project.backend.product.entity.Product;
 
-import java.time.LocalDateTime;
 
 public record CartItemResponse(
         Long cartItemId,
@@ -12,8 +11,7 @@ public record CartItemResponse(
         Integer price,
         Integer quantity,
         boolean selected,
-        String thumbnailUrl,
-        LocalDateTime desireDate
+        String thumbnailUrl
 ) {
     public static CartItemResponse from(CartItem item) {
         final Product p = item.getProduct();
@@ -24,8 +22,7 @@ public record CartItemResponse(
                 p.getPrice(),
                 item.getQuantity(),
                 item.isSelected(),
-                p.getThumbnailUrl(),
-                item.getDesireDate()
+                p.getThumbnailUrl()
         );
     }
 }
