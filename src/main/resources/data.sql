@@ -30,8 +30,65 @@ VALUES (5, 'https://cdn.example.com/owner1.jpg', '청담 뷰티샵', '010-1234-5
 
        (9, 'https://cdn.example.com/owner5.jpg', '수영구 메이크업', '010-5678-9012', '555-66-77777',
         '110-888-999000', 'OWNER',
-        'owner5@example.com', '최현우', 'social-202', 'GOOGLE', NOW(), NOW());
+        'owner5@example.com', '최현우', 'social-202', 'GOOGLE', NOW(), NOW()),
+       (11,
+        NULL,
+        '웨딩픽',
+        '010-1234-1234',
+        '12341234',
+        '농협 123412341234',
+        'OWNER',
+        'sojinee56@gmail.com',
+        '하진',
+        '4512155917',
+        'KAKAO',
+        '2025-11-12 13:01:10.706312',
+        '2025-11-12 13:01:48.475545');
 
+INSERT INTO customer (id,
+                      name,
+                      phone_number,
+                      email,
+                      social_id,
+                      social_provider,
+                      user_role,
+                      is_deleted,
+                      wedding_date,
+                      created_at,
+                      updated_at,
+                      zip_code,
+                      sido,
+                      sigungu,
+                      dong,
+                      building_name,
+                      address,
+                      detail_address,
+                      road_address,
+                      jibun_address,
+                      wedding_sido,
+                      wedding_sigungu)
+VALUES (1,
+        '하진',
+        '010-1234-1234',
+        'sojinee56@gmail.com',
+        '4512155917',
+        'KAKAO',
+        'CUSTOMER',
+        FALSE,
+        '2025-11-20',
+        '2025-11-12 13:39:41.04218',
+        '2025-11-12 13:40:05.108486',
+        '52827',
+        NULL,
+        NULL,
+        '가좌동',
+        NULL,
+        '경남 진주시 진주대로 502',
+        '1층',
+        '경남 진주시 진주대로 502',
+        NULL,
+        '서울특별시',
+        '강남구');
 
 -- 💍 DRESS MOCK DATA (총 20개)
 INSERT INTO product (id, owner_id, product_type, category, price, address, detail, star_count,
@@ -75,7 +132,14 @@ VALUES (101, 5, 'DRESS', 'DRESS', 300000, '서울 강남구 청담동', '우아�
        (119, 9, 'DRESS', 'DRESS', 240000, '서울 강북구 미아동', '심플한 H라인 드레스', 4.6, 40,
         'Simple H-Line Dress', NOW(), NOW(), '09:00, 11:00, 14:00', 'SEOUL'),
        (120, 9, 'DRESS', 'DRESS', 350000, '서울 은평구 불광동', '트렌디한 셀럽 스타일', 4.9, 57,
-        'Celebrity Trend Dress', NOW(), NOW(), '09:30, 12:30, 15:30', 'SEOUL');
+        'Celebrity Trend Dress', NOW(), NOW(), '09:30, 12:30, 15:30', 'SEOUL'),
+       (121, 11, 'DRESS', 'DRESS', 1800000, '경남 진주시 진주대로 502',
+        '하진 웨딩픽 전용 A라인 드레스 세트. 깔끔하고 우아한 본식용 드레스.',
+        4.9, 58, '웨딩드레스 A라인 세트', NOW(), NOW(), '10:00, 13:00, 16:00', 'SEOUL'),
+       (122, 11, 'STUDIO', 'STUDIO', 1200000, '경남 진주시 진주대로 502',
+        '자연광을 활용한 감성적인 웨딩 스냅 전용 스튜디오.',
+        4.7, 53, '감성 스튜디오 촬영', NOW(), NOW(), '10:00, 13:00, 16:00', 'BUSAN');
+
 INSERT INTO dress (id)
 VALUES (101),
        (102),
@@ -96,7 +160,9 @@ VALUES (101),
        (117),
        (118),
        (119),
-       (120);
+       (120),
+       (121),
+       (122);
 INSERT INTO tags (product_id, name)
 VALUES (101, 'SILK'),
        (101, 'CEREMONY'),
@@ -152,9 +218,9 @@ VALUES (201, 5, 'MAKEUP', 'MAKEUP', 150000, '서울 강남구 논현동', '내�
         'Dual Shooting & Ceremony', NOW(), NOW(), '09:00, 12:00, 15:00', 'SEOUL'),
        (208, 9, 'MAKEUP', 'MAKEUP', 190000, '서울 종로구 삼청동', '팀장급 메이크업', 4.8, 48, 'Team Leader Makeup',
         NOW(), NOW(), '09:30, 12:30, 15:30', 'SEOUL'),
-       (209, 9, 'MAKEUP', 'MAKEUP', 155000, '서울 용산구 한남동', '차분한 분위기의 본식 메이크업', 4.7, 44,
+       (209, 11, 'MAKEUP', 'MAKEUP', 155000, '서울 용산구 한남동', '차분한 분위기의 본식 메이크업', 4.7, 44,
         'Calm Ceremony Makeup', NOW(), NOW(), '09:00, 11:00, 14:00', 'SEOUL'),
-       (210, 9, 'MAKEUP', 'MAKEUP', 200000, '서울 중구 을지로동', '감독/부원장급 스페셜', 4.9, 50,
+       (210, 11, 'MAKEUP', 'MAKEUP', 200000, '서울 중구 을지로동', '감독/부원장급 스페셜', 4.9, 50,
         'Executive Director Makeup', NOW(), NOW(), '10:00, 13:00, 16:00', 'SEOUL');
 INSERT INTO makeup (id)
 VALUES (201),
@@ -189,7 +255,10 @@ VALUES (301, 5, 'STUDIO', 'STUDIO', 500000, '서울 강남구 청담동', '인�
        (309, 9, 'STUDIO', 'STUDIO', 620000, '서울 용산구 한남동', '반려동물과 함께 촬영 가능', 4.8, 52,
         'Pet Friendly Studio', NOW(), NOW(), '09:00, 11:00, 14:00', 'SEOUL'),
        (310, 9, 'STUDIO', 'STUDIO', 590000, '서울 종로구 인사동', '다양한 배경 촬영 패키지', 4.6, 46,
-        'Varied Theme Studio', NOW(), NOW(), '10:00, 13:00, 16:00', 'SEOUL');
+        'Varied Theme Studio', NOW(), NOW(), '10:00, 13:00, 16:00', 'SEOUL'),
+       (311, 11, 'MAKEUP', 'MAKEUP', 750000, '경남 진주시 진주대로 502',
+        '자연스러운 윤광 베이스와 브라이덜 헤어 포함.',
+        4.8, 55, '클래식 메이크업 패키지', NOW(), NOW(), '09:00, 11:00, 15:00', 'SEOUL');
 INSERT INTO studio (id)
 VALUES (301),
        (302),
@@ -200,7 +269,8 @@ VALUES (301),
        (307),
        (308),
        (309),
-       (310);
+       (310),
+       (311);
 
 INSERT INTO tags (product_id, name)
 VALUES (301, 'PORTRAIT_FOCUSED'),
@@ -248,7 +318,9 @@ VALUES (401, '서울 강남구 역삼동 123', '09:00~22:00', 4.5, 'WEDDING_HALL
        (409, '경기 성남시 분당구 99', '09:00~21:00', 4.8, 'WEDDING_HALL', NOW(), '대형 웨딩 전문홀', false, '라움홀',
         5, 11000000, 'SEOUL', 4.9, NOW(), 'WEDDING_HALL'),
        (410, '제주 제주시 애월읍 55', '09:00~22:00', 4.9, 'WEDDING_HALL', NOW(), '자연 속 웨딩홀', false,
-        '제주하모니홀', 5, 9000000, 'SEOUL', 5.0, NOW(), 'WEDDING_HALL');
+        '제주하모니홀', '11', 9000000, 'SEOUL', 5.0, NOW(), 'WEDDING_HALL'),
+       (411, '제주 제주시 애월읍 55', '09:00~22:00', 4.9, 'WEDDING_HALL', NOW(), '자연 속 웨딩홀', false,
+        '제주하모니홀', 11, 9000000, 'SEOUL', 5.0, NOW(), 'WEDDING_HALL');
 
 -- wedding_hall 테이블에 상세 컬럼 삽입 (subway_accessible, dining_available 추가)
 INSERT INTO wedding_hall (id,
@@ -267,7 +339,9 @@ VALUES (401, 300, 50, 500, 100, '뷔페', '예약 후 7일 내 계약금 10%'),
        (407, 260, 40, 450, 75, '뷔페', '야외 예식은 날씨에 따라 조정'),
        (408, 180, 20, 300, 40, '코스식', '예약금 10% 선입금'),
        (409, 500, 100, 800, 150, '뷔페', 'VIP룸 제공, 일정 조율 가능'),
-       (410, 320, 60, 550, 90, '한식', '자연 속 예식장으로 일정 조정 가능');
+       (410, 320, 60, 550, 90, '한식', '자연 속 예식장으로 일정 조정 가능'),
+       (411, 320, 60, 550, 90, '한식', '자연 속 예식장으로 일정 조정 가능');
+
 
 
 INSERT INTO tags (product_id, name)
@@ -280,4 +354,55 @@ VALUES (401, 'GENERAL'),
        (407, 'CHURCH'),
        (408, 'CHAPEL'),
        (409, 'SMALL'),
+       (410, 'OUTDOOR_GARDEN'),
        (410, 'OUTDOOR_GARDEN');
+
+
+-- 1. APPROVE (승인된 예약) - 웨딩드레스 A라인 세트 (121)
+INSERT INTO reservation (owner_id, customer_id, product_id, status, reservation_time, title,
+                         content, created_at, updated_at)
+VALUES (11,
+        1,
+        121,
+        'APPROVE',
+        '2025-11-18',
+        '본식용 A라인 드레스 대여 예약',
+        '2025년 11월 20일 본식에 사용할 A라인 드레스 세트 예약합니다. 피팅은 11월 15일 오후 2시 희망.',
+        NOW(),
+        NOW()),
+       (11,
+        1,
+        122,
+        'PENDING',
+        '2025-11-16',
+        '스튜디오 스냅 촬영 예약 요청',
+        '자연광 감성 스튜디오에서 웨딩 스냅 촬영 원합니다. 11월 16일 오전 10시 가능 여부 확인 부탁드립니다.',
+        NOW(),
+        NOW()),
+       (11,
+        1,
+        311,
+        'DENY',
+        '2025-11-19',
+        '클래식 메이크업 예약 (거절됨)',
+        '본식 당일 메이크업 예약 시도했으나, 해당 일정은 이미 예약 완료되어 거절되었습니다.',
+        NOW(),
+        NOW()),
+       (11,
+        1,
+        121,
+        'APPROVE',
+        '2025-11-15',
+        '피팅 및 최종 드레스 확정',
+        'A라인 드레스 피팅 후 최종 확정. 사이즈 조정 필요 시 말씀 부탁드립니다.',
+        NOW(),
+        NOW()),
+       (11,
+        1,
+        122,
+        'PENDING',
+        '2025-11-16',
+        '스튜디오 촬영 시간 조정 요청',
+        '오전 10시 불가 시 오후 1시로 조정 가능 여부 확인 부탁드립니다.',
+        NOW(),
+        NOW());
