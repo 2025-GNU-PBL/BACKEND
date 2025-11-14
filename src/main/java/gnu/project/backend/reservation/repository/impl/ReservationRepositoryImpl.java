@@ -2,9 +2,11 @@ package gnu.project.backend.reservation.repository.impl;
 
 import static gnu.project.backend.customer.entity.QCustomer.customer;
 import static gnu.project.backend.owner.entity.QOwner.owner;
+import static gnu.project.backend.product.entity.QImage.image;
 import static gnu.project.backend.product.entity.QProduct.product;
 import static gnu.project.backend.reservation.entity.QReservation.reservation;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
@@ -77,13 +79,16 @@ public class ReservationRepositoryImpl implements ReservationCustomRepository {
 
     @Override
     public Optional<ReservationDetailResponseDto> findReservationDetailById(final Long id) {
+        BooleanBuilder imageCondition = new BooleanBuilder();
+        imageCondition.and(image.displayOrder.eq(0));
         return Optional.ofNullable(
             query.select(createReservationDetailResponse())
                 .from(reservation)
                 .leftJoin(reservation.owner, owner)
                 .leftJoin(reservation.customer, customer)
                 .leftJoin(reservation.product, product)
-                .where(reservation.id.eq(id))
+                .leftJoin(product.images, image)
+                .where(reservation.id.eq(id), imageCondition)
                 .fetchOne()
         );
     }
@@ -104,7 +109,8 @@ public class ReservationRepositoryImpl implements ReservationCustomRepository {
             customer.phoneNumber,
             customer.oauthInfo.email,
             reservation.title,
-            reservation.content
+            reservation.content,
+            image.url
         );
     }
 }

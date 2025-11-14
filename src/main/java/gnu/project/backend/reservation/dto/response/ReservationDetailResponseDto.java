@@ -17,7 +17,8 @@ public record ReservationDetailResponseDto(
     String customerPhoneNumber,
     String customerEmail,
     String title,
-    String content
+    String content,
+    String thumbnail
 ) {
 
 
