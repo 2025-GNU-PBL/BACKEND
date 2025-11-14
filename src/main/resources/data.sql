@@ -28,7 +28,10 @@ VALUES (1, '하진', '010-1234-1234', 'sojinee56@gmail.com', '4512155917', 'KAKA
         '2025-11-20', '2025-11-12 13:39:41.04218', '2025-11-12 13:40:05.108486', '52827', NULL,
         NULL, '가좌동', NULL, '경남 진주시 진주대로 502', '1층', '경남 진주시 진주대로 502', NULL, '서울특별시', '강남구');
 
--- DRESS MOCK DATA (21개)
+
+-- ========================================
+-- DRESS 상품 (21개) + 하위 테이블 매핑
+-- ========================================
 INSERT INTO product (id, owner_id, product_type, category, price, address, detail, star_count,
                      average_rating, name, created_at, updated_at, available_times, region)
 VALUES (101, 5, 'DRESS', 'DRESS', 300000, '서울 강남구 청담동', '우아한 A라인 웨딩드레스', 4.8, 52,
@@ -75,7 +78,7 @@ VALUES (101, 5, 'DRESS', 'DRESS', 300000, '서울 강남구 청담동', '우아�
         '하진 웨딩픽 전용 A라인 드레스 세트. 깔끔하고 우아한 본식용 드레스.', 4.9, 58, '웨딩드레스 A라인 세트', NOW(), NOW(),
         '10:00, 13:00, 16:00', 'SEOUL');
 
--- dress 테이블 (122 제거!)
+-- DRESS 하위 테이블 (PK = product.id)
 INSERT INTO dress (id)
 VALUES (101),
        (102),
@@ -99,45 +102,10 @@ VALUES (101),
        (120),
        (121);
 
--- DRESS 태그
-INSERT INTO tags (product_id, name)
-VALUES (101, 'SILK'),
-       (101, 'CEREMONY'),
-       (102, 'LACE'),
-       (102, 'SHOOTING'),
-       (103, 'DOMESTIC'),
-       (103, 'CEREMONY'),
-       (104, 'LACE'),
-       (104, 'DOMESTIC_AND_IMPORTED'),
-       (105, 'SHOOTING'),
-       (105, 'DOMESTIC'),
-       (106, 'SHOOTING'),
-       (106, 'CEREMONY'),
-       (107, 'SILK'),
-       (107, 'IMPORTED'),
-       (108, 'DOMESTIC'),
-       (108, 'SHOOTING_AND_CEREMONY'),
-       (109, 'SILK'),
-       (109, 'IMPORTED'),
-       (110, 'LACE'),
-       (110, 'CEREMONY'),
-       (111, 'DOMESTIC_AND_IMPORTED'),
-       (111, 'CEREMONY'),
-       (112, 'DOMESTIC'),
-       (112, 'SHOOTING'),
-       (113, 'SHOOTING_AND_CEREMONY'),
-       (114, 'DOMESTIC'),
-       (115, 'SHOOTING'),
-       (116, 'IMPORTED'),
-       (116, 'CEREMONY'),
-       (117, 'DOMESTIC'),
-       (118, 'BEADS'),
-       (118, 'CEREMONY'),
-       (119, 'DOMESTIC'),
-       (120, 'IMPORTED'),
-       (120, 'CEREMONY');
 
--- STUDIO 상품 (122 → STUDIO, 311 → 추가)
+-- ========================================
+-- STUDIO 상품 (122, 301~310) + 하위 테이블 매핑
+-- ========================================
 INSERT INTO product (id, owner_id, product_type, category, price, address, detail, star_count,
                      average_rating, name, created_at, updated_at, available_times, region)
 VALUES (122, 11, 'STUDIO', 'STUDIO', 1200000, '경남 진주시 진주대로 502', '자연광을 활용한 감성적인 웨딩 스냅 전용 스튜디오.',
@@ -163,6 +131,7 @@ VALUES (122, 11, 'STUDIO', 'STUDIO', 1200000, '경남 진주시 진주대로 502
        (310, 9, 'STUDIO', 'STUDIO', 590000, '서울 종로구 인사동', '다양한 배경 촬영 패키지', 4.6, 46,
         'Varied Theme Studio', NOW(), NOW(), '10:00, 13:00, 16:00', 'SEOUL');
 
+-- STUDIO 하위 테이블 (PK = product.id)
 INSERT INTO studio (id)
 VALUES (122),
        (301),
@@ -176,20 +145,10 @@ VALUES (122),
        (309),
        (310);
 
--- STUDIO 태그
-INSERT INTO tags (product_id, name)
-VALUES (301, 'PORTRAIT_FOCUSED'),
-       (302, 'VARIED_BACKGROUND'),
-       (303, 'PORTRAIT_AND_BACKGROUND'),
-       (304, 'HANOK'),
-       (305, 'GARDEN'),
-       (306, 'NIGHT'),
-       (307, 'ROAD'),
-       (308, 'UNDERWATER'),
-       (309, 'PET_FRIENDLY'),
-       (310, 'VARIED_BACKGROUND');
 
--- MAKEUP 상품
+-- ========================================
+-- MAKEUP 상품 (201~211) + 하위 테이블 매핑
+-- ========================================
 INSERT INTO product (id, owner_id, product_type, category, price, address, detail, star_count,
                      average_rating, name, created_at, updated_at, available_times, region)
 VALUES (201, 5, 'MAKEUP', 'MAKEUP', 150000, '서울 강남구 논현동', '내추럴 촬영용 메이크업', 4.6, 42,
@@ -215,6 +174,7 @@ VALUES (201, 5, 'MAKEUP', 'MAKEUP', 150000, '서울 강남구 논현동', '내�
        (211, 11, 'MAKEUP', 'MAKEUP', 750000, '경남 진주시 진주대로 502', '자연스러운 윤광 베이스와 브라이덜 헤어 포함.', 4.8,
         55, '클래식 메이크업 패키지', NOW(), NOW(), '09:00, 11:00, 15:00', 'SEOUL');
 
+-- MAKEUP 하위 테이블 (PK = product.id)
 INSERT INTO makeup (id)
 VALUES (201),
        (202),
@@ -228,21 +188,10 @@ VALUES (201),
        (210),
        (211);
 
--- MAKEUP 태그
-INSERT INTO tags (product_id, name)
-VALUES (201, 'SHOOTING'),
-       (201, 'CLEAN_AND_BRIGHT'),
-       (202, 'CEREMONY'),
-       (203, 'DIRECTOR_OR_CEO'),
-       (204, 'CLEAN_AND_BRIGHT'),
-       (205, 'CONTOUR_AND_SHADOW'),
-       (206, 'FRUITY_TONE'),
-       (207, 'SHOOTING_AND_CEREMONY'),
-       (208, 'TEAM_LEADER_OR_DESIGNER'),
-       (209, 'CEREMONY'),
-       (210, 'DEPUTY_DIRECTOR');
 
--- WEDDING_HALL
+-- ========================================
+-- WEDDING_HALL 상품 (401~410) + 하위 테이블 매핑
+-- ========================================
 INSERT INTO product (id, address, available_times, average_rating, category, created_at, detail,
                      is_deleted, name, owner_id, price, region, star_count, updated_at,
                      product_type)
@@ -267,6 +216,7 @@ VALUES (401, '서울 강남구 역삼동 123', '09:00~22:00', 4.5, 'WEDDING_HALL
        (410, '제주 제주시 애월읍 55', '09:00~22:00', 4.9, 'WEDDING_HALL', NOW(), '자연 속 웨딩홀', false,
         '제주하모니홀', 11, 9000000, 'SEOUL', 5.0, NOW(), 'WEDDING_HALL');
 
+-- WEDDING_HALL 하위 테이블 (PK = product.id)
 INSERT INTO wedding_hall (id, capacity, min_guest, max_guest, parking_capacity, catering_type,
                           reservation_policy)
 VALUES (401, 300, 50, 500, 100, '뷔페', '예약 후 7일 내 계약금 10%'),
@@ -280,19 +230,90 @@ VALUES (401, 300, 50, 500, 100, '뷔페', '예약 후 7일 내 계약금 10%'),
        (409, 500, 100, 800, 150, '뷔페', 'VIP룸 제공, 일정 조율 가능'),
        (410, 320, 60, 550, 90, '한식', '자연 속 예식장으로 일정 조정 가능');
 
-INSERT INTO tags (product_id, name)
-VALUES (401, 'GENERAL'),
-       (402, 'CONVENTION'),
-       (403, 'HOTEL'),
-       (404, 'HOUSE'),
-       (405, 'RESTAURANT'),
-       (406, 'HANOK'),
-       (407, 'CHURCH'),
-       (408, 'CHAPEL'),
-       (409, 'SMALL'),
-       (410, 'OUTDOOR_GARDEN');
 
+-- ========================================
+-- 태그 삽입 (DRESS, STUDIO, MAKEUP, WEDDING_HALL)
+-- ========================================
+INSERT INTO tags (product_id, name)
+VALUES
+-- DRESS
+(101, 'SILK'),
+(101, 'CEREMONY'),
+(102, 'LACE'),
+(102, 'SHOOTING'),
+(103, 'DOMESTIC'),
+(103, 'CEREMONY'),
+(104, 'LACE'),
+(104, 'DOMESTIC_AND_IMPORTED'),
+(105, 'SHOOTING'),
+(105, 'DOMESTIC'),
+(106, 'SHOOTING'),
+(106, 'CEREMONY'),
+(107, 'SILK'),
+(107, 'IMPORTED'),
+(108, 'DOMESTIC'),
+(108, 'SHOOTING_AND_CEREMONY'),
+(109, 'SILK'),
+(109, 'IMPORTED'),
+(110, 'LACE'),
+(110, 'CEREMONY'),
+(111, 'DOMESTIC_AND_IMPORTED'),
+(111, 'CEREMONY'),
+(112, 'DOMESTIC'),
+(112, 'SHOOTING'),
+(113, 'SHOOTING_AND_CEREMONY'),
+(114, 'DOMESTIC'),
+(115, 'SHOOTING'),
+(116, 'IMPORTED'),
+(116, 'CEREMONY'),
+(117, 'DOMESTIC'),
+(118, 'BEADS'),
+(118, 'CEREMONY'),
+(119, 'DOMESTIC'),
+(120, 'IMPORTED'),
+(120, 'CEREMONY'),
+
+-- STUDIO
+(301, 'PORTRAIT_FOCUSED'),
+(302, 'VARIED_BACKGROUND'),
+(303, 'PORTRAIT_AND_BACKGROUND'),
+(304, 'HANOK'),
+(305, 'GARDEN'),
+(306, 'NIGHT'),
+(307, 'ROAD'),
+(308, 'UNDERWATER'),
+(309, 'PET_FRIENDLY'),
+(310, 'VARIED_BACKGROUND'),
+
+-- MAKEUP
+(201, 'SHOOTING'),
+(201, 'CLEAN_AND_BRIGHT'),
+(202, 'CEREMONY'),
+(203, 'DIRECTOR_OR_CEO'),
+(204, 'CLEAN_AND_BRIGHT'),
+(205, 'CONTOUR_AND_SHADOW'),
+(206, 'FRUITY_TONE'),
+(207, 'SHOOTING_AND_CEREMONY'),
+(208, 'TEAM_LEADER_OR_DESIGNER'),
+(209, 'CEREMONY'),
+(210, 'DEPUTY_DIRECTOR'),
+
+-- WEDDING_HALL
+(401, 'GENERAL'),
+(402, 'CONVENTION'),
+(403, 'HOTEL'),
+(404, 'HOUSE'),
+(405, 'RESTAURANT'),
+(406, 'HANOK'),
+(407, 'CHURCH'),
+(408, 'CHAPEL'),
+(409, 'SMALL'),
+(410, 'OUTDOOR_GARDEN');
+
+
+-- ========================================
 -- RESERVATION (311 제거)
+-- ========================================
 INSERT INTO reservation (owner_id, customer_id, product_id, status, reservation_time, title,
                          content, created_at, updated_at)
 VALUES (11, 1, 121, 'APPROVE', '2025-11-18', '본식용 A라인 드레스 대여 예약',
@@ -304,7 +325,10 @@ VALUES (11, 1, 121, 'APPROVE', '2025-11-18', '본식용 A라인 드레스 대여
        (11, 1, 122, 'PENDING', '2025-11-16', '스튜디오 촬영 시간 조정 요청',
         '오전 10시 불가 시 오후 1시로 조정 가능 여부 확인 부탁드립니다.', NOW(), NOW());
 
+
+-- ========================================
 -- COUPON (311 제거)
+-- ========================================
 INSERT INTO coupon (product_id, owner_id, coupon_code, discount_type, discount_value, start_date,
                     expiration_date, coupon_name, coupon_detail, category, max_discount_amount,
                     min_purchase_amount, current_usage_count, version, parent_coupon_id,
@@ -330,7 +354,10 @@ VALUES (121, 11, 'WEDDINGPICK-001', 'RATE', 20.00, '2025-11-13', '2025-12-31', '
        (NULL, 11, 'WEDDINGPICK-010', 'RATE', 10.00, '2025-11-13', '2025-11-20', '결혼 D-7 특전 10% 할인',
         '결혼 7일 전 예약 시 10% 추가 할인', NULL, 200000, 500000, 0, 1, NULL, TRUE, 0, 'ACTIVE');
 
+
+-- ========================================
 -- CUSTOMER_COUPON (WEDDINGPICK-004 제거)
+-- ========================================
 INSERT INTO customer_coupon (id, customer_id, coupon_id, status, downloaded_at, used_at, created_at,
                              updated_at, is_deleted)
 VALUES (1, 1, (SELECT id FROM coupon WHERE coupon_code = 'WEDDINGPICK-001'), 'AVAILABLE',
