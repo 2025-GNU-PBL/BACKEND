@@ -5,6 +5,7 @@ import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.Region;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "dress")
 @DiscriminatorValue("DRESS")
+@PrimaryKeyJoinColumn(name = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Dress extends Product {
 
