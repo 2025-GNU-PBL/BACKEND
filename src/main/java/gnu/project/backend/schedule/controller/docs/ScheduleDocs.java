@@ -8,6 +8,7 @@ import gnu.project.backend.schedule.dto.response.ScheduleResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -31,7 +32,7 @@ public interface ScheduleDocs {
     )
     @PostMapping()
     ResponseEntity<ScheduleResponseDto> uploadSchedule(
-        @Parameter(description = "등록할 일정 정보") @RequestPart("request") ScheduleRequestDto request,
+        @Parameter(description = "등록할 일정 정보") @Valid @RequestPart("request") ScheduleRequestDto request,
         @Parameter(description = "업로드할 이미지 파일 (선택)") @RequestPart(value = "file", required = false) List<MultipartFile> file,
         @Parameter(hidden = true) Accessor accessor
     );

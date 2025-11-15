@@ -78,7 +78,7 @@ public class ScheduleController implements ScheduleDocs {
     @PatchMapping("/{id}")
     public ResponseEntity<ScheduleResponseDto> updateSchedule(
         @PathVariable final Long id,
-        @RequestPart("request") @Valid final ScheduleUpdateRequestDto request,
+        @RequestPart("request") final ScheduleUpdateRequestDto request,
         @RequestPart(value = "file", required = false) final List<MultipartFile> files,
         @Auth final Accessor accessor
     ) {

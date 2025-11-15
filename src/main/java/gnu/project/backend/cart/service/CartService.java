@@ -1,6 +1,9 @@
 package gnu.project.backend.cart.service;
 
-import static gnu.project.backend.common.error.ErrorCode.*;
+import static gnu.project.backend.common.error.ErrorCode.AUTH_FORBIDDEN;
+import static gnu.project.backend.common.error.ErrorCode.CART_ITEM_NOT_FOUND;
+import static gnu.project.backend.common.error.ErrorCode.CUSTOMER_NOT_FOUND_EXCEPTION;
+import static gnu.project.backend.common.error.ErrorCode.PRODUCT_NOT_FOUND_EXCEPTION;
 
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.cart.dto.request.CartAddRequest;
@@ -20,11 +23,11 @@ import gnu.project.backend.product.entity.Product;
 import gnu.project.backend.product.repository.ProductRepository;
 import gnu.project.backend.reservation.prefill.dto.response.CreateDraftsResponse;
 import gnu.project.backend.reservation.prefill.service.ReservationPrefillService;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,12 +42,12 @@ public class CartService {
 
     private Customer getCurrentCustomer(Accessor accessor) {
         return customerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
-                .orElseThrow(() -> new BusinessException(CUSTOMER_NOT_FOUND_EXCEPTION));
+            .orElseThrow(() -> new BusinessException(CUSTOMER_NOT_FOUND_EXCEPTION));
     }
 
     private Cart getOrCreateCart(Customer customer) {
         return cartRepository.findByCustomer_Id(customer.getId())
-                .orElseGet(() -> cartRepository.save(Cart.create(customer)));
+            .orElseGet(() -> cartRepository.save(Cart.create(customer)));
     }
 
     public void addItem(Accessor accessor, CartAddRequest request) {
@@ -52,13 +55,14 @@ public class CartService {
         final Cart cart = getOrCreateCart(customer);
 
         final Product product = productRepository.findById(request.productId())
-                .orElseThrow(() -> new BusinessException(PRODUCT_NOT_FOUND_EXCEPTION));
+            .orElseThrow(() -> new BusinessException(PRODUCT_NOT_FOUND_EXCEPTION));
 
-        final int qty = (request.quantity() != null && request.quantity() > 0) ? request.quantity() : 1;
+        final int qty =
+            (request.quantity() != null && request.quantity() > 0) ? request.quantity() : 1;
 
         final CartItem existing = cartItemRepository.findSameItem(
-                cart.getId(),
-                request.productId()
+            cart.getId(),
+            request.productId()
         );
 
         if (existing != null) {
@@ -67,9 +71,9 @@ public class CartService {
         }
 
         final CartItem cartItem = CartItem.create(
-                cart,
-                product,
-                qty
+            cart,
+            product,
+            qty
         );
         cartItemRepository.save(cartItem);
     }
@@ -80,31 +84,36 @@ public class CartService {
         final List<CartItem> items = cartItemRepository.findAllByCustomerSocialId(socialId);
 
         final List<CartItemResponse> responses = items.stream()
-                .map(CartItemResponse::from)
-                .toList();
+            .map(CartItemResponse::from)
+            .toList();
 
         final int totalProductAmount = calcSelectedTotalAmount(items);
         final int totalDiscountAmount = 0;
         final int paymentAmount = totalProductAmount - totalDiscountAmount;
 
-        return new CartSummaryResponse(responses, totalProductAmount, totalDiscountAmount, paymentAmount);
+        return new CartSummaryResponse(responses, totalProductAmount, totalDiscountAmount,
+            paymentAmount);
     }
 
     public void updateCartItem(Long cartItemId, Accessor accessor, CartItemUpdateRequest request) {
         final Customer current = getCurrentCustomer(accessor);
         final CartItem item = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new BusinessException(CART_ITEM_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(CART_ITEM_NOT_FOUND));
 
         assertOwnedByCustomer(item, current.getId());
 
-        if (request.quantity() != null) item.updateQuantity(request.quantity());
-        if (request.selected() != null) item.updateSelected(request.selected());
+        if (request.quantity() != null) {
+            item.updateQuantity(request.quantity());
+        }
+        if (request.selected() != null) {
+            item.updateSelected(request.selected());
+        }
     }
 
     public void deleteCartItem(Long cartItemId, Accessor accessor) {
         final Customer current = getCurrentCustomer(accessor);
         final CartItem item = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new BusinessException(CART_ITEM_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(CART_ITEM_NOT_FOUND));
         assertOwnedByCustomer(item, current.getId());
         cartItemRepository.delete(item);
     }
@@ -128,7 +137,7 @@ public class CartService {
     public CreateDraftsResponse createInquiryDraftsFromSelected(final Accessor accessor) {
         final Customer customer = getCurrentCustomer(accessor);
         final List<CartItem> selectedItems =
-                cartItemRepository.findSelectedByCustomerSocialId(accessor.getSocialId());
+            cartItemRepository.findSelectedByCustomerSocialId(accessor.getSocialId());
 
         if (selectedItems.isEmpty()) {
             throw new BusinessException(CART_ITEM_NOT_FOUND);
@@ -144,20 +153,24 @@ public class CartService {
 
         // expiresAt 등 메타를 포함한 DTO로 반환 (프런트에서 만료 타이머/안내 처리 용이)
         return prefillService.createFromCartItems(
-                customer, products, quantities
+            customer, products, quantities
         );
     }
 
     private int calcSelectedTotalAmount(List<CartItem> items) {
         return items.stream()
-                .filter(CartItem::isSelected)
-                .mapToInt(i -> i.getProduct().getPrice() * i.getQuantity())
-                .sum();
+            .filter(CartItem::isSelected)
+            .mapToInt(i -> i.getProduct().getPrice() * i.getQuantity())
+            .sum();
     }
 
     private void assertOwnedByCustomer(CartItem item, Long customerId) {
         if (!item.getCart().getCustomer().getId().equals(customerId)) {
             throw new AuthException(AUTH_FORBIDDEN);
         }
+    }
+
+    public Integer getCartCount(final Accessor accessor) {
+        return cartItemRepository.findAllByCustomerSocialId(accessor.getSocialId()).size();
     }
 }
