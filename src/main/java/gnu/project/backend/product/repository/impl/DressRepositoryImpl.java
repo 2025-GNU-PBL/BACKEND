@@ -54,7 +54,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
     public List<ProductPageResponse> searchDress(int pageSize, int pageNumber) {
         List<ProductPageResponse> dresses = pagination(
             query
-                .select(createDressResponse())
+                .selectDistinct(createDressResponse())
                 .from(dress)
                 .leftJoin(dress.images, image)
                 .where(image.displayOrder.eq(0).or(image.isNull()))
@@ -105,7 +105,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
     public Optional<Dress> findDressWithImagesAndOptionsById(Long id) {
         return Optional.ofNullable(
             query
-                .selectFrom(dress)
+                .selectDistinct(dress)
                 .leftJoin(dress.images, image).fetchJoin()
                 .leftJoin(dress.options, option)
                 .leftJoin(dress.tags, tag)
@@ -128,7 +128,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
         };
 
         List<ProductPageResponse> dresses = pagination(query
-            .select(createDressResponse())
+            .selectDistinct(createDressResponse())
             .from(dress)
             .leftJoin(dress.images, image)
             .where(image.displayOrder.eq(0).or(image.isNull()))

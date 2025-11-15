@@ -56,7 +56,7 @@ public class ProductSearchRepositoryImpl implements ProductSearchCustomRepositor
         imageCondition.and(image.displayOrder.eq(0));
 
         List<ProductPageResponse> response = query
-            .select(createProductResponse())
+            .selectDistinct(createProductResponse())
             .from(product)
             .leftJoin(product.images, image).on(imageCondition)
             .where(productCondition)

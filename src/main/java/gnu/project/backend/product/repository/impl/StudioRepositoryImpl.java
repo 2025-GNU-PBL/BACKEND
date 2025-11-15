@@ -96,7 +96,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
     public List<ProductPageResponse> searchStudio(int pageSize, int pageNumber) {
         List<ProductPageResponse> studios = pagination(
             query
-                .select(createStudioResponse())
+                .selectDistinct(createStudioResponse())
                 .from(studio)
                 .leftJoin(studio.images, image)
                 .where(image.displayOrder.eq(0).or(image.isNull()))
@@ -169,7 +169,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
 
         List<ProductPageResponse> studios = pagination(
             query
-                .select(createStudioResponse())
+                .selectDistinct(createStudioResponse())
                 .from(studio)
                 .leftJoin(studio.images, image)
                 .where(image.displayOrder.eq(0).or(image.isNull()))

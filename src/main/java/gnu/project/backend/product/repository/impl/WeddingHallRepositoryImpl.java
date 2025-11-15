@@ -70,7 +70,7 @@ public class WeddingHallRepositoryImpl implements WeddingHallCustomRepository {
     ) {
         final List<ProductPageResponse> rows = paginate(
             query
-                .select(createCardProjection())
+                .selectDistinct(createCardProjection())
                 .from(weddingHall)
                 .leftJoin(weddingHall.images, image)
                 .where(
