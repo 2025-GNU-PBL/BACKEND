@@ -70,7 +70,7 @@ public class WeddingHallRepositoryImpl implements WeddingHallCustomRepository {
     ) {
         final List<ProductPageResponse> rows = paginate(
             query
-                .select(createCardProjection())
+                .selectDistinct(createCardProjection())
                 .from(weddingHall)
                 .leftJoin(weddingHall.images, image)
                 .where(
@@ -78,8 +78,7 @@ public class WeddingHallRepositoryImpl implements WeddingHallCustomRepository {
                     weddingHall.owner.oauthInfo.socialId.eq(ownerSocialId),
                     image.displayOrder.eq(0).or(image.isNull())   // 썸네일만
                 )
-                .orderBy(DEFAULT_LATEST_ORDER)
-                .distinct(),
+                .orderBy(DEFAULT_LATEST_ORDER),
             pageable
         ).fetch();
 
@@ -156,7 +155,7 @@ public class WeddingHallRepositoryImpl implements WeddingHallCustomRepository {
 
         final List<ProductPageResponse> rows = paginate(
             query
-                .select(createCardProjection())
+                .selectDistinct(createCardProjection())
                 .from(weddingHall)
                 .leftJoin(weddingHall.images, image)
                 .leftJoin(weddingHall.tags, tag)
@@ -168,8 +167,7 @@ public class WeddingHallRepositoryImpl implements WeddingHallCustomRepository {
                     weddingHall.isDeleted.eq(false),
                     image.displayOrder.eq(0).or(image.isNull())
                 )
-                .orderBy(order)
-                .distinct(),
+                .orderBy(order),
             pageSize, pageNumber
         ).fetch();
 

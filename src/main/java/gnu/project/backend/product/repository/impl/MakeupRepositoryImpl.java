@@ -50,7 +50,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
     @Override
     public List<ProductPageResponse> searchMakeup(final int pageSize, final int pageNumber) {
         return pagination(query
-                .select(createMakeupResponse())
+                .selectDistinct(createMakeupResponse())
                 .from(makeup)
                 .leftJoin(makeup.images, image)
                 .where(image.displayOrder.eq(0).or(image.isNull()))
@@ -72,7 +72,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
         };
 
         List<ProductPageResponse> makeups = pagination(query
-            .select(createMakeupResponse())
+            .selectDistinct(createMakeupResponse())
             .from(makeup)
             .leftJoin(makeup.images, image)
             .where(image.displayOrder.eq(0).or(image.isNull()))
