@@ -39,7 +39,7 @@ public class WeddingHallRepositoryImpl implements WeddingHallCustomRepository {
 
     // 최신순 기본 정렬(updatedAt DESC → id DESC)
     private static final OrderSpecifier<?>[] DEFAULT_LATEST_ORDER = {
-        weddingHall.updatedAt.desc(),
+        weddingHall.createdAt.desc(),
         weddingHall.id.desc()
     };
 
