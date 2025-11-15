@@ -1,7 +1,14 @@
 spring:
+  sql:
+    init:
+      mode: always
   config:
     activate:
       on-profile: perform
+  data:
+    redis:
+      port: 6380
+      host: localhost
   datasource:
     hikari:
       maximum-pool-size: 20       # 커넥션 풀 크기
