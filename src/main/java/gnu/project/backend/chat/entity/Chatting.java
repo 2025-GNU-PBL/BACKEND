@@ -50,23 +50,34 @@ public class Chatting extends BaseEntity {
             ChatRoom chatRoom,
             String message,
             String senderRole,
-            String senderId,
-            LocalDateTime sendTime,
-            boolean ownerRead,
-            LocalDateTime ownerReadAt,
-            boolean customerRead,
-            LocalDateTime customerReadAt
+            String senderId
     ) {
+        if (chatRoom == null) {
+            throw new IllegalArgumentException("ChatRoom은 필수입니다.");
+        }
+        if (message == null || message.trim().isEmpty()) {
+            throw new IllegalArgumentException("메시지는 필수입니다.");
+        }
+        if (message.length() > 255) {
+            throw new IllegalArgumentException("메시지는 255자를 초과할 수 없습니다.");
+        }
+        if (senderRole == null || senderRole.trim().isEmpty()) {
+            throw new IllegalArgumentException("발신자 역할은 필수입니다.");
+        }
+        if (senderId == null || senderId.trim().isEmpty()) {
+            throw new IllegalArgumentException("발신자 ID는 필수입니다.");
+        }
+
         Chatting c = new Chatting();
         c.chatRoom = chatRoom;
         c.message = message;
         c.senderRole = senderRole;
         c.senderId = senderId;
-        c.sendTime = sendTime;
-        c.ownerRead = ownerRead;
-        c.ownerReadAt = ownerReadAt;
-        c.customerRead = customerRead;
-        c.customerReadAt = customerReadAt;
+        c.sendTime = LocalDateTime.now();
+        c.ownerRead = false;
+        c.customerRead = false;
+        c.ownerReadAt = null;
+        c.customerReadAt = null;
         return c;
     }
 

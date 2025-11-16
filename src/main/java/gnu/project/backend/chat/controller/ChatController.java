@@ -10,10 +10,9 @@ import gnu.project.backend.chat.dto.response.ChatRoomListResponse;
 import gnu.project.backend.chat.service.ChatService;
 import gnu.project.backend.product.enumerated.Category;
 import io.swagger.v3.oas.annotations.Parameter;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,11 +46,12 @@ public class ChatController implements ChatDocs {
 
     @Override
     public List<ChatMessageResponse> getHistory(
+            @Parameter(hidden = true) @Auth Accessor accessor,
             @PathVariable Long chatRoomId,
             @RequestParam(required = false) Long cursor,
             @RequestParam(defaultValue = "30") int size
     ) {
-        return chatService.getHistory(chatRoomId, cursor, size);
+        return chatService.getHistory(accessor, chatRoomId, cursor, size);
     }
 
     @Override

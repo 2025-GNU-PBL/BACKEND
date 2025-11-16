@@ -41,6 +41,7 @@ public interface ChatDocs {
     @Operation(summary = "채팅 히스토리 조회")
     @GetMapping("/api/chat/history/{chatRoomId}")
     List<ChatMessageResponse> getHistory(
+            @Parameter(hidden = true) @Auth Accessor accessor,
             @PathVariable Long chatRoomId,
             @RequestParam(required = false) Long cursor,
             @RequestParam(defaultValue = "30") int size
