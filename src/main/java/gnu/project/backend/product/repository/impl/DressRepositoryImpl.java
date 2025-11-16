@@ -130,7 +130,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
         };
 
         List<ProductPageResponse> dresses = pagination(query
-            .select(createDressResponse())
+            .selectDistinct(createDressResponse())
             .from(dress)
             .leftJoin(dress.images, image)
             .on(image.product.id.eq(dress.id).and(image.displayOrder.eq(0)))

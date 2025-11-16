@@ -75,7 +75,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
         };
 
         List<ProductPageResponse> makeups = pagination(query
-            .select(createMakeupResponse())
+            .selectDistinct(createMakeupResponse())
             .from(makeup)
             .leftJoin(makeup.images, image)
             .on(image.displayOrder.eq(0).and(image.product.id.eq(makeup.id)))
