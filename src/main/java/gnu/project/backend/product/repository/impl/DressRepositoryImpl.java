@@ -128,12 +128,12 @@ public class DressRepositoryImpl implements DressCustomRepository {
                     dress.id.desc()};
             case LATEST -> DRESS_DEFAULT_ORDER;
         };
-        
+
         List<ProductPageResponse> dresses = pagination(query
-            .selectDistinct(createDressResponse())
+            .select(createDressResponse())
             .from(dress)
             .leftJoin(dress.images, image)
-            .where(image.displayOrder.eq(0).or(image.isNull()))
+            .on(image.product.id.eq(dress.id).and(image.displayOrder.eq(0)))
             .leftJoin(dress.tags, tag)
             .where(
                 categoryEq(category),

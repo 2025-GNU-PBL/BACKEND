@@ -170,10 +170,10 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
         };
         List<ProductPageResponse> studios = pagination(
             query
-                .selectDistinct(createStudioResponse())
+                .select(createStudioResponse())
                 .from(studio)
                 .leftJoin(studio.images, image)
-                .where(image.displayOrder.eq(0).or(image.isNull()))
+                .on(image.product.id.eq(studio.id).and(image.displayOrder.eq(0)))
                 .leftJoin(studio.tags, tag)
                 .where(
                     regionEq(region),
