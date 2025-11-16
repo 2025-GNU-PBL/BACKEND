@@ -64,18 +64,21 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
     public List<ProductPageResponse> searchMakeupsByFilter(List<MakeupTag> tags, Category category,
         Region region, Integer minPrice, Integer maxPrice, SortType sortType, Integer pageNumber,
         Integer pageSize) {
-        OrderSpecifier<?> order = switch (sortType) {
-            case PRICE_ASC -> makeup.price.asc();
-            case PRICE_DESC -> makeup.price.desc();
-            case LATEST -> makeup.createdAt.desc();
-            default -> makeup.createdAt.desc();
+
+        OrderSpecifier<?>[] order = switch (sortType) {
+            case PRICE_ASC -> new OrderSpecifier<?>[]{makeup.price.asc(), makeup.id.desc()};
+            case PRICE_DESC -> new OrderSpecifier<?>[]{makeup.price.desc(), makeup.id.desc()};
+            case POPULAR ->
+                new OrderSpecifier<?>[]{makeup.starCount.desc(), makeup.averageRating.desc(),
+                    makeup.id.desc()};
+            case LATEST -> MAKEUP_DEFAULT_ORDER;
         };
 
         List<ProductPageResponse> makeups = pagination(query
             .selectDistinct(createMakeupResponse())
             .from(makeup)
             .leftJoin(makeup.images, image)
-            .where(image.displayOrder.eq(0).or(image.isNull()))
+            .on(image.displayOrder.eq(0).and(image.product.id.eq(makeup.id)))
             .leftJoin(makeup.tags, tag)
             .where(
                 categoryEq(category),

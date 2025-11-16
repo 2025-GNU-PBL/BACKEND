@@ -53,7 +53,7 @@ public class ProductSearchRepositoryImpl implements ProductSearchCustomRepositor
         }
 
         BooleanBuilder imageCondition = new BooleanBuilder();
-        imageCondition.and(image.displayOrder.eq(0));
+        imageCondition.and(image.displayOrder.eq(0).and(image.product.id.eq(product.id)));
 
         List<ProductPageResponse> response = query
             .selectDistinct(createProductResponse())
@@ -120,8 +120,9 @@ public class ProductSearchRepositoryImpl implements ProductSearchCustomRepositor
         return switch (s) {
             case PRICE_ASC -> new OrderSpecifier<?>[]{product.price.asc(), product.id.desc()};
             case PRICE_DESC -> new OrderSpecifier<?>[]{product.price.desc(), product.id.desc()};
-            case POPULAR -> new OrderSpecifier<?>[]{product.starCount.desc(),
-                product.averageRating.desc(), product.id.desc()};
+            case POPULAR ->
+                new OrderSpecifier<?>[]{product.starCount.desc(), product.averageRating.desc(),
+                    product.id.desc()};
             case LATEST -> DEFAULT_LATEST_ORDER;
         };
     }
