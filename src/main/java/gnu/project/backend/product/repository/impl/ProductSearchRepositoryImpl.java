@@ -120,8 +120,9 @@ public class ProductSearchRepositoryImpl implements ProductSearchCustomRepositor
         return switch (s) {
             case PRICE_ASC -> new OrderSpecifier<?>[]{product.price.asc(), product.id.desc()};
             case PRICE_DESC -> new OrderSpecifier<?>[]{product.price.desc(), product.id.desc()};
-            case POPULAR -> new OrderSpecifier<?>[]{product.starCount.desc(),
-                product.averageRating.desc(), product.id.desc()};
+            case POPULAR ->
+                new OrderSpecifier<?>[]{product.starCount.desc(), product.averageRating.desc(),
+                    product.id.desc()};
             case LATEST -> DEFAULT_LATEST_ORDER;
         };
     }
