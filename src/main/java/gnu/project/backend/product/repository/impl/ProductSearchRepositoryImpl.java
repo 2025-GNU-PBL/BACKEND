@@ -53,7 +53,7 @@ public class ProductSearchRepositoryImpl implements ProductSearchCustomRepositor
         }
 
         BooleanBuilder imageCondition = new BooleanBuilder();
-        imageCondition.and(image.displayOrder.eq(0).and(image.id.eq(product.id)));
+        imageCondition.and(image.displayOrder.eq(0).and(image.product.id.eq(product.id)));
 
         List<ProductPageResponse> response = query
             .select(createProductResponse())
