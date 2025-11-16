@@ -1,4 +1,3 @@
-// src/main/java/gnu/project/backend/chat/repository/ChatRoomRepository.java
 package gnu.project.backend.chat.repository;
 
 import gnu.project.backend.chat.entity.ChatRoom;

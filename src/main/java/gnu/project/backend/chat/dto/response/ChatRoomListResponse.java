@@ -1,5 +1,7 @@
 package gnu.project.backend.chat.dto.response;
 
+import gnu.project.backend.product.enumerated.Category;
+
 import java.time.LocalDateTime;
 
 public record ChatRoomListResponse(
@@ -9,5 +11,6 @@ public record ChatRoomListResponse(
         String opponentProfileImage,
         String lastMessage,
         LocalDateTime lastMessageTime,
-        long unreadCount
+        long unreadCount,
+        Category lastProductCategory
 ) {}

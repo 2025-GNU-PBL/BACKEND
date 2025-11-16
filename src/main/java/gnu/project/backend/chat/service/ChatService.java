@@ -1,8 +1,10 @@
 package gnu.project.backend.chat.service;
 
+import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.chat.constant.ChatConstants;
 import gnu.project.backend.chat.dto.request.ChatMessageRequest;
-import gnu.project.backend.chat.dto.request.ChatRoomCreateRequest;
+import gnu.project.backend.chat.dto.request.ChatOpenFromProductRequest;
+import gnu.project.backend.chat.dto.request.ChatSendRequest;
 import gnu.project.backend.chat.dto.response.ChatMessageResponse;
 import gnu.project.backend.chat.dto.response.ChatRoomListResponse;
 import gnu.project.backend.chat.entity.ChatRoom;
@@ -16,6 +18,10 @@ import gnu.project.backend.customer.entity.Customer;
 import gnu.project.backend.customer.repository.CustomerRepository;
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
+import gnu.project.backend.product.entity.Product;
+import gnu.project.backend.product.enumerated.Category;
+import gnu.project.backend.product.repository.ProductRepository;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,103 +35,245 @@ public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
     private final ChattingRepository chattingRepository;
-
-    // 실제 사용자 존재/ROLE 확인용
     private final OwnerRepository ownerRepository;
     private final CustomerRepository customerRepository;
+    private final ProductRepository productRepository;
 
-    /**
-     * ownerId, customerId 조합으로만 방을 만든다. (역순 매칭은 제거)
-     */
-    public Long createOrGetRoom(String ownerId, String customerId) {
-        return chatRoomRepository.findByOwnerIdAndCustomerId(ownerId, customerId)
-            .map(ChatRoom::getId)
-            .orElseGet(() -> {
-                ChatRoom room = ChatRoom.builder()
-                    .ownerId(ownerId)
-                    .customerId(customerId)
-                    .build();
-                chatRoomRepository.save(room);
-                return room.getId();
-            });
+    public Long openRoomFromProduct(Accessor accessor, ChatOpenFromProductRequest request) {
+        if (request == null || request.productId() == null) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST);
+        }
+        Customer customer = customerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.CUSTOMER_NOT_FOUND_EXCEPTION));
+        Product product = productRepository.findById(request.productId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND_EXCEPTION));
+
+        String ownerId = product.getOwner().getOauthInfo().getSocialId();
+        Category category = product.getCategory();
+
+        ChatRoom room = chatRoomRepository.findByOwnerIdAndCustomerId(ownerId, customer.getOauthInfo().getSocialId())
+                .orElseGet(() -> chatRoomRepository.save(ChatRoom.create(ownerId, customer.getOauthInfo().getSocialId())));
+        room.touchCategory(category);
+        return room.getId();
     }
 
-    public ChatMessageResponse saveMessage(ChatMessageRequest req) {
-        ChatRoom room = chatRoomRepository.findById(req.chatRoomId())
-            .orElseThrow(() -> new BusinessException(ErrorCode.BAD_REQUEST));
-        //TODO : 대체
+    @Transactional(readOnly = true)
+    public List<ChatRoomListResponse> getMyRoomsAsCustomer(Accessor accessor, Category category) {
+        String customerId = accessor.getSocialId();
+        return chatRoomRepository.findRoomsByCustomer(customerId, category);
+    }
 
-        // 1) 우리 시스템에 실제로 있는 유저인지 + ROLE이 맞는지
-        verifySender(req.senderRole(), req.senderId());
+    @Transactional(readOnly = true)
+    public List<ChatRoomListResponse> getMyRoomsAsOwner(Accessor accessor, Category category) {
+        String ownerId = accessor.getSocialId();
+        return chatRoomRepository.findRoomsByOwner(ownerId, category);
+    }
 
-        // 2) 그 유저가 이 방의 멤버가 맞는지
-        validateParticipant(room, req.senderRole(), req.senderId());
+    @Transactional(readOnly = true)
+    public List<ChatMessageResponse> getHistory(Long chatRoomId, Long cursor, int size) {
+        return chattingRepository.findPage(chatRoomId, cursor, size)
+                .stream()
+                .map(c -> new ChatMessageResponse(
+                        chatRoomId,
+                        c.getSenderRole(),
+                        c.getSenderId(),
+                        c.getMessage(),
+                        c.getSendTime(),
+                        c.isOwnerRead(),
+                        c.isCustomerRead(),
+                        c.getOwnerReadAt(),
+                        c.getCustomerReadAt(),
+                        c.getId()
+                ))
+                .toList();
+    }
+
+    public void readAll(Accessor accessor, Long chatRoomId) {
+        ChatRoom room = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.BAD_REQUEST));
+        String sid = accessor.getSocialId();
 
         LocalDateTime now = LocalDateTime.now();
+        if (sid.equals(room.getOwnerId())) {
+            chattingRepository.bulkReadByOwner(chatRoomId, now);
+            return;
+        }
+        if (sid.equals(room.getCustomerId())) {
+            chattingRepository.bulkReadByCustomer(chatRoomId, now);
+            return;
+        }
+        throw new BusinessException(ErrorCode.AUTH_FORBIDDEN);
+    }
+
+    public ChatMessageResponse sendByRest(Accessor accessor, ChatSendRequest request) {
+        if (request == null || request.chatRoomId() == null) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST);
+        }
+        if (request.message() == null || request.message().isBlank()) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST);
+        }
+        if (request.message().length() > ChatConstants.MAX_MESSAGE_LENGTH) {
+            throw new BusinessException(ErrorCode.TOO_MANY_REQUESTS);
+        }
+
+        ChatRoom room = chatRoomRepository.findById(request.chatRoomId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.BAD_REQUEST));
+
+        String sid = accessor.getSocialId();
+        String role;
+        if (sid.equals(room.getOwnerId())) {
+            role = ChatConstants.ROLE_OWNER;
+        } else if (sid.equals(room.getCustomerId())) {
+            role = ChatConstants.ROLE_CUSTOMER;
+        } else {
+            throw new BusinessException(ErrorCode.AUTH_FORBIDDEN);
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate fromDate = now.toLocalDate();
+        LocalDateTime from = fromDate.atStartOfDay();
+        LocalDateTime to = from.plusDays(1);
+        long sent = chattingRepository.countSentBetween(room.getId(), sid, from, to);
+        if (sent >= ChatConstants.DAILY_SEND_LIMIT_PER_SIDE) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST);
+        }
 
         boolean ownerRead = false;
         boolean customerRead = false;
         LocalDateTime ownerReadAt = null;
         LocalDateTime customerReadAt = null;
+        if (ChatConstants.ROLE_OWNER.equalsIgnoreCase(role)) {
+            ownerRead = true;
+            ownerReadAt = now;
+        } else {
+            customerRead = true;
+            customerReadAt = now;
+        }
 
+        Chatting chatting = Chatting.create(
+                room,
+                request.message(),
+                role,
+                sid,
+                now,
+                ownerRead,
+                ownerReadAt,
+                customerRead,
+                customerReadAt
+        );
+        chattingRepository.save(chatting);
+
+        return new ChatMessageResponse(
+                room.getId(),
+                chatting.getSenderRole(),
+                chatting.getSenderId(),
+                chatting.getMessage(),
+                chatting.getSendTime(),
+                chatting.isOwnerRead(),
+                chatting.isCustomerRead(),
+                chatting.getOwnerReadAt(),
+                chatting.getCustomerReadAt(),
+                chatting.getId()
+        );
+    }
+
+    public void deleteMySideRoom(Accessor accessor, Long chatRoomId) {
+        ChatRoom room = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.BAD_REQUEST));
+        String sid = accessor.getSocialId();
+        if (sid.equals(room.getOwnerId())) {
+            room.deleteByOwner();
+            return;
+        }
+        if (sid.equals(room.getCustomerId())) {
+            room.deleteByCustomer();
+            return;
+        }
+        throw new BusinessException(ErrorCode.AUTH_FORBIDDEN);
+    }
+
+    public ChatMessageResponse saveMessage(ChatMessageRequest req) {
+        if (req == null || req.chatRoomId() == null) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST);
+        }
+        if (req.message() == null || req.message().isBlank()) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST);
+        }
+        if (req.message().length() > ChatConstants.MAX_MESSAGE_LENGTH) {
+            throw new BusinessException(ErrorCode.TOO_MANY_REQUESTS);
+        }
+
+        ChatRoom room = chatRoomRepository.findById(req.chatRoomId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.BAD_REQUEST));
+
+        verifySender(req.senderRole(), req.senderId());
+        validateParticipant(room, req.senderRole(), req.senderId());
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate fromDate = now.toLocalDate();
+        LocalDateTime from = fromDate.atStartOfDay();
+        LocalDateTime to = from.plusDays(1);
+        long sent = chattingRepository.countSentBetween(room.getId(), req.senderId(), from, to);
+        if (sent >= ChatConstants.DAILY_SEND_LIMIT_PER_SIDE) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST);
+        }
+
+        boolean ownerRead = false;
+        boolean customerRead = false;
+        LocalDateTime ownerReadAt = null;
+        LocalDateTime customerReadAt = null;
         if (ChatConstants.ROLE_OWNER.equalsIgnoreCase(req.senderRole())) {
             ownerRead = true;
             ownerReadAt = now;
         } else if (ChatConstants.ROLE_CUSTOMER.equalsIgnoreCase(req.senderRole())) {
             customerRead = true;
             customerReadAt = now;
+        } else {
+            throw new BusinessException(ErrorCode.ROLE_IS_NOT_VALID);
         }
 
-        Chatting chatting = Chatting.builder()
-            .chatRoom(room)
-            .message(req.message())
-            .senderRole(req.senderRole())
-            .senderId(req.senderId())
-            .sendTime(now)
-            .ownerRead(ownerRead)
-            .ownerReadAt(ownerReadAt)
-            .customerRead(customerRead)
-            .customerReadAt(customerReadAt)
-            .build();
-
+        Chatting chatting = Chatting.create(
+                room,
+                req.message(),
+                req.senderRole(),
+                req.senderId(),
+                now,
+                ownerRead,
+                ownerReadAt,
+                customerRead,
+                customerReadAt
+        );
         chattingRepository.save(chatting);
 
         return new ChatMessageResponse(
-            room.getId(),
-            chatting.getSenderRole(),
-            chatting.getSenderId(),
-            chatting.getMessage(),
-            chatting.getSendTime(),
-            chatting.isOwnerRead(),
-            chatting.isCustomerRead(),
-            chatting.getOwnerReadAt(),
-            chatting.getCustomerReadAt(),
-            chatting.getId()
+                room.getId(),
+                chatting.getSenderRole(),
+                chatting.getSenderId(),
+                chatting.getMessage(),
+                chatting.getSendTime(),
+                chatting.isOwnerRead(),
+                chatting.isCustomerRead(),
+                chatting.getOwnerReadAt(),
+                chatting.getCustomerReadAt(),
+                chatting.getId()
         );
     }
 
-    /**
-     * 실제 owner/customer 엔티티로 검증
-     */
     private void verifySender(String senderRole, String senderSocialId) {
         if (senderRole == null || senderSocialId == null) {
             throw new BusinessException(ErrorCode.BAD_REQUEST);
         }
-
         if (ChatConstants.ROLE_OWNER.equalsIgnoreCase(senderRole)) {
             Owner owner = ownerRepository.findByOauthInfo_SocialId(senderSocialId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.OWNER_NOT_FOUND_EXCEPTION));
-
+                    .orElseThrow(() -> new BusinessException(ErrorCode.OWNER_NOT_FOUND_EXCEPTION));
             if (owner.getUserRole() != UserRole.OWNER) {
                 throw new BusinessException(ErrorCode.ROLE_IS_NOT_VALID);
             }
             return;
         }
-
         if (ChatConstants.ROLE_CUSTOMER.equalsIgnoreCase(senderRole)) {
             Customer customer = customerRepository.findByOauthInfo_SocialId(senderSocialId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.CUSTOMER_NOT_FOUND_EXCEPTION));
-
+                    .orElseThrow(() -> new BusinessException(ErrorCode.CUSTOMER_NOT_FOUND_EXCEPTION));
             if (!customer.isActive()) {
                 throw new BusinessException(ErrorCode.CUSTOMER_DELETED_EXCEPTION);
             }
@@ -134,13 +282,9 @@ public class ChatService {
             }
             return;
         }
-
         throw new BusinessException(ErrorCode.ROLE_IS_NOT_VALID);
     }
 
-    /**
-     * 방에 저장돼 있는 owner_id / customer_id 와도 일치하는지 확인
-     */
     private void validateParticipant(ChatRoom room, String senderRole, String senderId) {
         if (ChatConstants.ROLE_OWNER.equalsIgnoreCase(senderRole)) {
             if (!senderId.equals(room.getOwnerId())) {
@@ -148,81 +292,10 @@ public class ChatService {
             }
             return;
         }
-
         if (ChatConstants.ROLE_CUSTOMER.equalsIgnoreCase(senderRole)) {
             if (!senderId.equals(room.getCustomerId())) {
                 throw new BusinessException(ErrorCode.AUTH_FORBIDDEN);
             }
-            return;
-        }
-
-        throw new BusinessException(ErrorCode.ROLE_IS_NOT_VALID);
-    }
-
-    @Transactional(readOnly = true)
-    public List<ChatRoomListResponse> getRoomsByOwner(String ownerId) {
-        return chatRoomRepository.findRoomsByOwner(ownerId);
-    }
-
-    @Transactional(readOnly = true)
-    public List<ChatRoomListResponse> getRoomsByCustomer(String customerId) {
-        return chatRoomRepository.findRoomsByCustomer(customerId);
-    }
-
-    @Transactional(readOnly = true)
-    public List<ChatMessageResponse> getHistory(Long chatRoomId, Long cursor, int size) {
-        return chattingRepository.findPage(chatRoomId, cursor, size)
-            .stream()
-            .map(c -> new ChatMessageResponse(
-                chatRoomId,
-                c.getSenderRole(),
-                c.getSenderId(),
-                c.getMessage(),
-                c.getSendTime(),
-                c.isOwnerRead(),
-                c.isCustomerRead(),
-                c.getOwnerReadAt(),
-                c.getCustomerReadAt(),
-                c.getId()
-            ))
-            .toList();
-    }
-
-    public void readAll(Long chatRoomId, String role) {
-        if (role == null) {
-            throw new BusinessException(ErrorCode.BAD_REQUEST);
-        }
-        LocalDateTime now = LocalDateTime.now();
-
-        if (ChatConstants.ROLE_OWNER.equalsIgnoreCase(role)) {
-            chattingRepository.bulkReadByOwner(chatRoomId, now);
-            return;
-        }
-        if (ChatConstants.ROLE_CUSTOMER.equalsIgnoreCase(role)) {
-            chattingRepository.bulkReadByCustomer(chatRoomId, now);
-            return;
-        }
-
-        throw new BusinessException(ErrorCode.ROLE_IS_NOT_VALID);
-    }
-
-    public Long createRoomByDto(ChatRoomCreateRequest request) {
-        return createOrGetRoom(request.ownerId(), request.customerId());
-    }
-
-    public void deleteRoomForSide(Long chatRoomId, String role, String senderId) {
-        ChatRoom room = chatRoomRepository.findById(chatRoomId)
-            .orElseThrow(() -> new BusinessException(ErrorCode.BAD_REQUEST));
-
-        // 내가 그 방 사람 맞는지도 한 번 더
-        validateParticipant(room, role, senderId);
-
-        if (ChatConstants.ROLE_OWNER.equalsIgnoreCase(role)) {
-            room.deleteByOwner();
-            return;
-        }
-        if (ChatConstants.ROLE_CUSTOMER.equalsIgnoreCase(role)) {
-            room.deleteByCustomer();
             return;
         }
         throw new BusinessException(ErrorCode.ROLE_IS_NOT_VALID);

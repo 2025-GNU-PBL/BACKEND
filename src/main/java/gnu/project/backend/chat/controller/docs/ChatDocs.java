@@ -1,12 +1,15 @@
-// src/main/java/gnu/project/backend/chat/controller/docs/ChatDocs.java
 package gnu.project.backend.chat.controller.docs;
 
-import gnu.project.backend.chat.dto.request.ChatMessageRequest;
-import gnu.project.backend.chat.dto.request.ChatRoomCreateRequest;
+import gnu.project.backend.auth.aop.Auth;
+import gnu.project.backend.auth.entity.Accessor;
+import gnu.project.backend.chat.dto.request.ChatOpenFromProductRequest;
+import gnu.project.backend.chat.dto.request.ChatSendRequest;
 import gnu.project.backend.chat.dto.response.ChatMessageResponse;
 import gnu.project.backend.chat.dto.response.ChatRoomListResponse;
+import gnu.project.backend.product.enumerated.Category;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,20 +17,29 @@ import java.util.List;
 @Tag(name = "Chat", description = "채팅 API")
 public interface ChatDocs {
 
-    @Operation(summary = "채팅방 생성/가져오기")
-    @PostMapping("/rooms")
-    Long createRoom(@RequestBody ChatRoomCreateRequest request);
+    @Operation(summary = "상품 상세에서 채팅방 오픈/획득")
+    @PostMapping("/api/chat/rooms/open-from-product")
+    Long openFromProduct(
+            @Parameter(hidden = true) @Auth Accessor accessor,
+            @RequestBody ChatOpenFromProductRequest request
+    );
 
-    @Operation(summary = "오너 채팅방 목록")
-    @GetMapping("/rooms/owner/{ownerId}")
-    List<ChatRoomListResponse> getOwnerRooms(@PathVariable String ownerId);
+    @Operation(summary = "내 채팅방 목록(고객)")
+    @GetMapping("/api/chat/rooms/me/customer")
+    List<ChatRoomListResponse> myRoomsAsCustomer(
+            @Parameter(hidden = true) @Auth Accessor accessor,
+            @RequestParam(required = false) Category category
+    );
 
-    @Operation(summary = "고객 채팅방 목록")
-    @GetMapping("/rooms/customer/{customerId}")
-    List<ChatRoomListResponse> getCustomerRooms(@PathVariable String customerId);
+    @Operation(summary = "내 채팅방 목록(오너)")
+    @GetMapping("/api/chat/rooms/me/owner")
+    List<ChatRoomListResponse> myRoomsAsOwner(
+            @Parameter(hidden = true) @Auth Accessor accessor,
+            @RequestParam(required = false) Category category
+    );
 
-    @Operation(summary = "채팅 히스토리 조회 (페이징)")
-    @GetMapping("/history/{chatRoomId}")
+    @Operation(summary = "채팅 히스토리 조회")
+    @GetMapping("/api/chat/history/{chatRoomId}")
     List<ChatMessageResponse> getHistory(
             @PathVariable Long chatRoomId,
             @RequestParam(required = false) Long cursor,
@@ -35,18 +47,23 @@ public interface ChatDocs {
     );
 
     @Operation(summary = "채팅방 읽음 처리")
-    @PostMapping("/rooms/{chatRoomId}/read")
-    void readAll(@PathVariable Long chatRoomId, @RequestParam String role);
+    @PostMapping("/api/chat/rooms/{chatRoomId}/read")
+    void readAll(
+            @Parameter(hidden = true) @Auth Accessor accessor,
+            @PathVariable Long chatRoomId
+    );
 
-    @Operation(summary = "테스트용 REST 메시지 전송")
-    @PostMapping("/messages")
-    ChatMessageResponse sendByRest(@RequestBody ChatMessageRequest request);
+    @Operation(summary = "메시지 전송(Accessor 기반)")
+    @PostMapping("/api/chat/messages")
+    ChatMessageResponse sendByRest(
+            @Parameter(hidden = true) @Auth Accessor accessor,
+            @RequestBody ChatSendRequest request
+    );
 
-    @Operation(summary = "채팅방 한쪽만 숨기기(소프트 삭제)")
-    @DeleteMapping("/rooms/{chatRoomId}")
+    @Operation(summary = "채팅방 한쪽만 숨기기(Accessor 기반)")
+    @DeleteMapping("/api/chat/rooms/{chatRoomId}")
     void deleteRoom(
-            @PathVariable Long chatRoomId,
-            @RequestParam String role,
-            @RequestParam String senderId
+            @Parameter(hidden = true) @Auth Accessor accessor,
+            @PathVariable Long chatRoomId
     );
 }
