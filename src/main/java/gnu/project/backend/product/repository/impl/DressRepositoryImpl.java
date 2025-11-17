@@ -33,8 +33,8 @@ import lombok.RequiredArgsConstructor;
 public class DressRepositoryImpl implements DressCustomRepository {
 
     private static final OrderSpecifier<?>[] DRESS_DEFAULT_ORDER = {
+        dress.createdAt.desc(),
         dress.id.desc(),
-        dress.createdAt.desc()
     };
     private final JPAQueryFactory query;
 
@@ -120,18 +120,20 @@ public class DressRepositoryImpl implements DressCustomRepository {
         Integer maxPrice, SortType sortType, Integer pageNumber,
         Integer pageSize) {
 
-        OrderSpecifier<?> order = switch (sortType) {
-            case PRICE_ASC -> dress.price.asc();
-            case PRICE_DESC -> dress.price.desc();
-            case LATEST -> dress.createdAt.desc();
-            default -> dress.createdAt.desc();
+        OrderSpecifier<?>[] order = switch (sortType) {
+            case PRICE_ASC -> new OrderSpecifier<?>[]{dress.price.asc(), dress.id.desc()};
+            case PRICE_DESC -> new OrderSpecifier<?>[]{dress.price.desc(), dress.id.desc()};
+            case POPULAR ->
+                new OrderSpecifier<?>[]{dress.starCount.desc(), dress.averageRating.desc(),
+                    dress.id.desc()};
+            case LATEST -> DRESS_DEFAULT_ORDER;
         };
 
         List<ProductPageResponse> dresses = pagination(query
             .selectDistinct(createDressResponse())
             .from(dress)
             .leftJoin(dress.images, image)
-            .where(image.displayOrder.eq(0).or(image.isNull()))
+            .on(image.product.id.eq(dress.id).and(image.displayOrder.eq(0)))
             .leftJoin(dress.tags, tag)
             .where(
                 categoryEq(category),

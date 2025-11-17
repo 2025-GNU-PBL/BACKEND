@@ -73,10 +73,10 @@ public class WeddingHallRepositoryImpl implements WeddingHallCustomRepository {
                 .selectDistinct(createCardProjection())
                 .from(weddingHall)
                 .leftJoin(weddingHall.images, image)
+                .on(image.id.eq(weddingHall.id).and(image.displayOrder.eq(0)))
                 .where(
                     weddingHall.isDeleted.isFalse(),
-                    weddingHall.owner.oauthInfo.socialId.eq(ownerSocialId),
-                    image.displayOrder.eq(0).or(image.isNull())   // 썸네일만
+                    weddingHall.owner.oauthInfo.socialId.eq(ownerSocialId)
                 )
                 .orderBy(DEFAULT_LATEST_ORDER),
             pageable

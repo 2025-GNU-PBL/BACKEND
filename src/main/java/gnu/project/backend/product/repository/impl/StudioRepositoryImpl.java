@@ -33,8 +33,8 @@ import lombok.RequiredArgsConstructor;
 public class StudioRepositoryImpl implements StudioCustomRepository {
 
     private static final OrderSpecifier<?>[] STUDIO_DEFAULT_ORDER = {
+        studio.createdAt.desc(),
         studio.id.desc(),
-        studio.createdAt.desc()
     };
     private final JPAQueryFactory query;
 
@@ -160,19 +160,20 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
     public List<ProductPageResponse> searchStudiosByFilter(List<StudioTag> tags, Category category,
         Region region, Integer minPrice, Integer maxPrice, SortType sortType, Integer pageNumber,
         Integer pageSize) {
-        OrderSpecifier<?> order = switch (sortType) {
-            case PRICE_ASC -> studio.price.asc();
-            case PRICE_DESC -> studio.price.desc();
-            case LATEST -> studio.createdAt.desc();
-            default -> studio.createdAt.desc();
+        OrderSpecifier<?>[] order = switch (sortType) {
+            case PRICE_ASC -> new OrderSpecifier<?>[]{studio.price.asc(), studio.id.desc()};
+            case PRICE_DESC -> new OrderSpecifier<?>[]{studio.price.desc(), studio.id.desc()};
+            case POPULAR ->
+                new OrderSpecifier<?>[]{studio.starCount.desc(), studio.averageRating.desc(),
+                    studio.id.desc()};
+            case LATEST -> STUDIO_DEFAULT_ORDER;
         };
-
         List<ProductPageResponse> studios = pagination(
             query
                 .selectDistinct(createStudioResponse())
                 .from(studio)
                 .leftJoin(studio.images, image)
-                .where(image.displayOrder.eq(0).or(image.isNull()))
+                .on(image.product.id.eq(studio.id).and(image.displayOrder.eq(0)))
                 .leftJoin(studio.tags, tag)
                 .where(
                     regionEq(region),
