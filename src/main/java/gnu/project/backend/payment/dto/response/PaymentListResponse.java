@@ -5,6 +5,7 @@ import gnu.project.backend.common.enumerated.PaymentStatus;
 import java.time.LocalDateTime;
 
 public record PaymentListResponse(
+        String paymentKey,
         String orderCode,
         String shopName,
         String productName,
