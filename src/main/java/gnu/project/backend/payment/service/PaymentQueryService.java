@@ -40,6 +40,7 @@ public class PaymentQueryService {
                             order.getShopName(),
                             order.getMainProductName(),
                             order.getThumbnailUrl(),
+                            p.getPaymentKey(),
                             p.getAmount(),
                             p.getStatus(),
                             p.getApprovedAt()
@@ -73,6 +74,7 @@ public class PaymentQueryService {
                 order.getThumbnailUrl(),
 
                 // 결제 내역
+                p.getPaymentKey(),
                 order.getOriginalPrice(),
                 order.getDiscountAmount(),
                 order.getTotalPrice(),
@@ -153,6 +155,7 @@ public class PaymentQueryService {
 
         List<PaymentSettlementSummaryItemResponse> allItems = filtered.stream()
                 .map(p -> new PaymentSettlementSummaryItemResponse(
+                        p.getPaymentKey(),
                         p.getOrder().getOrderCode(),
                         p.getOrder().getCustomer().getName(),
                         p.getAmount(),
