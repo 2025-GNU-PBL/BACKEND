@@ -1,8 +1,7 @@
 package gnu.project.backend.chat.dto.request;
 
-public record ChatMessageRequest(
+public record ChatSendRequest(
         Long chatRoomId,
-        String senderRole,
-        String senderId,
         String message
-) {}
+) {
+}

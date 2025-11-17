@@ -116,7 +116,8 @@ public enum ErrorCode {
     COUPON_ALREADY_USED(HttpStatus.BAD_REQUEST, "COUPON007", "해당 쿠폰은 이미 사용되었습니다."),
     COUPON_CANCELLED(HttpStatus.BAD_REQUEST, "COUPON008", "해당 쿠폰은 취소되었습니다."),
     CUSTOMER_COUPON_NOT_FOUND(HttpStatus.BAD_REQUEST, "COUPON009", "해당 쿠폰을 찾을 수 없습니다."),
-
+    //CHAT
+    TOO_MANY_REQUESTS(HttpStatus.TOO_MANY_REQUESTS,"CHAT001","하루 메시지 요청을 초과하였습니다"),
     //Notification
     NOTIFICATION_NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND, "NOTIFICATION001", "해당 알림을 찾을 수 없습니다.");
 

@@ -1,4 +1,3 @@
-// src/main/java/gnu/project/backend/chat/controller/ChatWsController.java
 package gnu.project.backend.chat.controller;
 
 import gnu.project.backend.chat.dto.request.ChatMessageRequest;

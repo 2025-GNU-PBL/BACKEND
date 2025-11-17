@@ -1,8 +1,11 @@
 package gnu.project.backend.chat.entity;
 
 import gnu.project.backend.common.entity.BaseEntity;
+import gnu.project.backend.product.enumerated.Category;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "chat_room")
@@ -10,7 +13,8 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatRoom extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "owner_id", nullable = false)
@@ -25,10 +29,19 @@ public class ChatRoom extends BaseEntity {
     @Column(name = "customer_deleted", nullable = false)
     private boolean customerDeleted = false;
 
-    @Builder
-    private ChatRoom(String ownerId, String customerId) {
-        this.ownerId = ownerId;
-        this.customerId = customerId;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "last_product_category", length = 50)
+    private Category lastProductCategory;
+
+    public static ChatRoom create(String ownerId, String customerId) {
+        ChatRoom room = new ChatRoom();
+        room.ownerId = ownerId;
+        room.customerId = customerId;
+        return room;
+    }
+
+    public void touchCategory(Category category) {
+        this.lastProductCategory = category;
     }
 
     public void deleteByOwner() {

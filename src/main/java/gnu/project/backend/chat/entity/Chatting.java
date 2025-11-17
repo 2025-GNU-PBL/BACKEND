@@ -1,9 +1,10 @@
-// src/main/java/gnu/project/backend/chat/entity/Chatting.java
 package gnu.project.backend.chat.entity;
 
 import gnu.project.backend.common.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -13,21 +14,20 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Chatting extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chatroom_id", nullable = false)
     private ChatRoom chatRoom;
 
-    @Column(nullable = false, length = 1000)
+    @Column(nullable = false, length = 255)
     private String message;
 
-    // 누가 보냈는지 역할
     @Column(name = "sender_role", nullable = false, length = 50)
-    private String senderRole; // OWNER | CUSTOMER
+    private String senderRole;
 
-    // 실제 사용자 식별자 (email, userId 등)
     @Column(name = "sender_id", nullable = false, length = 255)
     private String senderId;
 
@@ -46,25 +46,39 @@ public class Chatting extends BaseEntity {
     @Column(name = "customer_read_at")
     private LocalDateTime customerReadAt;
 
-    @Builder
-    private Chatting(ChatRoom chatRoom,
-                     String message,
-                     String senderRole,
-                     String senderId,
-                     LocalDateTime sendTime,
-                     boolean ownerRead,
-                     LocalDateTime ownerReadAt,
-                     boolean customerRead,
-                     LocalDateTime customerReadAt) {
-        this.chatRoom = chatRoom;
-        this.message = message;
-        this.senderRole = senderRole;
-        this.senderId = senderId;
-        this.sendTime = sendTime;
-        this.ownerRead = ownerRead;
-        this.ownerReadAt = ownerReadAt;
-        this.customerRead = customerRead;
-        this.customerReadAt = customerReadAt;
+    public static Chatting create(
+            ChatRoom chatRoom,
+            String message,
+            String senderRole,
+            String senderId
+    ) {
+        if (chatRoom == null) {
+            throw new IllegalArgumentException("ChatRoom은 필수입니다.");
+        }
+        if (message == null || message.trim().isEmpty()) {
+            throw new IllegalArgumentException("메시지는 필수입니다.");
+        }
+        if (message.length() > 255) {
+            throw new IllegalArgumentException("메시지는 255자를 초과할 수 없습니다.");
+        }
+        if (senderRole == null || senderRole.trim().isEmpty()) {
+            throw new IllegalArgumentException("발신자 역할은 필수입니다.");
+        }
+        if (senderId == null || senderId.trim().isEmpty()) {
+            throw new IllegalArgumentException("발신자 ID는 필수입니다.");
+        }
+
+        Chatting c = new Chatting();
+        c.chatRoom = chatRoom;
+        c.message = message;
+        c.senderRole = senderRole;
+        c.senderId = senderId;
+        c.sendTime = LocalDateTime.now();
+        c.ownerRead = false;
+        c.customerRead = false;
+        c.ownerReadAt = null;
+        c.customerReadAt = null;
+        return c;
     }
 
     public void readByOwner(LocalDateTime now) {

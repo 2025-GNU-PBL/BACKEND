@@ -1,73 +1,80 @@
 package gnu.project.backend.chat.controller;
 
-import gnu.project.backend.chat.constant.ChatConstants;
+import gnu.project.backend.auth.aop.Auth;
+import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.chat.controller.docs.ChatDocs;
-import gnu.project.backend.chat.dto.request.ChatMessageRequest;
-import gnu.project.backend.chat.dto.request.ChatRoomCreateRequest;
+import gnu.project.backend.chat.dto.request.ChatOpenFromProductRequest;
+import gnu.project.backend.chat.dto.request.ChatSendRequest;
 import gnu.project.backend.chat.dto.response.ChatMessageResponse;
 import gnu.project.backend.chat.dto.response.ChatRoomListResponse;
 import gnu.project.backend.chat.service.ChatService;
-import gnu.project.backend.common.error.ErrorCode;
-import gnu.project.backend.common.exception.BusinessException;
+import gnu.project.backend.product.enumerated.Category;
+import io.swagger.v3.oas.annotations.Parameter;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/chat")
 @RequiredArgsConstructor
 public class ChatController implements ChatDocs {
 
     private final ChatService chatService;
 
     @Override
-    public Long createRoom(@RequestBody ChatRoomCreateRequest request) {
-        return chatService.createRoomByDto(request);
+    public Long openFromProduct(
+            @Parameter(hidden = true) @Auth Accessor accessor,
+            @RequestBody ChatOpenFromProductRequest request
+    ) {
+        return chatService.openRoomFromProduct(accessor, request);
     }
 
     @Override
-    public List<ChatRoomListResponse> getOwnerRooms(@PathVariable String ownerId) {
-        return chatService.getRoomsByOwner(ownerId);
+    public List<ChatRoomListResponse> myRoomsAsCustomer(
+            @Parameter(hidden = true) @Auth Accessor accessor,
+            @RequestParam(required = false) Category category
+    ) {
+        return chatService.getMyRoomsAsCustomer(accessor, category);
     }
 
     @Override
-    public List<ChatRoomListResponse> getCustomerRooms(@PathVariable String customerId) {
-        return chatService.getRoomsByCustomer(customerId);
+    public List<ChatRoomListResponse> myRoomsAsOwner(
+            @Parameter(hidden = true) @Auth Accessor accessor,
+            @RequestParam(required = false) Category category
+    ) {
+        return chatService.getMyRoomsAsOwner(accessor, category);
     }
 
     @Override
     public List<ChatMessageResponse> getHistory(
-        @PathVariable Long chatRoomId,
-        @RequestParam(required = false) Long cursor,
-        @RequestParam(defaultValue = "30") int size
+            @Parameter(hidden = true) @Auth Accessor accessor,
+            @PathVariable Long chatRoomId,
+            @RequestParam(required = false) Long cursor,
+            @RequestParam(defaultValue = "30") int size
     ) {
-        return chatService.getHistory(chatRoomId, cursor, size);
+        return chatService.getHistory(accessor, chatRoomId, cursor, size);
     }
 
     @Override
-    public void readAll(@PathVariable Long chatRoomId, @RequestParam String role) {
-        if (!ChatConstants.ROLE_OWNER.equalsIgnoreCase(role)
-            && !ChatConstants.ROLE_CUSTOMER.equalsIgnoreCase(role)) {
-            throw new BusinessException(ErrorCode.ROLE_IS_NOT_VALID);
-        }
-        chatService.readAll(chatRoomId, role);
-    }
-
-    //TODO : Accessor
-    @Override
-    public ChatMessageResponse sendByRest(@RequestBody ChatMessageRequest request) {
-        return chatService.saveMessage(request);
+    public void readAll(
+            @Parameter(hidden = true) @Auth Accessor accessor,
+            @PathVariable Long chatRoomId
+    ) {
+        chatService.readAll(accessor, chatRoomId);
     }
 
     @Override
-    public void deleteRoom(@PathVariable Long chatRoomId,
-        @RequestParam String role,
-        @RequestParam String senderId) {
-        chatService.deleteRoomForSide(chatRoomId, role, senderId);
+    public ChatMessageResponse sendByRest(
+            @Parameter(hidden = true) @Auth Accessor accessor,
+            @RequestBody ChatSendRequest request
+    ) {
+        return chatService.sendByRest(accessor, request);
     }
 
+    @Override
+    public void deleteRoom(
+            @Parameter(hidden = true) @Auth Accessor accessor,
+            @PathVariable Long chatRoomId
+    ) {
+        chatService.deleteMySideRoom(accessor, chatRoomId);
+    }
 }
