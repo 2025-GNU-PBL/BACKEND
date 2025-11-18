@@ -42,7 +42,6 @@ public class DressRepositoryImpl implements DressCustomRepository {
     public DressResponse findByDressId(final Long id) {
         Dress result = query
             .selectFrom(dress)
-            .distinct()
             .leftJoin(dress.images, image).fetchJoin()
             .leftJoin(dress.tags, tag)
             .where(dress.id.eq(id).and(dress.isDeleted.isFalse()))
@@ -106,10 +105,11 @@ public class DressRepositoryImpl implements DressCustomRepository {
         return Optional.ofNullable(
             query
                 .selectDistinct(dress)
+                .from(dress)
                 .leftJoin(dress.images, image).fetchJoin()
                 .leftJoin(dress.options, option)
                 .leftJoin(dress.tags, tag)
-                .where(dress.id.eq(id).and(dress.isDeleted.isFalse()))
+                .where(dress.id.eq(id))
                 .fetchOne()
         );
     }
