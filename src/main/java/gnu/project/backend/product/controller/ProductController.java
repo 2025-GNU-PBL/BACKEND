@@ -1,5 +1,8 @@
 package gnu.project.backend.product.controller;
 
+import static gnu.project.backend.product.constant.PageConstant.DEFAULT_PAGE_NUMBER;
+import static gnu.project.backend.product.constant.PageConstant.DEFAULT_PAGE_SIZE;
+
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.aop.OnlyOwner;
 import gnu.project.backend.auth.entity.Accessor;
@@ -26,8 +29,8 @@ public class ProductController implements ProductDocs {
     @GetMapping()
     public ResponseEntity<Page<ProductPageResponse>> getMyProducts(
         @Parameter(hidden = true) @Auth final Accessor accessor,
-        @RequestParam(required = false, defaultValue = "1") final Integer pageNumber,
-        @RequestParam(required = false, defaultValue = "6") final Integer pageSize
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE_NUMBER) Integer pageNumber,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE_SIZE) Integer pageSize
     ) {
         return ResponseEntity.ok(productService.getMyProducts(accessor, pageNumber, pageSize));
     }

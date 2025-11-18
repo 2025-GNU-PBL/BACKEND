@@ -1,5 +1,9 @@
 package gnu.project.backend.product.controller;
 
+import static gnu.project.backend.product.constant.PageConstant.DEFAULT_PAGE_NUMBER;
+import static gnu.project.backend.product.constant.PageConstant.DEFAULT_PAGE_SIZE;
+import static gnu.project.backend.product.constant.ProductConstant.DEFAULT_SORT_TYPE;
+
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.aop.OnlyOwner;
 import gnu.project.backend.auth.entity.Accessor;
@@ -86,8 +90,8 @@ public class WeddingHallController implements WeddingHallDocs {
     @GetMapping("/me")
     public ResponseEntity<Page<ProductPageResponse>> readMyWeddingHalls(
         @Parameter(hidden = true) @Auth final Accessor accessor,
-        @RequestParam(name = "pageNumber", defaultValue = "1") final Integer pageNumber,
-        @RequestParam(name = "pageSize", defaultValue = "6") final Integer pageSize
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE_NUMBER) Integer pageNumber,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE_SIZE) Integer pageSize
     ) {
         return ResponseEntity.ok(
             weddingHallService.readMyWeddingHalls(accessor, pageNumber, pageSize)
@@ -102,9 +106,9 @@ public class WeddingHallController implements WeddingHallDocs {
         @RequestParam(required = false) final Region region,
         @RequestParam(required = false) final Integer minPrice,
         @RequestParam(required = false) final Integer maxPrice,
-        @RequestParam(required = false, defaultValue = "LATEST") final SortType sortType,
-        @RequestParam(required = false, defaultValue = "1") final Integer pageNumber,
-        @RequestParam(required = false, defaultValue = "6") final Integer pageSize
+        @RequestParam(required = false, defaultValue = DEFAULT_SORT_TYPE) SortType sortType,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE_NUMBER) Integer pageNumber,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE_SIZE) Integer pageSize
     ) {
         return ResponseEntity.ok(
             weddingHallService.getWeddingHallsByFilters(

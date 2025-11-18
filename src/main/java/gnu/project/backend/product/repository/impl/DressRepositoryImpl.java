@@ -45,7 +45,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
             .distinct()
             .leftJoin(dress.images, image).fetchJoin()
             .leftJoin(dress.tags, tag)
-            .where(dress.id.eq(id))
+            .where(dress.id.eq(id).and(dress.isDeleted.isFalse()))
             .fetchOne();
         return DressResponse.from(Objects.requireNonNull(result));
     }
@@ -57,7 +57,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
                 .selectDistinct(createDressResponse())
                 .from(dress)
                 .leftJoin(dress.images, image)
-                .where(image.displayOrder.eq(0).or(image.isNull()))
+                .where(image.displayOrder.eq(0).or(image.isNull()).and(dress.isDeleted.isFalse()))
                 .orderBy(DRESS_DEFAULT_ORDER),
             pageSize,
             pageNumber
@@ -109,7 +109,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
                 .leftJoin(dress.images, image).fetchJoin()
                 .leftJoin(dress.options, option)
                 .leftJoin(dress.tags, tag)
-                .where(dress.id.eq(id))
+                .where(dress.id.eq(id).and(dress.isDeleted.isFalse()))
                 .fetchOne()
         );
     }
@@ -139,7 +139,8 @@ public class DressRepositoryImpl implements DressCustomRepository {
                 categoryEq(category),
                 regionEq(region),
                 priceBetween(minPrice, maxPrice),
-                tagsIn(tags)
+                tagsIn(tags),
+                dress.isDeleted.isFalse()
             ).orderBy(order), pageSize, pageNumber).fetch();
 
         if (dresses.isEmpty()) {
@@ -190,7 +191,8 @@ public class DressRepositoryImpl implements DressCustomRepository {
                 categoryEq(category),
                 regionEq(region),
                 priceBetween(minPrice, maxPrice),
-                tagsIn(tags)
+                tagsIn(tags),
+                dress.isDeleted.isFalse()
             ).fetchOne();
     }
 

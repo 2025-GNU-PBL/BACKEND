@@ -1,13 +1,11 @@
 package gnu.project.backend.product.service;
 
-import static gnu.project.backend.common.error.ErrorCode.OWNER_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.common.error.ErrorCode.WEDDING_HALL_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.product.constant.ProductConstant.WEDDING_HALL_DELETE_SUCCESS;
 
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.exception.BusinessException;
 import gnu.project.backend.owner.entity.Owner;
-import gnu.project.backend.owner.repository.OwnerRepository;
 import gnu.project.backend.product.dto.request.WeddingHallRequest;
 import gnu.project.backend.product.dto.request.WeddingHallUpdateRequest;
 import gnu.project.backend.product.dto.response.ProductPageResponse;
@@ -17,6 +15,7 @@ import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.Region;
 import gnu.project.backend.product.enumerated.SortType;
 import gnu.project.backend.product.enumerated.WeddingHallTag;
+import gnu.project.backend.product.helper.OwnerHelper;
 import gnu.project.backend.product.helper.ProductHelper;
 import gnu.project.backend.product.repository.WeddingHallRepository;
 import java.util.List;
@@ -35,20 +34,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class WeddingHallService {
 
     private final WeddingHallRepository weddingHallRepository;
-    private final OwnerRepository ownerRepository;
     private final ProductHelper productHelper;
+    private final OwnerHelper ownerHelper;
 
-    // --- internal helpers ---
-    private static void validateOwner(final Accessor accessor, final WeddingHall hall) {
-        if (!hall.validOwner(accessor.getSocialId())) {
-            throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
-        }
-    }
-
-    private Owner findOwnerBySocialId(final Accessor accessor) {
-        return ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
-            .orElseThrow(() -> new BusinessException(OWNER_NOT_FOUND_EXCEPTION));
-    }
 
     @Transactional(readOnly = true)
     public WeddingHallResponse read(final Long id) {
@@ -75,7 +63,7 @@ public class WeddingHallService {
         final List<MultipartFile> images,
         final Accessor accessor
     ) {
-        final Owner owner = findOwnerBySocialId(accessor);
+        final Owner owner = ownerHelper.findOwnerBySocialId(accessor);
 
         final WeddingHall hall = WeddingHall.create(
             owner,
@@ -116,7 +104,7 @@ public class WeddingHallService {
             .findWeddingHallWithImagesAndOptionsById(id)
             .orElseThrow(() -> new BusinessException(WEDDING_HALL_NOT_FOUND_EXCEPTION));
 
-        validateOwner(accessor, hall);
+        ownerHelper.validateOwner(accessor, hall);
 
         productHelper.updateProductEnrichment(
             hall,
@@ -149,7 +137,7 @@ public class WeddingHallService {
             .findById(id)
             .orElseThrow(() -> new BusinessException(WEDDING_HALL_NOT_FOUND_EXCEPTION));
 
-        validateOwner(accessor, hall);
+        ownerHelper.validateOwner(accessor, hall);
         hall.delete();
         return WEDDING_HALL_DELETE_SUCCESS;
     }
