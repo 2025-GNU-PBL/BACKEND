@@ -42,7 +42,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
             .selectFrom(makeup)
             .distinct()
             .leftJoin(makeup.images, image).fetchJoin()
-            .where(makeup.id.eq(id))
+            .where(makeup.id.eq(id).and(makeup.isDeleted.isFalse()))
             .fetchOne();
         return MakeupResponse.from(Objects.requireNonNull(result));
     }
@@ -53,7 +53,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
                 .selectDistinct(createMakeupResponse())
                 .from(makeup)
                 .leftJoin(makeup.images, image)
-                .where(image.displayOrder.eq(0).or(image.isNull()))
+                .where(image.displayOrder.eq(0).or(image.isNull()).and(makeup.isDeleted.isFalse()))
                 .orderBy(MAKEUP_DEFAULT_ORDER),
             pageSize,
             pageNumber
@@ -84,7 +84,8 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
                 categoryEq(category),
                 regionEq(region),
                 priceBetween(minPrice, maxPrice),
-                tagsIn(tags)
+                tagsIn(tags),
+                makeup.isDeleted.isFalse()
             ).orderBy(order), pageSize, pageNumber).fetch();
 
         if (makeups.isEmpty()) {
@@ -95,7 +96,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
             .selectFrom(tag)
             .where(tag.product.id.in(makeups.stream()
                 .map(ProductPageResponse::id)
-                .toList())
+                .toList()).and(tag.product.isDeleted.isFalse())
             ).fetch();
 
         Map<Long, List<TagResponse>> tagsMap = allTags.stream()
@@ -135,7 +136,8 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
                 categoryEq(category),
                 regionEq(region),
                 priceBetween(minPrice, maxPrice),
-                tagsIn(tags)
+                tagsIn(tags),
+                makeup.isDeleted.isFalse()
             ).fetchOne();
     }
 

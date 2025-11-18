@@ -49,6 +49,8 @@ public class ProductSearchRepositoryImpl implements ProductSearchCustomRepositor
             productCondition.and(
                 product.name.containsIgnoreCase(keyword)
                     .or(product.detail.containsIgnoreCase(keyword))
+            ).and(
+                product.isDeleted.isFalse()
             );
         }
 
@@ -72,7 +74,7 @@ public class ProductSearchRepositoryImpl implements ProductSearchCustomRepositor
 
             List<Tag> allTags = query
                 .selectFrom(tag)
-                .where(tag.product.id.in(productIds))
+                .where(tag.product.id.in(productIds).and(tag.product.isDeleted.isFalse()))
                 .fetch();
 
             Map<Long, List<TagResponse>> tagsMap = allTags.stream()

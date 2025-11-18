@@ -43,7 +43,7 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
             query.selectFrom(product)
                 .leftJoin(product.owner, owner)
                 .fetchJoin()
-                .where(product.id.eq(id))
+                .where(product.id.eq(id).and(product.isDeleted.isFalse()))
                 .fetchFirst()
         );
     }
@@ -63,7 +63,7 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
             .selectDistinct(createProductResponse())
             .from(product)
             .leftJoin(product.images, image).on(imageCondition)
-            .where(product.owner.id.eq(id))
+            .where(product.owner.id.eq(id).and(product.isDeleted.isFalse()))
             .orderBy(DEFAULT_LATEST_ORDER)
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
@@ -76,7 +76,7 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
 
             List<Tag> allTags = query
                 .selectFrom(tag)
-                .where(tag.product.id.in(productIds))
+                .where(tag.product.id.in(productIds).and(tag.product.isDeleted.isFalse()))
                 .fetch();
 
             Map<Long, List<TagResponse>> tagsMap = allTags.stream()
@@ -109,7 +109,7 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
         Long total = query
             .select(product.count())
             .from(product)
-            .where(product.owner.id.eq(id))
+            .where(product.owner.id.eq(id).and(product.isDeleted.isFalse()))
             .fetchOne();
 
         if (total == null) {
