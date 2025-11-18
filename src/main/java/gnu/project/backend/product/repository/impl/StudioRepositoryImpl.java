@@ -45,7 +45,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
             .distinct()
             .leftJoin(studio.images, image).fetchJoin()
             .leftJoin(studio.tags, tag)
-            .where(studio.id.eq(id))
+            .where(studio.id.eq(id).and(studio.isDeleted.isFalse()))
             .fetchOne();
         return StudioResponse.from(Objects.requireNonNull(result));
     }
@@ -74,23 +74,6 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
         return tag.name.in(tags.stream().map(StudioTag::name).toList());
     }
 
-    public Long countStudiosByFilter(
-        List<StudioTag> tags,
-        Region region,
-        Integer minPrice,
-        Integer maxPrice
-    ) {
-        return query
-            .select(studio.countDistinct())
-            .from(studio)
-            .leftJoin(studio.tags, tag)
-            .where(
-                regionEq(region),
-                priceBetween(minPrice, maxPrice),
-                tagsIn(tags)
-            )
-            .fetchOne();
-    }
 
     @Override
     public List<ProductPageResponse> searchStudio(int pageSize, int pageNumber) {
@@ -99,7 +82,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
                 .selectDistinct(createStudioResponse())
                 .from(studio)
                 .leftJoin(studio.images, image)
-                .where(image.displayOrder.eq(0).or(image.isNull()))
+                .where(image.displayOrder.eq(0).or(image.isNull()).and(studio.isDeleted.isFalse()))
                 .orderBy(STUDIO_DEFAULT_ORDER),
             pageSize,
             pageNumber
@@ -113,7 +96,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
             .selectFrom(tag)
             .where(tag.product.id.in(studios.stream()
                 .map(ProductPageResponse::id)
-                .toList())
+                .toList()).and(tag.product.isDeleted.isFalse())
             ).fetch();
 
         Map<Long, List<TagResponse>> tagsMap = allTags.stream()
@@ -151,7 +134,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
                 .leftJoin(studio.images, image).fetchJoin()
                 .leftJoin(studio.options, option)
                 .leftJoin(studio.tags, tag)
-                .where(studio.id.eq(id))
+                .where(studio.id.eq(id).and(studio.isDeleted.isFalse()))
                 .fetchOne()
         );
     }
@@ -178,7 +161,8 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
                 .where(
                     regionEq(region),
                     priceBetween(minPrice, maxPrice),
-                    tagsIn(tags)
+                    tagsIn(tags),
+                    studio.isDeleted.isFalse()
                 )
                 .orderBy(order),
             pageSize,
@@ -193,7 +177,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
             .selectFrom(tag)
             .where(tag.product.id.in(studios.stream()
                 .map(ProductPageResponse::id)
-                .toList())
+                .toList()).and(tag.product.isDeleted.isFalse())
             ).fetch();
 
         Map<Long, List<gnu.project.backend.product.dto.response.TagResponse>> tagsMap = allTags.stream()
@@ -233,7 +217,8 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
                 categoryEq(category),
                 regionEq(region),
                 priceBetween(minPrice, maxPrice),
-                tagsIn(tags)
+                tagsIn(tags),
+                studio.isDeleted.isFalse()
             ).fetchOne();
     }
 

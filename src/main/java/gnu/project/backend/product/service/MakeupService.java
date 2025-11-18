@@ -1,13 +1,11 @@
 package gnu.project.backend.product.service;
 
 import static gnu.project.backend.common.error.ErrorCode.MAKEUP_NOT_FOUND_EXCEPTION;
-import static gnu.project.backend.common.error.ErrorCode.OWNER_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.product.constant.ProductConstant.MAKEUP_DELETE_SUCCESS;
 
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.exception.BusinessException;
 import gnu.project.backend.owner.entity.Owner;
-import gnu.project.backend.owner.repository.OwnerRepository;
 import gnu.project.backend.product.dto.request.MakeupRequest;
 import gnu.project.backend.product.dto.request.MakeupUpdateRequest;
 import gnu.project.backend.product.dto.response.MakeupResponse;
@@ -17,6 +15,7 @@ import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.MakeupTag;
 import gnu.project.backend.product.enumerated.Region;
 import gnu.project.backend.product.enumerated.SortType;
+import gnu.project.backend.product.helper.OwnerHelper;
 import gnu.project.backend.product.helper.ProductHelper;
 import gnu.project.backend.product.repository.MakeupRepository;
 import java.util.List;
@@ -35,14 +34,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class MakeupService {
 
     private final MakeupRepository makeupRepository;
-    private final OwnerRepository ownerRepository;
     private final ProductHelper productHelper;
+    private final OwnerHelper ownerHelper;
 
-    private static void validOwner(final Accessor accessor, final Makeup makeup) {
-        if (!makeup.validOwner(accessor.getSocialId())) {
-            throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
-        }
-    }
 
     @Transactional(readOnly = true)
     public MakeupResponse read(
@@ -57,7 +51,9 @@ public class MakeupService {
         final Integer pageSize
     ) {
         long totalElements = makeupRepository.count();
+
         final Pageable pageable = PageRequest.of(pageNumber - 1, pageSize);
+
         return new PageImpl<>(
             makeupRepository.searchMakeup(pageSize, pageNumber),
             pageable,
@@ -74,7 +70,7 @@ public class MakeupService {
                 () -> new BusinessException(MAKEUP_NOT_FOUND_EXCEPTION)
             );
 
-        validOwner(accessor, makeup);
+        ownerHelper.validateOwner(accessor, makeup);
 
         makeup.delete();
 
@@ -93,7 +89,7 @@ public class MakeupService {
                 () -> new BusinessException(MAKEUP_NOT_FOUND_EXCEPTION)
             );
 
-        validOwner(accessor, makeup);
+        ownerHelper.validateOwner(accessor, makeup);
 
         productHelper.updateProductEnrichment(
             makeup,
@@ -119,7 +115,7 @@ public class MakeupService {
         final List<MultipartFile> images,
         final Accessor accessor
     ) {
-        final Owner owner = findOwnerBySocialId(accessor);
+        final Owner owner = ownerHelper.findOwnerBySocialId(accessor);
         final Makeup savedMakeup = makeupRepository.save(
             Makeup.create(
                 owner,
@@ -141,13 +137,6 @@ public class MakeupService {
         return MakeupResponse.from(savedMakeup);
     }
 
-
-    private Owner findOwnerBySocialId(final Accessor accessor) {
-        return ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
-            .orElseThrow(() -> new BusinessException(
-                OWNER_NOT_FOUND_EXCEPTION)
-            );
-    }
 
     public Page<ProductPageResponse> getMakeupsByFilters(List<MakeupTag> tags, Category category,
         Region region, Integer minPrice, Integer maxPrice, SortType sortType,

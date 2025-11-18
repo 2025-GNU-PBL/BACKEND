@@ -1,5 +1,8 @@
 package gnu.project.backend.product.service;
 
+import static gnu.project.backend.product.constant.ProductConstant.MAX_SEARCH_HISTORY;
+import static gnu.project.backend.product.constant.ProductConstant.SEARCH_KEY_PREFIX;
+
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.dto.response.RecentSearchResponse;
@@ -22,8 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ProductSearchService {
 
-    private static final String SEARCH_KEY_PREFIX = "recent_search:";
-    private static final int MAX_SEARCH_HISTORY = 10;
+
     private final ProductSearchRepository productSearchRepository;
     private final RedisTemplate<String, String> redisTemplate;
 
@@ -54,7 +56,7 @@ public class ProductSearchService {
 
         zSetOps.remove(key, keyword);
         zSetOps.add(key, keyword, score);
-        
+
         long size = Optional.of(zSetOps.size(key)).orElse(0L);
         if (size > MAX_SEARCH_HISTORY) {
             zSetOps.removeRange(key, 0, size - MAX_SEARCH_HISTORY - 1);

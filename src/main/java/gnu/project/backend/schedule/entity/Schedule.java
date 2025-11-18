@@ -49,10 +49,10 @@ public class Schedule extends BaseEntity {
     @Column(name = "reservation_id")
     private Long reservationId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String content;
 
     @Column(nullable = false)

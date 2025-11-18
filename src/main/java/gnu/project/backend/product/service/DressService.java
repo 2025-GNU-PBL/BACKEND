@@ -1,13 +1,11 @@
 package gnu.project.backend.product.service;
 
 import static gnu.project.backend.common.error.ErrorCode.DRESS_NOT_FOUND_EXCEPTION;
-import static gnu.project.backend.common.error.ErrorCode.OWNER_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.product.constant.ProductConstant.DRESS_DELETE_SUCCESS;
 
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.exception.BusinessException;
 import gnu.project.backend.owner.entity.Owner;
-import gnu.project.backend.owner.repository.OwnerRepository;
 import gnu.project.backend.product.dto.request.DressRequest;
 import gnu.project.backend.product.dto.request.DressUpdateRequest;
 import gnu.project.backend.product.dto.response.DressResponse;
@@ -17,6 +15,7 @@ import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.DressTag;
 import gnu.project.backend.product.enumerated.Region;
 import gnu.project.backend.product.enumerated.SortType;
+import gnu.project.backend.product.helper.OwnerHelper;
 import gnu.project.backend.product.helper.ProductHelper;
 import gnu.project.backend.product.repository.DressRepository;
 import java.util.List;
@@ -35,14 +34,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class DressService {
 
     private final DressRepository dressRepository;
-    private final OwnerRepository ownerRepository;
     private final ProductHelper productHelper;
-
-    private static void validOwner(Accessor accessor, Dress dress) {
-        if (!dress.validOwner(accessor.getSocialId())) {
-            throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
-        }
-    }
+    private final OwnerHelper ownerHelper;
 
     @Transactional(readOnly = true)
     public DressResponse read(
@@ -74,7 +67,7 @@ public class DressService {
                 () -> new BusinessException(DRESS_NOT_FOUND_EXCEPTION)
             );
 
-        validOwner(accessor, dress);
+        ownerHelper.validateOwner(accessor, dress);
         dress.delete();
 
         return DRESS_DELETE_SUCCESS;
@@ -92,7 +85,7 @@ public class DressService {
                 () -> new BusinessException(DRESS_NOT_FOUND_EXCEPTION)
             );
 
-        validOwner(accessor, dress);
+        ownerHelper.validateOwner(accessor, dress);
 
         productHelper.updateProductEnrichment(
             dress,
@@ -118,7 +111,7 @@ public class DressService {
         final List<MultipartFile> images,
         final Accessor accessor
     ) {
-        final Owner owner = findOwnerBySocialId(accessor);
+        final Owner owner = ownerHelper.findOwnerBySocialId(accessor);
         final Dress savedDress = dressRepository.save(
             Dress.create(
                 owner,
@@ -141,13 +134,6 @@ public class DressService {
         return DressResponse.from(savedDress);
     }
 
-
-    private Owner findOwnerBySocialId(final Accessor accessor) {
-        return ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
-            .orElseThrow(() -> new BusinessException(
-                OWNER_NOT_FOUND_EXCEPTION)
-            );
-    }
 
     public Page<ProductPageResponse> getDressesByFilters(List<DressTag> tags, Category category,
         Region region, Integer minPrice, Integer maxPrice, SortType sortType,

@@ -1,5 +1,9 @@
 package gnu.project.backend.product.controller;
 
+import static gnu.project.backend.product.constant.PageConstant.DEFAULT_PAGE_NUMBER;
+import static gnu.project.backend.product.constant.PageConstant.DEFAULT_PAGE_SIZE;
+import static gnu.project.backend.product.constant.ProductConstant.DEFAULT_SORT_TYPE;
+
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.aop.OnlyOwner;
 import gnu.project.backend.auth.entity.Accessor;
@@ -71,8 +75,8 @@ public class StudioController implements StudioDocs {
     @Override
     @GetMapping
     public ResponseEntity<Page<ProductPageResponse>> readStudios(
-        @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
-        @RequestParam(name = "pageSize", required = false, defaultValue = "6") final Integer pageSize
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE_NUMBER) Integer pageNumber,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE_SIZE) Integer pageSize
     ) {
         return ResponseEntity.ok(studioService.readStudios(pageNumber, pageSize));
     }
@@ -94,9 +98,9 @@ public class StudioController implements StudioDocs {
         @RequestParam(required = false) Region region,
         @RequestParam(required = false) Integer minPrice,
         @RequestParam(required = false) Integer maxPrice,
-        @RequestParam(required = false, defaultValue = "LATEST") SortType sortType,
-        @RequestParam(required = false, defaultValue = "1") Integer pageNumber,
-        @RequestParam(required = false, defaultValue = "6") Integer pageSize
+        @RequestParam(required = false, defaultValue = DEFAULT_SORT_TYPE) SortType sortType,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE_NUMBER) Integer pageNumber,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE_SIZE) Integer pageSize
     ) {
         return ResponseEntity.ok(
             studioService.getStudiosByFilters(tags, category, region, minPrice, maxPrice, sortType,

@@ -1,5 +1,9 @@
 package gnu.project.backend.product.controller;
 
+import static gnu.project.backend.product.constant.PageConstant.DEFAULT_PAGE_NUMBER;
+import static gnu.project.backend.product.constant.PageConstant.DEFAULT_PAGE_SIZE;
+import static gnu.project.backend.product.constant.ProductConstant.DEFAULT_SORT_TYPE;
+
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.product.controller.docs.ProductSearchDocs;
@@ -27,9 +31,9 @@ public class ProductSearchController implements ProductSearchDocs {
     @GetMapping
     public ResponseEntity<Page<ProductPageResponse>> searchAllProducts(
         @RequestParam final String keyword,
-        @RequestParam(required = false, defaultValue = "LATEST") final SortType sortType,
-        @RequestParam(required = false, defaultValue = "1") final Integer pageNumber,
-        @RequestParam(required = false, defaultValue = "6") final Integer pageSize
+        @RequestParam(required = false, defaultValue = DEFAULT_SORT_TYPE) SortType sortType,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE_NUMBER) Integer pageNumber,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE_SIZE) Integer pageSize
     ) {
         return ResponseEntity.ok(
             productSearchService.search(keyword, sortType, pageNumber, pageSize)

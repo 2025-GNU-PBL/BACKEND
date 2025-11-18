@@ -1,14 +1,12 @@
 package gnu.project.backend.product.service;
 
 import static gnu.project.backend.common.error.ErrorCode.MAKEUP_NOT_FOUND_EXCEPTION;
-import static gnu.project.backend.common.error.ErrorCode.OWNER_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.common.error.ErrorCode.STUDIO_NOT_FOUND_EXCEPTION;
 import static gnu.project.backend.product.constant.ProductConstant.DRESS_DELETE_SUCCESS;
 
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.exception.BusinessException;
 import gnu.project.backend.owner.entity.Owner;
-import gnu.project.backend.owner.repository.OwnerRepository;
 import gnu.project.backend.product.dto.request.StudioRequest;
 import gnu.project.backend.product.dto.request.StudioUpdateRequest;
 import gnu.project.backend.product.dto.response.ProductPageResponse;
@@ -18,6 +16,7 @@ import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.Region;
 import gnu.project.backend.product.enumerated.SortType;
 import gnu.project.backend.product.enumerated.StudioTag;
+import gnu.project.backend.product.helper.OwnerHelper;
 import gnu.project.backend.product.helper.ProductHelper;
 import gnu.project.backend.product.repository.StudioRepository;
 import java.util.List;
@@ -36,14 +35,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class StudioService {
 
     private final StudioRepository studioRepository;
-    private final OwnerRepository ownerRepository;
+    private final OwnerHelper ownerHelper;
     private final ProductHelper productHelper;
 
-    private static void validOwner(final Accessor accessor, final Studio studio) {
-        if (!studio.validOwner(accessor.getSocialId())) {
-            throw new BusinessException(OWNER_NOT_FOUND_EXCEPTION);
-        }
-    }
 
     @Transactional(readOnly = true)
     public StudioResponse read(
@@ -75,7 +69,7 @@ public class StudioService {
                 () -> new BusinessException(MAKEUP_NOT_FOUND_EXCEPTION)
             );
 
-        validOwner(accessor, studio);
+        ownerHelper.validateOwner(accessor, studio);
         studio.delete();
 
         return DRESS_DELETE_SUCCESS;
@@ -93,7 +87,7 @@ public class StudioService {
                 () -> new BusinessException(STUDIO_NOT_FOUND_EXCEPTION)
             );
 
-        validOwner(accessor, studio);
+        ownerHelper.validateOwner(accessor, studio);
 
         productHelper.updateProductEnrichment(
             studio,
@@ -119,7 +113,7 @@ public class StudioService {
         final List<MultipartFile> images,
         final Accessor accessor
     ) {
-        final Owner owner = findOwnerBySocialId(accessor);
+        final Owner owner = ownerHelper.findOwnerBySocialId(accessor);
         final Studio savedStudio = studioRepository.save(
             Studio.create(
                 owner,
@@ -141,13 +135,6 @@ public class StudioService {
         return StudioResponse.from(savedStudio);
     }
 
-
-    private Owner findOwnerBySocialId(final Accessor accessor) {
-        return ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
-            .orElseThrow(() -> new BusinessException(
-                OWNER_NOT_FOUND_EXCEPTION)
-            );
-    }
 
     public Page<ProductPageResponse> getStudiosByFilters(List<StudioTag> tags, Category category,
         Region region, Integer minPrice, Integer maxPrice, SortType sortType,

@@ -1,5 +1,7 @@
 package gnu.project.backend.product.entity;
 
+import static gnu.project.backend.product.constant.ProductConstant.STRING_COLUMN_DEFINITION;
+
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.Region;
@@ -39,7 +41,7 @@ public class WeddingHall extends Product {
     private String cateringType;
 
     @Lob
-    @Column(name = "reservation_policy")
+    @Column(name = "reservation_policy", columnDefinition = STRING_COLUMN_DEFINITION)
     private String reservationPolicy;
 
     private WeddingHall(

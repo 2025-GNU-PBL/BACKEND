@@ -4,5 +4,5 @@ public enum Region {
     SEOUL,
     BUSAN,
     GYEONGGI,
-    ETC
+    INCHEON
 }
