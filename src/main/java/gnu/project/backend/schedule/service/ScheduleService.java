@@ -14,7 +14,7 @@ import gnu.project.backend.customer.repository.CustomerRepository;
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
 import gnu.project.backend.product.entity.Product;
-import gnu.project.backend.product.provider.FileProvider;
+import gnu.project.backend.product.provider.ScheduleFileProvider;
 import gnu.project.backend.reservation.entity.Reservation;
 import gnu.project.backend.reservation.repository.ReservationRepository;
 import gnu.project.backend.schedule.dto.request.ScheduleEventRequestDto;
@@ -42,7 +42,7 @@ public class ScheduleService {
     private final CustomerRepository customerRepository;
     private final OwnerRepository ownerRepository;
     private final ReservationRepository reservationRepository;
-    private final FileProvider fileProvider;
+    private final ScheduleFileProvider fileProvider;
 
     public ScheduleResponseDto upload(
         final ScheduleRequestDto request,
@@ -162,7 +162,7 @@ public class ScheduleService {
 
         final List<ScheduleFile> files = schedule.getFiles();
         if (!files.isEmpty()) {
-            fileProvider.deleteFile(files);
+            fileProvider.deleteFiles(files);
         }
 
         scheduleRepository.delete(schedule);

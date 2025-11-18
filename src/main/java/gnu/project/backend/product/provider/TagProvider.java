@@ -23,7 +23,7 @@ public class TagProvider {
 
     private final TagRepository tagRepository;
 
-    public static boolean isValidForProduct(Product product, String tagName) {
+    public static boolean isValidForProduct(final Product product, final String tagName) {
         Category category = product.getCategory();
         return switch (category) {
             case DRESS -> isEnumValue(DressTag.class, tagName);
