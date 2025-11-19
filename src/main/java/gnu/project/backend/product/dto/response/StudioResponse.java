@@ -15,7 +15,6 @@ public record StudioResponse(
     Integer price,
     String availableTimes,
     Region region,
-
     List<ImageResponse> images,
     List<OptionResponse> options,
     List<TagResponse> tags
