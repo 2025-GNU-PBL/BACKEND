@@ -61,6 +61,7 @@ public class PaymentController implements PaymentDocs {
         return ResponseEntity.ok(paymentCancelService.approveCancel(accessor, paymentKey));
     }
 
+    @Override
     @PostMapping("/{paymentKey}/cancel-reject")
     public ResponseEntity<PaymentCancelResponse> rejectCancel(
             @Auth Accessor accessor,

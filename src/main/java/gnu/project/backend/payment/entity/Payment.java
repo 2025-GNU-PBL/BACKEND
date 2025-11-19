@@ -115,7 +115,7 @@ public class Payment extends BaseEntity {
 
     public void rejectCancel(String rejectReason, LocalDateTime rejectedAt){
         if(this.status != PaymentStatus.CANCEL_REQUESTED){
-            throw new IllegalStateException("취소 요청 상태에서만 승인 가능");
+            throw new IllegalStateException("취소 요청 상태에서만 거절 가능");
         }
         this.status = PaymentStatus.DONE;
         this.cancelRejectReason = rejectReason;

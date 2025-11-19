@@ -73,7 +73,7 @@ public class PaymentCancelService {
     }
 
     @Transactional
-    public PaymentCancelResponse rejectCancel(Accessor accessor, String paymentKey,String rejectReason) {
+    public PaymentCancelResponse rejectCancel(Accessor accessor, String paymentKey, String rejectReason) {
         Payment payment = paymentRepository.findWithOrderAndDetailsByPaymentKey(paymentKey)
                 .orElseThrow(() -> new BusinessException(PAYMENT_NOT_FOUND));
 
