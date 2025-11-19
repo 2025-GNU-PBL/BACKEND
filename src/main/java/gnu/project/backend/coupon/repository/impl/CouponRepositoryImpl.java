@@ -2,6 +2,7 @@ package gnu.project.backend.coupon.repository.impl;
 
 import static gnu.project.backend.coupon.entity.QCoupon.coupon;
 import static gnu.project.backend.owner.entity.QOwner.owner;
+import static gnu.project.backend.product.entity.QProduct.product;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -49,6 +50,16 @@ public class CouponRepositoryImpl implements CouponCustomRepository {
         return query.selectFrom(coupon)
             .where(
                 coupon.expirationDate.before(now).and(coupon.isDeleted.isFalse()))
+            .fetch();
+    }
+
+    @Override
+    public List<Coupon> findByProductId(final Long productId) {
+        return query.selectDistinct(coupon)
+            .from(coupon)
+            .leftJoin(coupon.product, product)
+            .fetchJoin()
+            .where(coupon.isDeleted.isFalse(), product.id.eq(productId))
             .fetch();
     }
 }

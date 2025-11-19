@@ -332,27 +332,28 @@ VALUES (11, 1, 121, 'APPROVE', '2025-11-18', '본식용 A라인 드레스 대여
 INSERT INTO coupon (product_id, owner_id, coupon_code, discount_type, discount_value, start_date,
                     expiration_date, coupon_name, coupon_detail, category, max_discount_amount,
                     min_purchase_amount, current_usage_count, version, parent_coupon_id,
-                    is_latest_version, current_download_count, status)
+                    is_latest_version, current_download_count, status, is_deleted)
 VALUES (121, 11, 'WEDDINGPICK-001', 'RATE', 20.00, '2025-11-13', '2025-12-31', 'A라인 드레스 20% 할인',
-        '본식용 A라인 드레스 세트 20% 할인 쿠폰', 'DRESS', 500000, 1000000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+        '본식용 A라인 드레스 세트 20% 할인 쿠폰', 'DRESS', 500000, 1000000, 0, 1, NULL, TRUE, 0, 'ACTIVE', FALSE),
        (121, 11, 'WEDDINGPICK-002', 'AMOUNT', 300000, '2025-11-13', '2025-12-31', '드레스 30만원 즉시할인',
-        'A라인 드레스 구매 시 30만원 즉시 차감', 'DRESS', 300000, 1500000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+        'A라인 드레스 구매 시 30만원 즉시 차감', 'DRESS', 300000, 1500000, 0, 1, NULL, TRUE, 0, 'ACTIVE', FALSE),
        (122, 11, 'WEDDINGPICK-003', 'RATE', 15.00, '2025-11-13', '2025-12-31', '감성 스튜디오 15% 할인',
-        '자연광 스튜디오 촬영 15% 할인', 'STUDIO', 200000, 800000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+        '자연광 스튜디오 촬영 15% 할인', 'STUDIO', 200000, 800000, 0, 1, NULL, TRUE, 0, 'ACTIVE', FALSE),
        (NULL, 11, 'WEDDINGPICK-005', 'RATE', 5.00, '2025-11-13', '2025-12-31', '웨딩픽 전품목 5% 추가할인',
-        '웨딩픽 모든 서비스 5% 추가 할인', NULL, 100000, 500000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+        '웨딩픽 모든 서비스 5% 추가 할인', NULL, 100000, 500000, 0, 1, NULL, TRUE, 0, 'ACTIVE', FALSE),
        (121, 11, 'WEDDINGPICK-006', 'AMOUNT', 250000, '2025-11-13', '2025-12-31', '드레스+메이크업 패키지 할인',
-        'A라인 드레스 + 메이크업 동시 예약 시 25만원 할인', 'DRESS', 250000, 2000000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+        'A라인 드레스 + 메이크업 동시 예약 시 25만원 할인', 'DRESS', 250000, 2000000, 0, 1, NULL, TRUE, 0, 'ACTIVE',
+        FALSE),
        (122, 11, 'WEDDINGPICK-007', 'AMOUNT', 200000, '2025-11-13', '2025-12-31', '스튜디오 프리미엄 업그레이드',
-        '기본 → 프리미엄 촬영 무료 업그레이드 (20만원 상당)', 'STUDIO', 200000, 1000000, 0, 1, NULL, TRUE, 0,
-        'ACTIVE'),
+        '기본 → 프리미엄 촬영 무료 업그레이드 (20만원 상당)', 'STUDIO', 200000, 1000000, 0, 1, NULL, TRUE, 0, 'ACTIVE',
+        FALSE),
        (NULL, 11, 'WEDDINGPICK-008', 'RATE', 10.00, '2025-11-13', '2025-12-31', '웨딩픽 첫 구매 10% 할인',
-        '웨딩픽 첫 예약 시 사용 가능한 10% 할인', NULL, 150000, 300000, 0, 1, NULL, TRUE, 0, 'ACTIVE'),
+        '웨딩픽 첫 예약 시 사용 가능한 10% 할인', NULL, 150000, 300000, 0, 1, NULL, TRUE, 0, 'ACTIVE', FALSE),
        (NULL, 11, 'WEDDINGPICK-009', 'AMOUNT', 50000, '2025-11-13', '2025-12-31',
         '하진님 생일 축하 5만원 쿠폰', '고객님 생일 기념 5만원 즉시 할인 쿠폰', NULL, 50000, 100000, 0, 1, NULL, TRUE, 0,
-        'ACTIVE'),
+        'ACTIVE', FALSE),
        (NULL, 11, 'WEDDINGPICK-010', 'RATE', 10.00, '2025-11-13', '2025-11-20', '결혼 D-7 특전 10% 할인',
-        '결혼 7일 전 예약 시 10% 추가 할인', NULL, 200000, 500000, 0, 1, NULL, TRUE, 0, 'ACTIVE');
+        '결혼 7일 전 예약 시 10% 추가 할인', NULL, 200000, 500000, 0, 1, NULL, TRUE, 0, 'ACTIVE', FALSE);
 
 
 -- ========================================

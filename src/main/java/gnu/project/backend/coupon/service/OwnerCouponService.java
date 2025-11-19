@@ -116,4 +116,10 @@ public class OwnerCouponService {
 
         return OwnerCouponResponseDto.toResponse(updatedCoupon);
     }
+
+    @Transactional(readOnly = true)
+    public List<OwnerCouponResponseDto> getCouponsByProduct(final Long productId) {
+        return couponRepository.findByProductId(productId).stream()
+            .map(OwnerCouponResponseDto::toResponse).toList();
+    }
 }

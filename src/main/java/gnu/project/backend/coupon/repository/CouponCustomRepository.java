@@ -14,4 +14,6 @@ public interface CouponCustomRepository {
     List<Coupon> findCoupons(final Long ownerId);
 
     List<Coupon> findAllExpired(final LocalDate now);
+
+    List<Coupon> findByProductId(final Long productId);
 }

@@ -15,6 +15,7 @@ public record StudioResponse(
     Integer price,
     String availableTimes,
     Region region,
+    String bzName,
     List<ImageResponse> images,
     List<OptionResponse> options,
     List<TagResponse> tags
@@ -29,6 +30,7 @@ public record StudioResponse(
             studio.getPrice(),
             studio.getAvailableTimes(),
             studio.getRegion(),
+            studio.getOwner().getBzName(),
             studio.getImages().stream()
                 .map(ImageResponse::from)
                 .toList(),
