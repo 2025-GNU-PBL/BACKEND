@@ -15,10 +15,6 @@ public class ReviewImageProvider {
 
     private final ImageService imageService;
 
-    /**
-     * 리뷰에서 업로드된 단일 이미지 파일을 S3에 저장하고 public URL을 리턴한다.
-     * 이미지가 null/비어있으면 그냥 null 리턴.
-     */
     public String uploadReviewImage(
             final Product product,
             final String customerSocialId,
@@ -29,8 +25,6 @@ public class ReviewImageProvider {
         }
 
         try {
-            // WeddingHall에서는 category(ownerSocialId, ...) 기반으로 키를 만드는데
-            // 리뷰는 REVIEW-<카테고리>/<고객소셜아이디>/... 형태로 정리
             final String key = imageService.uploadImage(
                     "REVIEW-" + product.getCategory().toString(),
                     customerSocialId,

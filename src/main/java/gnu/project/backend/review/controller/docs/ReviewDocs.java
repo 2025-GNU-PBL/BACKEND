@@ -3,7 +3,6 @@ package gnu.project.backend.review.controller.docs;
 import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.review.dto.request.ReviewCreateRequest;
-import gnu.project.backend.review.dto.request.ReviewUpdateRequest;
 import gnu.project.backend.review.dto.response.ReviewResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -65,21 +64,6 @@ public interface ReviewDocs {
     ResponseEntity<ReviewResponse> readMyReviewDetail(
             @PathVariable("reviewId") Long reviewId,
             @Parameter(hidden = true) @Auth Accessor accessor
-    );
-
-    @Operation(
-            summary = "리뷰 수정",
-            description = "본인이 작성한 리뷰만 수정할 수 있다. request(JSON) + image(file) 멀티파트 업로드."
-    )
-    @PutMapping(
-            value = "/reviews/{reviewId}",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    )
-    ResponseEntity<Void> updateReview(
-            @PathVariable("reviewId") Long reviewId,
-            @Parameter(hidden = true) @Auth Accessor accessor,
-            @RequestPart("request") ReviewUpdateRequest request,
-            @RequestPart(name = "image", required = false) MultipartFile image
     );
 
     @Operation(

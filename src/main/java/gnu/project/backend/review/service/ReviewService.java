@@ -5,10 +5,10 @@ import gnu.project.backend.common.exception.BusinessException;
 import gnu.project.backend.common.exception.AuthException;
 import gnu.project.backend.customer.entity.Customer;
 import gnu.project.backend.customer.repository.CustomerRepository;
+import gnu.project.backend.order.repository.OrderRepository;
 import gnu.project.backend.product.entity.Product;
 import gnu.project.backend.product.repository.ProductRepository;
 import gnu.project.backend.review.dto.request.ReviewCreateRequest;
-import gnu.project.backend.review.dto.request.ReviewUpdateRequest;
 import gnu.project.backend.review.dto.response.ReviewResponse;
 import gnu.project.backend.review.entity.Review;
 import gnu.project.backend.review.provider.ReviewImageProvider;
@@ -32,6 +32,7 @@ public class ReviewService {
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
     private final ReviewImageProvider reviewImageProvider;
+    private final OrderRepository orderRepository;
 
 
     private Customer getCurrentCustomer(final Accessor accessor) {
@@ -65,11 +66,9 @@ public class ReviewService {
     }
 
     private void validatePurchase(final Customer customer, final Product product) {
-        // boolean purchased = reservationRepository.existsByCustomerIdAndProductIdAndStatus(
-        //        customer.getId(), product.getId(), "CONFIRMED"
-        // );
-        boolean purchased = true; // 지금은 임시 허용
-
+        boolean purchased = orderRepository.existsPaidByCustomerAndProduct(
+                customer.getId(), product.getId()
+        );
         if (!purchased) {
             throw new BusinessException(REVIEW_NOT_ELIGIBLE);
         }
@@ -87,7 +86,7 @@ public class ReviewService {
         final Customer customer = getCurrentCustomer(accessor);
         final Product product = getProductOrThrow(productId);
 
-        validatePurchase(customer, product); // <- 일단은 항상 통과
+        validatePurchase(customer, product);
 
 
         if (reviewRepository.existsByProductIdAndCustomerId(productId, customer.getId())) {
@@ -136,38 +135,6 @@ public class ReviewService {
     }
 
     @Transactional
-    public void updateReview(
-            final Long reviewId,
-            final Accessor accessor,
-            final ReviewUpdateRequest request,
-            final MultipartFile newImage
-    ) {
-        final Review review = getReviewOrThrow(reviewId);
-        final Customer currentCustomer = getCurrentCustomer(accessor);
-
-        validateOwner(review, currentCustomer);
-
-        String imageUrl = review.getImageUrl();
-        if (newImage != null && !newImage.isEmpty()) {
-            imageUrl = reviewImageProvider.uploadReviewImage(
-                    review.getProduct(),
-                    currentCustomer.getSocialId(),
-                    newImage
-            );
-        }
-
-        review.update(
-                request.star(),
-                request.title(),
-                request.comment(),
-                imageUrl
-        );
-
-        recalcAndApplyProductRating(review.getProduct());
-    }
-
-
-    @Transactional
     public void deleteReview(
             final Long reviewId,
             final Accessor accessor
@@ -178,7 +145,7 @@ public class ReviewService {
         validateOwner(review, currentCustomer);
 
         reviewRepository.delete(review);
-
+        reviewRepository.flush();
         recalcAndApplyProductRating(review.getProduct());
     }
 

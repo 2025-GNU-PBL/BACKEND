@@ -31,8 +31,7 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
                 .selectFrom(review)
                 .join(review.customer, customer).fetchJoin()
                 .where(
-                        review.product.id.eq(productId),
-                        review.isDeleted.eq(false)
+                        review.product.id.eq(productId)
                 )
                 .orderBy(review.createdAt.desc())
                 .offset(pageable.getOffset())
@@ -52,7 +51,6 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
                 .from(review)
                 .where(
                         review.product.id.eq(productId)
-                                .and(review.isDeleted.eq(false))
                 )
                 .fetchOne();
         return (count == null ? 0L : count);
@@ -68,10 +66,9 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
                 .from(review)
                 .where(
                         review.product.id.eq(productId),
-                        review.customer.id.eq(customerId),
-                        review.isDeleted.eq(false)
+                        review.customer.id.eq(customerId)
                 )
-                .fetchFirst(); // null or 1
+                .fetchFirst();
         return result != null;
     }
 
@@ -81,8 +78,7 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
                 .select(review.star.avg())
                 .from(review)
                 .where(
-                        review.product.id.eq(productId),
-                        review.isDeleted.eq(false)
+                        review.product.id.eq(productId)
                 )
                 .fetchOne();
 
@@ -90,8 +86,7 @@ public class ReviewRepositoryImpl implements ReviewCustomRepository {
                 .select(review.count())
                 .from(review)
                 .where(
-                        review.product.id.eq(productId),
-                        review.isDeleted.eq(false)
+                        review.product.id.eq(productId)
                 )
                 .fetchOne();
 

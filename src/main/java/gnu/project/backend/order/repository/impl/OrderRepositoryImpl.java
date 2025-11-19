@@ -1,6 +1,7 @@
 package gnu.project.backend.order.repository.impl;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import gnu.project.backend.common.enumerated.OrderStatus;
 import gnu.project.backend.customer.entity.QCustomer;
 import gnu.project.backend.order.entity.Order;
 import gnu.project.backend.order.entity.QOrder;
@@ -20,6 +21,7 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
 
     private final JPAQueryFactory queryFactory;
 
+    private static final QProduct product = QProduct.product;
     private static final QOrder order = QOrder.order;
     private static final QOrderDetail orderDetail = QOrderDetail.orderDetail;
     private static final QCustomer customer = QCustomer.customer;
@@ -67,5 +69,22 @@ public class OrderRepositoryImpl implements OrderCustomRepository {
                 .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public boolean existsPaidByCustomerAndProduct(Long customerId, Long productId) {
+        Integer hit = queryFactory
+                .selectOne()
+                .from(order)
+                .join(order.customer, customer)
+                .join(order.orderDetails, orderDetail)
+                .join(orderDetail.product, product)
+                .where(
+                        customer.id.eq(customerId),
+                        product.id.eq(productId),
+                        order.status.eq(OrderStatus.PAID)
+                )
+                .fetchFirst();
+        return hit != null;
     }
 }
