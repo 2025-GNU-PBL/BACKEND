@@ -12,7 +12,9 @@ public record PaymentCancelResponse(
         String productName,
         PaymentStatus status,
         String cancelReason,
-        LocalDateTime canceledAt
+        LocalDateTime canceledAt,
+        String rejectReason,
+        LocalDateTime rejectedAt
 ) {
     public static PaymentCancelResponse from(Payment p) {
         return new PaymentCancelResponse(
@@ -22,7 +24,9 @@ public record PaymentCancelResponse(
                 p.getOrder().getMainProductName(),
                 p.getStatus(),
                 p.getCancelReason(),
-                p.getCanceledAt()
+                p.getCanceledAt(),
+                p.getCancelRejectReason(),
+                p.getCancelRejectAt()
         );
     }
 }

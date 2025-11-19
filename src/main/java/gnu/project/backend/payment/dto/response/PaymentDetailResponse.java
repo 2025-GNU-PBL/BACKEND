@@ -23,6 +23,9 @@ public record PaymentDetailResponse(
         String cancelReason,
         String receiptUrl,
         String paymentMethod,
-        String pgProvider
+        String pgProvider,
+
+        String rejectReason,
+        LocalDateTime rejectedAt
 ) {
 }

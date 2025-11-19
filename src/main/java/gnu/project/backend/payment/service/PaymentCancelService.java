@@ -71,4 +71,24 @@ public class PaymentCancelService {
         payment.approveCancel(toss.getCancelReason(), LocalDateTime.now());
         paymentRepository.save(payment);
     }
+
+    @Transactional
+    public PaymentCancelResponse rejectCancel(Accessor accessor, String paymentKey, String rejectReason) {
+        Payment payment = paymentRepository.findWithOrderAndDetailsByPaymentKey(paymentKey)
+                .orElseThrow(() -> new BusinessException(PAYMENT_NOT_FOUND));
+
+        String ownerSocialId = payment.getOrder().getMainProductOwnerSocialId();
+        if (!accessor.isOwner() || ownerSocialId == null || !ownerSocialId.equals(accessor.getSocialId())) {
+            throw new BusinessException(PAYMENT_ACCESS_DENIED);
+        }
+
+        if (payment.getStatus() != PaymentStatus.CANCEL_REQUESTED) {
+            return PaymentCancelResponse.from(payment);
+        }
+
+        payment.rejectCancel(rejectReason, LocalDateTime.now());
+        paymentRepository.save(payment);
+        return PaymentCancelResponse.from(payment);
+    }
+
 }

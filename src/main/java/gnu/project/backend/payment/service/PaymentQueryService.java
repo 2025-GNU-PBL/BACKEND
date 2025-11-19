@@ -87,7 +87,9 @@ public class PaymentQueryService {
                 p.getCancelReason(),
                 p.getReceiptUrl(),
                 p.getPaymentMethod(),
-                p.getPgProvider()
+                p.getPgProvider(),
+                p.getCancelRejectReason(),
+                p.getCancelRejectAt()
         );
     }
 

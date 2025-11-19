@@ -2,6 +2,7 @@ package gnu.project.backend.payment.controller.docs;
 
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.enumerated.PaymentStatus;
+import gnu.project.backend.payment.dto.request.PaymentCancelRejectRequest;
 import gnu.project.backend.payment.dto.request.PaymentCancelRequest;
 import gnu.project.backend.payment.dto.request.PaymentConfirmRequest;
 import gnu.project.backend.payment.dto.response.*;
@@ -35,6 +36,14 @@ public interface PaymentDocs {
             @Parameter(hidden = true) Accessor accessor,
             @PathVariable String paymentKey
     );
+
+    @Operation(summary = "결제 취소 거절(사장)", description = "사장이 취소 요청을 거절하여 결제를 다시 완료 상태로 복귀")
+    ResponseEntity<PaymentCancelResponse> rejectCancel(
+            @Parameter(hidden = true) Accessor accessor,
+            @PathVariable String paymentKey,
+            @RequestBody PaymentCancelRejectRequest request
+            );
+
 
     @Operation(summary = "내 결제 내역", description = "로그인한 고객의 결제 목록 조회 (페이징 지원)")
     ResponseEntity<List<PaymentListResponse>> getMyPayments(
