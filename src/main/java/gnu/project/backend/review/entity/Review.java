@@ -23,13 +23,12 @@ public class Review  extends BaseEntity {
     private Customer customer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id"/*, nullable = false */)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @Column(nullable = false)
     private Short star;
 
-    //Title 추가
     @Column(nullable = false)
     private String title;
 
@@ -55,19 +54,6 @@ public class Review  extends BaseEntity {
         review.comment = comment;
         review.imageUrl = imageUrl;
         return review;
-    }
-
-
-    public void update(
-            final Short star,
-            final String title,
-            final String comment,
-            final String imageUrl
-    ) {
-        this.star = star;
-        this.title = title;
-        this.comment = comment;
-        this.imageUrl = imageUrl;
     }
 
 }

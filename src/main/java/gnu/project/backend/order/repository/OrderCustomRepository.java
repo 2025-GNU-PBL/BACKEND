@@ -10,4 +10,6 @@ public interface OrderCustomRepository {
     List<Order> findAllByCustomerSocialId(String socialId);
 
     Optional<Order> findByOrderCodeWithDetails(String orderCode);
+
+    boolean existsPaidByCustomerAndProduct(Long customerId, Long productId);
 }

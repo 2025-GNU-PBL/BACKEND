@@ -68,7 +68,7 @@ public class Product extends BaseEntity {
     private double starCount = 0;
 
     @Column
-    private Integer averageRating = 0;
+    private Integer averageRating = 0; //Review 갯수
 
     @Lob
     @Column(nullable = false, columnDefinition = STRING_COLUMN_DEFINITION)
@@ -182,5 +182,4 @@ public class Product extends BaseEntity {
         this.starCount = newAverageStar;
         this.averageRating = newReviewCount;
     }
-
 }

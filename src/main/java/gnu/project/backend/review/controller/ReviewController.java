@@ -4,7 +4,6 @@ import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.review.controller.docs.ReviewDocs;
 import gnu.project.backend.review.dto.request.ReviewCreateRequest;
-import gnu.project.backend.review.dto.request.ReviewUpdateRequest;
 import gnu.project.backend.review.dto.response.ReviewResponse;
 import gnu.project.backend.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -72,21 +71,6 @@ public class ReviewController implements ReviewDocs {
         return ResponseEntity.ok(
                 reviewService.readMyReviewDetail(reviewId, accessor)
         );
-    }
-
-    @Override
-    @PutMapping(
-            value = "/reviews/{reviewId}",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-    )
-    public ResponseEntity<Void> updateReview(
-            @PathVariable("reviewId") final Long reviewId,
-            @Parameter(hidden = true) @Auth final Accessor accessor,
-            @Valid @RequestPart("request") final ReviewUpdateRequest request,
-            @RequestPart(name = "image", required = false) final MultipartFile image
-    ) {
-        reviewService.updateReview(reviewId, accessor, request, image);
-        return ResponseEntity.ok().build();
     }
 
     @Override
