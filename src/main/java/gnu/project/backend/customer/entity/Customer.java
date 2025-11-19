@@ -39,20 +39,8 @@ public class Customer extends BaseEntity implements OauthUser {
     @Column(name = "road_address", length = 255)
     private String roadAddress;
 
-    @Column(name = "jibun_address", length = 255)
-    private String jibunAddress;
-
     @Column(name = "detail_address", length = 255)
     private String detailAddress;
-
-    @Column(name = "sido", length = 30)
-    private String sido;
-
-    @Column(name = "sigungu", length = 50)
-    private String sigungu;
-
-    @Column(name = "dong", length = 50)
-    private String dong;
 
     @Column(name = "building_name", length = 100)
     private String buildingName;
@@ -95,10 +83,6 @@ public class Customer extends BaseEntity implements OauthUser {
             null,
             null,
             null,
-            null,
-            null,
-            null,
-            null,
             UserRole.CUSTOMER,
             oauthInfo
 
@@ -111,11 +95,7 @@ public class Customer extends BaseEntity implements OauthUser {
 
         final String zipCode,
         final String roadAddress,
-        final String jibunAddress,
         final String detailAddress,
-        final String sido,
-        final String sigungu,
-        final String dong,
         final String buildingName,
 
         final String weddingSido,
@@ -127,11 +107,7 @@ public class Customer extends BaseEntity implements OauthUser {
 
         this.zipCode = zipCode;
         this.roadAddress = roadAddress;
-        this.jibunAddress = jibunAddress;
         this.detailAddress = detailAddress;
-        this.sido = sido;
-        this.sigungu = sigungu;
-        this.dong = dong;
         this.buildingName = buildingName;
 
         this.weddingSido = weddingSido;
@@ -145,11 +121,7 @@ public class Customer extends BaseEntity implements OauthUser {
 
         final String zipCode,
         final String roadAddress,
-        final String jibunAddress,
         final String detailAddress,
-        final String sido,
-        final String sigungu,
-        final String dong,
         final String buildingName,
 
         final String weddingSido,
@@ -161,11 +133,7 @@ public class Customer extends BaseEntity implements OauthUser {
 
         if (zipCode != null) this.zipCode = zipCode;
         if (roadAddress != null) this.roadAddress = roadAddress;
-        if (jibunAddress != null) this.jibunAddress = jibunAddress;
         if (detailAddress != null) this.detailAddress = detailAddress;
-        if (sido != null) this.sido = sido;
-        if (sigungu != null) this.sigungu = sigungu;
-        if (dong != null) this.dong = dong;
         if (buildingName != null) this.buildingName = buildingName;
 
         if (weddingSido != null) this.weddingSido = weddingSido;
@@ -180,11 +148,7 @@ public class Customer extends BaseEntity implements OauthUser {
 
         this.zipCode = null;
         this.roadAddress = null;
-        this.jibunAddress = null;
         this.detailAddress = null;
-        this.sido = null;
-        this.sigungu = null;
-        this.dong = null;
         this.buildingName = null;
 
         this.weddingSido = null;
