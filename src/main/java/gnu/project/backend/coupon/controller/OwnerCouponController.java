@@ -70,4 +70,13 @@ public class OwnerCouponController {
             ownerCouponService.getMyCoupons(accessor)
         );
     }
+
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<List<OwnerCouponResponseDto>> getCouponsByProduct(
+        @PathVariable final Long productId
+    ) {
+        return ResponseEntity.ok(
+            ownerCouponService.getCouponsByProduct(productId)
+        );
+    }
 }

@@ -116,4 +116,9 @@ public class OwnerCouponService {
 
         return OwnerCouponResponseDto.toResponse(updatedCoupon);
     }
+
+    public List<OwnerCouponResponseDto> getCouponsByProduct(final Long productId) {
+        return couponRepository.findByProductId(productId).stream()
+            .map(OwnerCouponResponseDto::toResponse).toList();
+    }
 }
