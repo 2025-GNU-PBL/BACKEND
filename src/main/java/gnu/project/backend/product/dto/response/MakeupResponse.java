@@ -16,7 +16,9 @@ public record MakeupResponse(
     String availableTimes,
     Region region,
     List<ImageResponse> images,
-    List<OptionResponse> options
+    List<OptionResponse> options,
+    List<TagResponse> tag
+
 ) {
 
     public static MakeupResponse from(Makeup makeup) {
@@ -33,6 +35,9 @@ public record MakeupResponse(
                 .toList(),
             makeup.getOptions().stream()
                 .map(OptionResponse::from)
+                .toList(),
+            makeup.getTags().stream()
+                .map(TagResponse::from)
                 .toList()
         );
     }
