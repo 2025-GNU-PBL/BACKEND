@@ -4,6 +4,7 @@ import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.enumerated.PaymentStatus;
 import gnu.project.backend.payment.controller.docs.PaymentDocs;
+import gnu.project.backend.payment.dto.request.PaymentCancelRejectRequest;
 import gnu.project.backend.payment.dto.request.PaymentCancelRequest;
 import gnu.project.backend.payment.dto.request.PaymentConfirmRequest;
 import gnu.project.backend.payment.dto.response.*;
@@ -58,6 +59,15 @@ public class PaymentController implements PaymentDocs {
             @PathVariable String paymentKey
     ) {
         return ResponseEntity.ok(paymentCancelService.approveCancel(accessor, paymentKey));
+    }
+
+    @PostMapping("/{paymentKey}/cancel-reject")
+    public ResponseEntity<PaymentCancelResponse> rejectCancel(
+            @Auth Accessor accessor,
+            @PathVariable String paymentKey,
+            @RequestBody PaymentCancelRejectRequest request
+            ) {
+        return ResponseEntity.ok(paymentCancelService.rejectCancel(accessor, paymentKey, request.rejectReason()));
     }
 
     @Override

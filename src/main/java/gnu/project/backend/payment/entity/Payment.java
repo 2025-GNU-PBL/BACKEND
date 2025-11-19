@@ -65,6 +65,9 @@ public class Payment extends BaseEntity {
     @Setter
     private String cancelReason;
 
+    private String cancelRejectReason;
+    private LocalDateTime cancelRejectAt;
+
     @Setter
     private LocalDateTime canceledAt;
 
@@ -108,6 +111,17 @@ public class Payment extends BaseEntity {
         this.canceledAt = canceledAt;
         this.order.updateStatus(OrderStatus.CANCELED);
 
+    }
+
+    public void rejectCancel(String rejectReason, LocalDateTime rejectedAt){
+        if(this.status != PaymentStatus.CANCEL_REQUESTED){
+            throw new IllegalStateException("취소 요청 상태에서만 승인 가능");
+        }
+        this.status = PaymentStatus.DONE;
+        this.cancelRejectReason = rejectReason;
+        this.cancelRejectAt = rejectedAt;
+        this.cancelReason = null;
+        this.order.updateStatus(OrderStatus.PAID);
     }
 
 
