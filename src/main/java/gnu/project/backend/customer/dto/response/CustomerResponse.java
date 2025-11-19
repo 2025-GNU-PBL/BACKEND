@@ -14,11 +14,7 @@ public record CustomerResponse(
 
         String zipCode,
         String roadAddress,
-        String jibunAddress,
         String detailAddress,
-        String sido,
-        String sigungu,
-        String dong,
         String buildingName,
 
         String weddingSido,
@@ -36,11 +32,7 @@ public record CustomerResponse(
 
                 customer.getZipCode(),
                 customer.getRoadAddress(),
-                customer.getJibunAddress(),
                 customer.getDetailAddress(),
-                customer.getSido(),
-                customer.getSigungu(),
-                customer.getDong(),
                 customer.getBuildingName(),
                 customer.getWeddingSido(),
                 customer.getWeddingSigungu(),

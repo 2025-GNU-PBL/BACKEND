@@ -19,11 +19,7 @@ public record CustomerRequest(
         String address,
         String zipCode,
         String roadAddress,
-        String jibunAddress,
         String detailAddress,
-        String sido,
-        String sigungu,
-        String dong,
         String buildingName,
 
         @Size(max = 30, message = SIDO_SIZE_MESSAGE)
