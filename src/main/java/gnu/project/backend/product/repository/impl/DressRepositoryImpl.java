@@ -41,7 +41,8 @@ public class DressRepositoryImpl implements DressCustomRepository {
     @Override
     public DressResponse findByDressId(final Long id) {
         Dress result = query
-            .selectFrom(dress)
+            .selectDistinct(dress)
+            .from(dress)
             .leftJoin(dress.images, image).fetchJoin()
             .leftJoin(dress.tags, tag)
             .where(dress.id.eq(id).and(dress.isDeleted.isFalse()))

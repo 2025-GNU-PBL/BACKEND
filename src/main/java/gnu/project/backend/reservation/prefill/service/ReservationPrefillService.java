@@ -30,9 +30,9 @@ public class ReservationPrefillService {
     private final ReservationRepository reservationRepository;
 
     public CreateDraftsResponse createFromCartItems(
-            Customer customer,
-            List<Product> products,
-            List<Integer> quantities
+        Customer customer,
+        List<Product> products,
+        List<Integer> quantities
     ) {
         LocalDateTime expires = LocalDateTime.now().plusMinutes(30);
         int size = products.size();
@@ -43,9 +43,9 @@ public class ReservationPrefillService {
             Integer quantity = quantities.get(i);
 
             ReservationPrefill saved = prefillRepository.save(
-                    ReservationPrefill.create(
-                            customer, product, quantity, expires
-                    )
+                ReservationPrefill.create(
+                    customer, product, quantity, expires
+                )
             );
             ids.add(saved.getId());
         }
@@ -56,37 +56,38 @@ public class ReservationPrefillService {
     public ReservationPrefillResponse getPrefill(Long prefillId, Long customerId) {
         LocalDateTime now = LocalDateTime.now();
         ReservationPrefill p = prefillRepository
-                .findActiveByIdAndCustomerId(prefillId, customerId, now)
-                .orElseThrow(() -> new BusinessException(RESERVATION_NOT_FOUND_EXCEPTION));
+            .findActiveByIdAndCustomerId(prefillId, customerId, now)
+            .orElseThrow(() -> new BusinessException(RESERVATION_NOT_FOUND_EXCEPTION));
 
         Product prod = p.getProduct();
         return new ReservationPrefillResponse(
-                p.getId(),
-                prod.getId(),
-                prod.getName(),
-                prod.getPrice(),
-                prod.getThumbnailUrl(),
-                p.getQuantity()
+            p.getId(),
+            prod.getId(),
+            prod.getName(),
+            prod.getOwner().getBzName(),
+            prod.getOwner().getProfileImage(),
+            prod.getPrice(),
+            prod.getThumbnailUrl(),
+            p.getQuantity()
         );
     }
 
     public ReservationResponseDto consumeToReservation(
-            Long prefillId, Customer customer, String title, String content
+        Long prefillId, Customer customer, String title, String content
     ) {
         LocalDateTime now = LocalDateTime.now();
         ReservationPrefill p = prefillRepository
-                .findActiveByIdAndCustomerId(prefillId, customer.getId(), now)
-                .orElseThrow(() -> new BusinessException(RESERVATION_NOT_FOUND_EXCEPTION));
-
+            .findActiveByIdAndCustomerId(prefillId, customer.getId(), now)
+            .orElseThrow(() -> new BusinessException(RESERVATION_NOT_FOUND_EXCEPTION));
 
         Reservation reservation = Reservation.ofCreate(
-                p.getProduct().getOwner(),
-                customer,
-                p.getProduct(),
-                Status.PENDING,
-                LocalDate.now(),
-                title,
-                content
+            p.getProduct().getOwner(),
+            customer,
+            p.getProduct(),
+            Status.PENDING,
+            LocalDate.now(),
+            title,
+            content
         );
         reservationRepository.save(reservation);
 
