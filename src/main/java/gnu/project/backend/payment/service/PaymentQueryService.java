@@ -1,24 +1,30 @@
 package gnu.project.backend.payment.service;
 
+import static gnu.project.backend.common.error.ErrorCode.OWNER_NOT_FOUND_EXCEPTION;
+import static gnu.project.backend.common.error.ErrorCode.PAYMENT_ACCESS_DENIED;
+import static gnu.project.backend.common.error.ErrorCode.PAYMENT_NOT_FOUND;
+
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.enumerated.PaymentStatus;
 import gnu.project.backend.common.exception.BusinessException;
 import gnu.project.backend.order.entity.Order;
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
-import gnu.project.backend.payment.dto.response.*;
+import gnu.project.backend.payment.dto.response.PaymentCancelResponse;
+import gnu.project.backend.payment.dto.response.PaymentDetailResponse;
+import gnu.project.backend.payment.dto.response.PaymentListResponse;
+import gnu.project.backend.payment.dto.response.PaymentSettlementResponse;
+import gnu.project.backend.payment.dto.response.PaymentSettlementSummaryItemResponse;
+import gnu.project.backend.payment.dto.response.PaymentSettlementSummaryResponse;
 import gnu.project.backend.payment.entity.Payment;
 import gnu.project.backend.payment.repository.PaymentRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
-
-import static gnu.project.backend.common.error.ErrorCode.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,33 +36,34 @@ public class PaymentQueryService {
 
     public List<PaymentListResponse> getMyPayments(String socialId, int page, int size) {
         List<Payment> payments =
-                paymentRepository.findAllWithOrderAndDetailsByCustomerSocialId(socialId, page, size);
+            paymentRepository.findAllWithOrderAndDetailsByCustomerSocialId(socialId, page, size);
 
         return payments.stream()
-                .map(p -> {
-                    Order order = p.getOrder();
-                    return new PaymentListResponse(
-                            order.getOrderCode(),
-                            order.getShopName(),
-                            order.getMainProductName(),
-                            order.getThumbnailUrl(),
-                            p.getPaymentKey(),
-                            p.getAmount(),
-                            p.getStatus(),
-                            p.getApprovedAt()
-                    );
-                })
-                .toList();
+            .map(p -> {
+                Order order = p.getOrder();
+                return new PaymentListResponse(
+                    order.getOrderCode(),
+                    order.getShopName(),
+                    order.getMainProductName(),
+                    order.getThumbnailUrl(),
+                    p.getPaymentKey(),
+                    p.getAmount(),
+                    p.getStatus(),
+                    p.getApprovedAt()
+                );
+            })
+            .toList();
     }
 
     public PaymentDetailResponse getDetail(String paymentKey, Accessor accessor) {
         Payment p = paymentRepository.findWithOrderAndDetailsByPaymentKey(paymentKey)
-                .orElseThrow(() -> new BusinessException(PAYMENT_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(PAYMENT_NOT_FOUND));
 
         Order order = p.getOrder();
 
         String customerSocialId = order.getCustomerSocialId();
-        boolean isCustomer = customerSocialId != null && customerSocialId.equals(accessor.getSocialId());
+        boolean isCustomer =
+            customerSocialId != null && customerSocialId.equals(accessor.getSocialId());
 
         String ownerSocialId = order.getMainProductOwnerSocialId();
         boolean isOwner = ownerSocialId != null && ownerSocialId.equals(accessor.getSocialId());
@@ -66,45 +73,46 @@ public class PaymentQueryService {
         }
 
         return new PaymentDetailResponse(
-                order.getOrderCode(),
+            p.getPaymentKey(),
+            order.getOrderCode(),
 
-                // 상품 정보
-                order.getShopName(),
-                order.getMainProductName(),
-                order.getThumbnailUrl(),
+            // 상품 정보
+            order.getShopName(),
+            order.getMainProductName(),
+            order.getThumbnailUrl(),
 
-                // 결제 내역
-                p.getPaymentKey(),
-                order.getOriginalPrice(),
-                order.getDiscountAmount(),
-                order.getTotalPrice(),
-                p.getAmount(),
+            // 결제 내역
+            order.getOriginalPrice(),
+            order.getDiscountAmount(),
+            order.getTotalPrice(),
+            p.getAmount(),
 
-                // 상태/메타
-                p.getStatus(),
-                p.getApprovedAt(),
-                p.getCanceledAt(),
-                p.getCancelReason(),
-                p.getReceiptUrl(),
-                p.getPaymentMethod(),
-                p.getPgProvider(),
-                p.getCancelRejectReason(),
-                p.getCancelRejectAt()
+            // 상태/메타
+            p.getStatus(),
+            p.getApprovedAt(),
+            p.getCanceledAt(),
+            p.getCancelReason(),
+            p.getReceiptUrl(),
+            p.getPaymentMethod(),
+            p.getPgProvider(),
+            p.getCancelRejectReason(),
+            p.getCancelRejectAt()
         );
     }
 
     public PaymentSettlementResponse getMySettlement(
-            Accessor accessor,
-            Integer year,
-            Integer month,
-            PaymentStatus status,
-            int page,
-            int size
+        Accessor accessor,
+        Integer year,
+        Integer month,
+        PaymentStatus status,
+        int page,
+        int size
     ) {
         Owner owner = ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
-                .orElseThrow(() -> new BusinessException(OWNER_NOT_FOUND_EXCEPTION));
+            .orElseThrow(() -> new BusinessException(OWNER_NOT_FOUND_EXCEPTION));
 
-        List<Payment> payments = paymentRepository.findAllWithOrderAndDetailsByOwnerId(owner.getId());
+        List<Payment> payments = paymentRepository.findAllWithOrderAndDetailsByOwnerId(
+            owner.getId());
 
         // 필터링
         Stream<Payment> stream = payments.stream();
@@ -113,8 +121,8 @@ public class PaymentQueryService {
             stream = stream.filter(p -> {
                 LocalDateTime approvedAt = p.getApprovedAt();
                 return approvedAt != null
-                        && approvedAt.getYear() == year
-                        && approvedAt.getMonthValue() == month;
+                    && approvedAt.getYear() == year
+                    && approvedAt.getMonthValue() == month;
             });
         }
 
@@ -148,23 +156,23 @@ public class PaymentQueryService {
         }
 
         PaymentSettlementSummaryResponse summary = new PaymentSettlementSummaryResponse(
-                owner.getBzName(),
-                Math.max(0L, totalSales),
-                Math.max(0L, expectedSettlement),
-                completedCount,
-                cancelCount
+            owner.getBzName(),
+            Math.max(0L, totalSales),
+            Math.max(0L, expectedSettlement),
+            completedCount,
+            cancelCount
         );
 
         List<PaymentSettlementSummaryItemResponse> allItems = filtered.stream()
-                .map(p -> new PaymentSettlementSummaryItemResponse(
-                        p.getPaymentKey(),
-                        p.getOrder().getOrderCode(),
-                        p.getOrder().getCustomer().getName(),
-                        p.getAmount(),
-                        p.getStatus(),
-                        p.getApprovedAt()
-                ))
-                .toList();
+            .map(p -> new PaymentSettlementSummaryItemResponse(
+                p.getPaymentKey(),
+                p.getOrder().getOrderCode(),
+                p.getOrder().getCustomer().getName(),
+                p.getAmount(),
+                p.getStatus(),
+                p.getApprovedAt()
+            ))
+            .toList();
 
         List<PaymentSettlementSummaryItemResponse> pagedItems = applyPaging(allItems, page, size);
 
@@ -173,16 +181,18 @@ public class PaymentQueryService {
 
     public List<PaymentCancelResponse> getMyCancelRequests(Accessor accessor) {
         Owner owner = ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
-                .orElseThrow(() -> new BusinessException(OWNER_NOT_FOUND_EXCEPTION));
+            .orElseThrow(() -> new BusinessException(OWNER_NOT_FOUND_EXCEPTION));
 
         return paymentRepository.findAllCancelRequestedWithOrderAndDetailsByOwnerId(owner.getId())
-                .stream()
-                .map(PaymentCancelResponse::from)
-                .toList();
+            .stream()
+            .map(PaymentCancelResponse::from)
+            .toList();
     }
 
     private <T> List<T> applyPaging(List<T> list, int page, int size) {
-        if (size <= 0) return list;
+        if (size <= 0) {
+            return list;
+        }
 
         int safePage = Math.max(page, 0);
         int fromIndex = safePage * size;
