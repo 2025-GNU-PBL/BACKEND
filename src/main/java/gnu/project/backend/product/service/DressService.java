@@ -112,6 +112,7 @@ public class DressService {
         final Accessor accessor
     ) {
         final Owner owner = ownerHelper.findOwnerBySocialId(accessor);
+        
         final Dress savedDress = dressRepository.save(
             Dress.create(
                 owner,
