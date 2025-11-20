@@ -101,6 +101,15 @@ public class PaymentController implements PaymentDocs {
     }
 
     @Override
+    @GetMapping("/cancels/{paymentKey}")
+    public ResponseEntity<PaymentDetailResponse> getCanceledPaymentDetail(
+            @Auth Accessor accessor,
+            @PathVariable String paymentKey
+    ) {
+        return ResponseEntity.ok(paymentQueryService.getCanceledDetail(paymentKey, accessor));
+    }
+
+    @Override
     @GetMapping("/settlements/me")
     public ResponseEntity<PaymentSettlementResponse> getMySettlements(
             @Auth Accessor accessor,
