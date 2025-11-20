@@ -19,16 +19,42 @@ VALUES (5, 'https://cdn.example.com/owner1.jpg', '청담 뷰티샵', '010-1234-5
        (11, NULL, '웨딩픽', '010-1234-1234', '12341234', '농협 123412341234', 'OWNER',
         'sojinee56@gmail.com', '하진', '4512155917', 'KAKAO', '2025-11-12 13:01:10.706312',
         '2025-11-12 13:01:48.475545');
-
-INSERT INTO customer (id, name, phone_number, email, social_id, social_provider, user_role,
-                      is_deleted, wedding_date, created_at, updated_at, zip_code, sido, sigungu,
-                      dong, building_name, address, detail_address, road_address, jibun_address,
-                      wedding_sido, wedding_sigungu)
-VALUES (1, '하진', '010-1234-1234', 'sojinee56@gmail.com', '4512155917', 'KAKAO', 'CUSTOMER', FALSE,
-        '2025-11-20', '2025-11-12 13:39:41.04218', '2025-11-12 13:40:05.108486', '52827', NULL,
-        NULL, '가좌동', NULL, '경남 진주시 진주대로 502', '1층', '경남 진주시 진주대로 502', NULL, '서울특별시', '강남구');
-
-
+INSERT INTO customer (id,
+                      phone_number,
+                      address,
+                      is_deleted,
+                      zip_code,
+                      road_address,
+                      detail_address,
+                      building_name,
+                      wedding_sido,
+                      wedding_sigungu,
+                      wedding_date,
+                      user_role,
+                      email,
+                      name,
+                      social_id,
+                      social_provider,
+                      created_at,
+                      updated_at)
+VALUES (1,
+        '010-1234-1234',
+        '경남 진주시 진주대로 502',
+        false,
+        '52827',
+        '경남 진주시 진주대로 502',
+        '1층',
+        NULL,
+        '서울특별시',
+        '강남구',
+        '2025-11-20',
+        'CUSTOMER',
+        'sojinee56@gmail.com',
+        '하진',
+        '4512155917',
+        'KAKAO',
+        '2025-11-12 13:39:41',
+        '2025-11-12 13:40:05');
 -- ========================================
 -- DRESS 상품 (21개) + 하위 테이블 매핑
 -- ========================================
