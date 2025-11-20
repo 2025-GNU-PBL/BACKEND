@@ -4,8 +4,9 @@ import gnu.project.backend.auth.aop.Auth;
 import gnu.project.backend.auth.aop.OnlyCustomer;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.reservation.controller.docs.ReservationDocs;
+import gnu.project.backend.reservation.dto.request.ReservationApprovalRequestDto;
+import gnu.project.backend.reservation.dto.request.ReservationRejectionRequestDto;
 import gnu.project.backend.reservation.dto.request.ReservationRequestDto;
-import gnu.project.backend.reservation.dto.request.ReservationStatusChangeRequestDto;
 import gnu.project.backend.reservation.dto.response.ReservationDetailResponseDto;
 import gnu.project.backend.reservation.dto.response.ReservationResponseDto;
 import gnu.project.backend.reservation.service.ReservationService;
@@ -36,13 +37,25 @@ public class ReservationController implements ReservationDocs {
         return ResponseEntity.ok(reservationService.createReservation(accessor, request));
     }
 
-    @PatchMapping()
-    public ResponseEntity<ReservationResponseDto> changeReservationStatus(
+
+    @PatchMapping("/{id}/approve")
+    public ResponseEntity<ReservationResponseDto> approve(
         @Auth final Accessor accessor,
-        @RequestBody final ReservationStatusChangeRequestDto request
+        @PathVariable final Long id,
+        @RequestBody final ReservationApprovalRequestDto request
     ) {
-        return ResponseEntity.ok(reservationService.changeStatus(accessor, request));
+        return ResponseEntity.ok(reservationService.approveReservation(accessor, id, request));
     }
+
+    @PatchMapping("/{id}/reject")
+    public ResponseEntity<ReservationResponseDto> reject(
+        @Auth final Accessor accessor,
+        @PathVariable final Long id,
+        @RequestBody final ReservationRejectionRequestDto request
+    ) {
+        return ResponseEntity.ok(reservationService.rejectReservation(accessor, id, request));
+    }
+
 
     @GetMapping()
     public ResponseEntity<List<ReservationResponseDto>> findReservations(

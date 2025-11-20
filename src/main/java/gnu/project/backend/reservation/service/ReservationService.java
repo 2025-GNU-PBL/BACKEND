@@ -14,12 +14,12 @@ import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.owner.repository.OwnerRepository;
 import gnu.project.backend.product.entity.Product;
 import gnu.project.backend.product.repository.ProductRepository;
+import gnu.project.backend.reservation.dto.request.ReservationApprovalRequestDto;
+import gnu.project.backend.reservation.dto.request.ReservationRejectionRequestDto;
 import gnu.project.backend.reservation.dto.request.ReservationRequestDto;
-import gnu.project.backend.reservation.dto.request.ReservationStatusChangeRequestDto;
 import gnu.project.backend.reservation.dto.response.ReservationDetailResponseDto;
 import gnu.project.backend.reservation.dto.response.ReservationResponseDto;
 import gnu.project.backend.reservation.entity.Reservation;
-import gnu.project.backend.reservation.enumerated.Status;
 import gnu.project.backend.reservation.event.ReservationApprovedEvent;
 import gnu.project.backend.reservation.repository.ReservationRepository;
 import java.util.List;
@@ -68,32 +68,51 @@ public class ReservationService {
         return ReservationResponseDto.from(savedReservation);
     }
 
-    public ReservationResponseDto changeStatus(
+    public ReservationResponseDto rejectReservation(
         final Accessor accessor,
-        final ReservationStatusChangeRequestDto requestDto
+        final Long reservationId,
+        final ReservationRejectionRequestDto requestDto
     ) {
         final Reservation reservation = reservationRepository.findReservationByIdWithOwner(
-                requestDto.id())
+                reservationId)
             .orElseThrow(() -> new BusinessException(RESERVATION_NOT_FOUND_EXCEPTION)
             );
-        //TODO : 사장만 해당 상태를 변경할 수 있나? 고객의 단순 변심으로는 변경이 안되나?
+
         if (!reservation.getOwner().getSocialId().equals(accessor.getSocialId())) {
             throw new BusinessException(IS_NOT_VALID_SOCIAL);
         }
+
         reservation.changeStatus(requestDto.status());
-        if (reservation.getStatus() == Status.APPROVE) {
-            eventPublisher.publishEvent(
-                new ReservationApprovedEvent(
-                    reservation.getCustomer().getId(),
-                    reservation.getId(),
-                    reservation.getReservationTime(),
-                    reservation.getTitle(),
-                    reservation.getContent()
-                )
+
+        return ReservationResponseDto.from(reservation);
+    }
+
+    public ReservationResponseDto approveReservation(final Accessor accessor, final Long id,
+        final ReservationApprovalRequestDto request) {
+
+        final Reservation reservation = reservationRepository.findReservationByIdWithOwner(id)
+            .orElseThrow(() -> new BusinessException(RESERVATION_NOT_FOUND_EXCEPTION)
             );
-            log.info("예약 승인 이벤트 발행 완료 - Reservation ID: {}", reservation.getId());
+
+        if (!reservation.getOwner().getSocialId().equals(accessor.getSocialId())) {
+            throw new BusinessException(IS_NOT_VALID_SOCIAL);
         }
 
+        reservation.changeStatus(request.status());
+
+        eventPublisher.publishEvent(
+            new ReservationApprovedEvent(
+                reservation.getCustomer().getId(),
+                reservation.getId(),
+                request.reservationStartDate(),
+                request.reservationEndDate(),
+                request.reservationStartTime(),
+                request.reservationEndTime(),
+                reservation.getTitle(),
+                reservation.getContent()
+            )
+        );
+        log.info("예약 승인 이벤트 발행 완료 - Reservation ID: {}", reservation.getId());
         return ReservationResponseDto.from(reservation);
     }
 

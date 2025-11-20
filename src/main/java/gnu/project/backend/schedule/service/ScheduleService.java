@@ -72,7 +72,10 @@ public class ScheduleService {
             customer,
             request.title(),
             request.content(),
-            request.scheduleDate()
+            request.startScheduleDate(),
+            request.endScheduleDate(),
+            request.startTime(),
+            request.endTime()
         );
 
         final Schedule savedSchedule = scheduleRepository.save(schedule);
@@ -94,7 +97,10 @@ public class ScheduleService {
             null,
             request.title(),
             request.content(),
-            request.scheduleDate()
+            request.startScheduleDate(),
+            request.endScheduleDate(),
+            request.startTime(),
+            request.endTime()
         );
 
         final Schedule savedSchedule = scheduleRepository.save(schedule);
@@ -141,7 +147,15 @@ public class ScheduleService {
             .orElseThrow(() -> new BusinessException(SCHEDULE_NOT_FOUND_EXCEPTION));
 
         validateScheduleAccess(schedule, accessor);
-        schedule.updateContent(request.title(), request.content(), request.scheduleDate());
+
+        schedule.updateContent(
+            request.title(),
+            request.content(),
+            request.startScheduleDate(),
+            request.endScheduleDate(),
+            request.startTime(),
+            request.endTime()
+        );
 
         if (files != null && !files.isEmpty()) {
             fileProvider.updateScheduleFiles(
@@ -255,7 +269,11 @@ public class ScheduleService {
             scheduleRequestDto.reservationId(),
             scheduleRequestDto.title(),
             scheduleRequestDto.content(),
-            scheduleRequestDto.scheduleTime()
+            scheduleRequestDto.startScheduleDate(),
+            scheduleRequestDto.endScheduleDate(),
+            scheduleRequestDto.startTime(),
+            scheduleRequestDto.endTime()
+
         );
         scheduleRepository.save(schedule);
     }

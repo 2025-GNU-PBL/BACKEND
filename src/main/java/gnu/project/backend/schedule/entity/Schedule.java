@@ -16,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -56,7 +57,16 @@ public class Schedule extends BaseEntity {
     private String content;
 
     @Column(nullable = false)
-    private LocalDate scheduleDate;
+    private LocalDate startScheduleDate;
+
+    @Column(nullable = false)
+    private LocalDate endScheduleDate;
+
+    @Column(nullable = false)
+    private LocalTime startTime;
+
+    @Column(nullable = false)
+    private LocalTime endTime;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ScheduleFile> files = new ArrayList<>();
@@ -66,7 +76,10 @@ public class Schedule extends BaseEntity {
         final Customer customer,
         final String title,
         final String content,
-        final LocalDate scheduleDate
+        final LocalDate startScheduleDate,
+        final LocalDate endScheduleDate,
+        final LocalTime startTime,
+        final LocalTime endTime
     ) {
         Schedule schedule = new Schedule();
         schedule.owner = owner;
@@ -75,7 +88,10 @@ public class Schedule extends BaseEntity {
         schedule.product = null;
         schedule.title = title;
         schedule.content = content;
-        schedule.scheduleDate = scheduleDate;
+        schedule.startScheduleDate = startScheduleDate;
+        schedule.endScheduleDate = endScheduleDate;
+        schedule.startTime = startTime;
+        schedule.endTime = endTime;
         return schedule;
     }
 
@@ -86,7 +102,10 @@ public class Schedule extends BaseEntity {
         final Long reservationId,
         final String title,
         final String content,
-        final LocalDate reservationTime
+        final LocalDate startScheduleDate,
+        final LocalDate endScheduleDate,
+        final LocalTime startTime,
+        final LocalTime endTime
     ) {
         Schedule schedule = new Schedule();
         schedule.owner = owner;
@@ -95,7 +114,10 @@ public class Schedule extends BaseEntity {
         schedule.reservationId = reservationId;
         schedule.title = title;
         schedule.content = content;
-        schedule.scheduleDate = reservationTime;
+        schedule.startScheduleDate = startScheduleDate;
+        schedule.endScheduleDate = endScheduleDate;
+        schedule.startTime = startTime;
+        schedule.endTime = endTime;
         return schedule;
     }
 
@@ -106,10 +128,16 @@ public class Schedule extends BaseEntity {
     public void updateContent(
         final String title,
         final String content,
-        final LocalDate scheduleDate
+        final LocalDate startScheduleDate,
+        final LocalDate endScheduleDate,
+        final LocalTime startTime,
+        final LocalTime endTime
     ) {
         this.title = title;
         this.content = content;
-        this.scheduleDate = scheduleDate;
+        this.startScheduleDate = startScheduleDate;
+        this.endScheduleDate = endScheduleDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 }
