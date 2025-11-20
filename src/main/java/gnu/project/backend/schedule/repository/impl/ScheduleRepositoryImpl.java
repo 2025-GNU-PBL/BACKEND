@@ -19,7 +19,7 @@ import org.springframework.stereotype.Repository;
 public class ScheduleRepositoryImpl implements ScheduleCustomRepository {
 
     private static final OrderSpecifier<?>[] SCHEDULE_DEFAULT_ORDER = {
-        schedule.scheduleDate.asc(),
+        schedule.createdAt.asc(),
         schedule.id.asc()
     };
     private final JPAQueryFactory query;
@@ -58,8 +58,8 @@ public class ScheduleRepositoryImpl implements ScheduleCustomRepository {
         return query.selectFrom(schedule)
             .where(
                 schedule.customer.id.eq(id),
-                schedule.scheduleDate.goe(startDate),
-                schedule.scheduleDate.loe(endDate)
+                schedule.startScheduleDate.goe(startDate),
+                schedule.startScheduleDate.loe(endDate)
             )
             .orderBy(SCHEDULE_DEFAULT_ORDER)
             .fetch();
@@ -69,8 +69,8 @@ public class ScheduleRepositoryImpl implements ScheduleCustomRepository {
         return query.selectFrom(schedule)
             .where(
                 schedule.owner.id.eq(id),
-                schedule.scheduleDate.goe(startDate),
-                schedule.scheduleDate.loe(endDate)
+                schedule.startScheduleDate.goe(startDate),
+                schedule.startScheduleDate.loe(endDate)
             )
             .orderBy(SCHEDULE_DEFAULT_ORDER)
             .fetch();

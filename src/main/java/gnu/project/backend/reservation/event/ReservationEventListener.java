@@ -20,9 +20,12 @@ public class ReservationEventListener {
     public void handleReservationApproved(final ReservationApprovedEvent event) {
         final ScheduleEventRequestDto scheduleRequestDto = new ScheduleEventRequestDto(
             event.reservationId(),
-            event.reservationTime(),
             event.title(),
-            event.content()
+            event.content(),
+            event.reservationStartDate(),
+            event.reservationEndDate(),
+            event.reservationStartTime(),
+            event.reservationEndTime()
         );
         scheduleService.createScheduleFromReservation(
             scheduleRequestDto
