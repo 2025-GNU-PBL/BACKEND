@@ -72,6 +72,14 @@ public class PaymentController implements PaymentDocs {
     }
 
     @Override
+    @GetMapping("/cancels/me")
+    public ResponseEntity<List<PaymentCancelResponse>> getMyCanceledPayments(
+            @Auth Accessor accessor
+    ) {
+        return ResponseEntity.ok(paymentQueryService.getMyCanceledPayments(accessor));
+    }
+
+    @Override
     @GetMapping("/me")
     public ResponseEntity<List<PaymentListResponse>> getMyPayments(
             @Auth Accessor accessor,

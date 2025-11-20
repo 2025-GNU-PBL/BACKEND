@@ -119,4 +119,22 @@ public class PaymentRepositoryImpl implements PaymentRepositoryCustom {
                 .fetch();
     }
 
+    @Override
+    public List<Payment> findAllCanceledWithOrderAndDetailsByOwnerId(Long ownerId) {
+        return query
+                .selectFrom(payment)
+                .distinct()
+                .join(payment.order, order).fetchJoin()
+                .join(order.customer, customer).fetchJoin()
+                .leftJoin(order.orderDetails, orderDetail).fetchJoin()
+                .leftJoin(orderDetail.product, product).fetchJoin()
+                .join(product.owner, owner).fetchJoin()
+                .where(
+                        owner.id.eq(ownerId),
+                        payment.status.eq(PaymentStatus.CANCELED)
+                )
+                .orderBy(payment.canceledAt.desc().nullsLast(), payment.approvedAt.desc())
+                .fetch();
+    }
+
 }

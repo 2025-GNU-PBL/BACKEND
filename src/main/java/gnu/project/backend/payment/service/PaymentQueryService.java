@@ -189,6 +189,16 @@ public class PaymentQueryService {
             .toList();
     }
 
+    public List<PaymentCancelResponse> getMyCanceledPayments(Accessor accessor) {
+        Owner owner = ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
+                .orElseThrow(() -> new BusinessException(OWNER_NOT_FOUND_EXCEPTION));
+
+        return paymentRepository.findAllCanceledWithOrderAndDetailsByOwnerId(owner.getId())
+                .stream()
+                .map(PaymentCancelResponse::from)
+                .toList();
+    }
+
     private <T> List<T> applyPaging(List<T> list, int page, int size) {
         if (size <= 0) {
             return list;
