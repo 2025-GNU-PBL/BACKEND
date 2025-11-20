@@ -1,5 +1,6 @@
 package gnu.project.backend.review.dto.request;
 
+import gnu.project.backend.common.enumerated.ReviewSatisfaction;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -17,5 +18,7 @@ public record ReviewCreateRequest(
         @Max(value = 5, message = REVIEW_STAR_MAX)
         Short star,
 
-        String comment
+        String comment,
+
+        ReviewSatisfaction satisfaction
 ) {}
