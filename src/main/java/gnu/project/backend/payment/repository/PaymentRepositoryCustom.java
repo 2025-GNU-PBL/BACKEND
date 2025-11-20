@@ -18,4 +18,7 @@ public interface PaymentRepositoryCustom {
 
     //사장 취소 요청 목록 조회
     List<Payment> findAllCancelRequestedWithOrderAndDetailsByOwnerId(Long ownerId);
+
+    //사장 취소 목록 조회
+    List<Payment> findAllCanceledWithOrderAndDetailsByOwnerId(Long ownerId);
 }

@@ -80,4 +80,16 @@ public interface PaymentDocs {
     ResponseEntity<List<PaymentCancelResponse>> getMyCancelRequests(
             @Parameter(hidden = true) Accessor accessor
     );
+
+    @Operation(summary = "결제 취소 목록(사장)", description = "CANCELED 상태의 결제들만 조회")
+    ResponseEntity<List<PaymentCancelResponse>> getMyCanceledPayments(
+            @Parameter(hidden = true) Accessor accessor
+    );
+
+    @Operation(summary = "결제 취소 상세(사장)", description = "CANCELED 상태 결제 단건 상세 조회")
+    ResponseEntity<PaymentDetailResponse> getCanceledPaymentDetail(
+            @Parameter(hidden = true) Accessor accessor,
+            @PathVariable String paymentKey
+    );
+
 }

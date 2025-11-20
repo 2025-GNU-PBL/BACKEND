@@ -100,6 +100,48 @@ public class PaymentQueryService {
         );
     }
 
+    public PaymentDetailResponse getCanceledDetail(String paymentKey, Accessor accessor) {
+        Payment p = paymentRepository.findWithOrderAndDetailsByPaymentKey(paymentKey)
+                .orElseThrow(() -> new BusinessException(PAYMENT_NOT_FOUND));
+
+        Order order = p.getOrder();
+
+        String ownerSocialId = order.getMainProductOwnerSocialId();
+        boolean isOwner = ownerSocialId != null && ownerSocialId.equals(accessor.getSocialId());
+
+        if (!accessor.isOwner() || !isOwner) {
+            throw new BusinessException(PAYMENT_ACCESS_DENIED);
+        }
+
+        if (p.getStatus() != PaymentStatus.CANCELED) {
+            throw new BusinessException(PAYMENT_ACCESS_DENIED);
+        }
+
+        return new PaymentDetailResponse(
+                p.getPaymentKey(),
+                order.getOrderCode(),
+
+                order.getShopName(),
+                order.getMainProductName(),
+                order.getThumbnailUrl(),
+
+                order.getOriginalPrice(),
+                order.getDiscountAmount(),
+                order.getTotalPrice(),
+                p.getAmount(),
+
+                p.getStatus(),
+                p.getApprovedAt(),
+                p.getCanceledAt(),
+                p.getCancelReason(),
+                p.getReceiptUrl(),
+                p.getPaymentMethod(),
+                p.getPgProvider(),
+                p.getCancelRejectReason(),
+                p.getCancelRejectAt()
+        );
+    }
+
     public PaymentSettlementResponse getMySettlement(
         Accessor accessor,
         Integer year,
@@ -187,6 +229,16 @@ public class PaymentQueryService {
             .stream()
             .map(PaymentCancelResponse::from)
             .toList();
+    }
+
+    public List<PaymentCancelResponse> getMyCanceledPayments(Accessor accessor) {
+        Owner owner = ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
+                .orElseThrow(() -> new BusinessException(OWNER_NOT_FOUND_EXCEPTION));
+
+        return paymentRepository.findAllCanceledWithOrderAndDetailsByOwnerId(owner.getId())
+                .stream()
+                .map(PaymentCancelResponse::from)
+                .toList();
     }
 
     private <T> List<T> applyPaging(List<T> list, int page, int size) {

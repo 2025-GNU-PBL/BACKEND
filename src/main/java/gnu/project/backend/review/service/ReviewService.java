@@ -105,7 +105,8 @@ public class ReviewService {
                 request.star(),
                 request.title(),
                 request.comment(),
-                imageUrl
+                imageUrl,
+                request.satisfaction()
         );
 
         reviewRepository.save(review);

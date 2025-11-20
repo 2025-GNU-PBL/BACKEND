@@ -72,6 +72,14 @@ public class PaymentController implements PaymentDocs {
     }
 
     @Override
+    @GetMapping("/cancels/me")
+    public ResponseEntity<List<PaymentCancelResponse>> getMyCanceledPayments(
+            @Auth Accessor accessor
+    ) {
+        return ResponseEntity.ok(paymentQueryService.getMyCanceledPayments(accessor));
+    }
+
+    @Override
     @GetMapping("/me")
     public ResponseEntity<List<PaymentListResponse>> getMyPayments(
             @Auth Accessor accessor,
@@ -90,6 +98,15 @@ public class PaymentController implements PaymentDocs {
             @PathVariable String paymentKey
     ) {
         return ResponseEntity.ok(paymentQueryService.getDetail(paymentKey, accessor));
+    }
+
+    @Override
+    @GetMapping("/cancels/{paymentKey}")
+    public ResponseEntity<PaymentDetailResponse> getCanceledPaymentDetail(
+            @Auth Accessor accessor,
+            @PathVariable String paymentKey
+    ) {
+        return ResponseEntity.ok(paymentQueryService.getCanceledDetail(paymentKey, accessor));
     }
 
     @Override
