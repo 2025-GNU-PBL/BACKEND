@@ -72,32 +72,7 @@ public class PaymentQueryService {
             throw new BusinessException(PAYMENT_ACCESS_DENIED);
         }
 
-        return new PaymentDetailResponse(
-            p.getPaymentKey(),
-            order.getOrderCode(),
-
-            // 상품 정보
-            order.getShopName(),
-            order.getMainProductName(),
-            order.getThumbnailUrl(),
-
-            // 결제 내역
-            order.getOriginalPrice(),
-            order.getDiscountAmount(),
-            order.getTotalPrice(),
-            p.getAmount(),
-
-            // 상태/메타
-            p.getStatus(),
-            p.getApprovedAt(),
-            p.getCanceledAt(),
-            p.getCancelReason(),
-            p.getReceiptUrl(),
-            p.getPaymentMethod(),
-            p.getPgProvider(),
-            p.getCancelRejectReason(),
-            p.getCancelRejectAt()
-        );
+        return buildPaymentDetailResponse(p, order);
     }
 
     public PaymentDetailResponse getCanceledDetail(String paymentKey, Accessor accessor) {
@@ -114,32 +89,30 @@ public class PaymentQueryService {
         }
 
         if (p.getStatus() != PaymentStatus.CANCELED) {
+            throw new BusinessException(PAYMENT_NOT_FOUND);
+        }
+
+        return  buildPaymentDetailResponse(p, order);
+    }
+
+    public PaymentDetailResponse getCancelRequestDetail(String paymentKey, Accessor accessor) {
+        Payment p = paymentRepository.findWithOrderAndDetailsByPaymentKey(paymentKey)
+                .orElseThrow(() -> new BusinessException(PAYMENT_NOT_FOUND));
+
+        Order order = p.getOrder();
+
+        String ownerSocialId = order.getMainProductOwnerSocialId();
+        boolean isOwner = ownerSocialId != null && ownerSocialId.equals(accessor.getSocialId());
+
+        if (!accessor.isOwner() || !isOwner) {
             throw new BusinessException(PAYMENT_ACCESS_DENIED);
         }
 
-        return new PaymentDetailResponse(
-                p.getPaymentKey(),
-                order.getOrderCode(),
+        if (p.getStatus() != PaymentStatus.CANCEL_REQUESTED) {
+            throw new BusinessException(PAYMENT_NOT_FOUND);
+        }
 
-                order.getShopName(),
-                order.getMainProductName(),
-                order.getThumbnailUrl(),
-
-                order.getOriginalPrice(),
-                order.getDiscountAmount(),
-                order.getTotalPrice(),
-                p.getAmount(),
-
-                p.getStatus(),
-                p.getApprovedAt(),
-                p.getCanceledAt(),
-                p.getCancelReason(),
-                p.getReceiptUrl(),
-                p.getPaymentMethod(),
-                p.getPgProvider(),
-                p.getCancelRejectReason(),
-                p.getCancelRejectAt()
-        );
+        return buildPaymentDetailResponse(p, order);
     }
 
     public PaymentSettlementResponse getMySettlement(
@@ -239,6 +212,32 @@ public class PaymentQueryService {
                 .stream()
                 .map(PaymentCancelResponse::from)
                 .toList();
+    }
+
+    private PaymentDetailResponse buildPaymentDetailResponse(Payment p, Order order) {
+        return new PaymentDetailResponse(
+                p.getPaymentKey(),
+                order.getOrderCode(),
+
+                order.getShopName(),
+                order.getMainProductName(),
+                order.getThumbnailUrl(),
+
+                order.getOriginalPrice(),
+                order.getDiscountAmount(),
+                order.getTotalPrice(),
+                p.getAmount(),
+
+                p.getStatus(),
+                p.getApprovedAt(),
+                p.getCanceledAt(),
+                p.getCancelReason(),
+                p.getReceiptUrl(),
+                p.getPaymentMethod(),
+                p.getPgProvider(),
+                p.getCancelRejectReason(),
+                p.getCancelRejectAt()
+        );
     }
 
     private <T> List<T> applyPaging(List<T> list, int page, int size) {
