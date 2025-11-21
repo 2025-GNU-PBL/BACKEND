@@ -42,14 +42,14 @@ public class PaymentQueryService {
             .map(p -> {
                 Order order = p.getOrder();
                 return new PaymentListResponse(
-                    order.getOrderCode(),
-                    order.getShopName(),
-                    order.getMainProductName(),
-                    order.getThumbnailUrl(),
-                    p.getPaymentKey(),
-                    p.getAmount(),
-                    p.getStatus(),
-                    p.getApprovedAt()
+                        p.getPaymentKey(),
+                        order.getOrderCode(),
+                        order.getShopName(),
+                        order.getMainProductName(),
+                        order.getThumbnailUrl(),
+                        p.getAmount(),
+                        p.getStatus(),
+                        p.getApprovedAt()
                 );
             })
             .toList();
@@ -222,6 +222,10 @@ public class PaymentQueryService {
                 order.getShopName(),
                 order.getMainProductName(),
                 order.getThumbnailUrl(),
+
+                order.getCustomer().getId(),
+                order.getCustomer().getName(),
+                order.getCustomer().getPhoneNumber(),
 
                 order.getOriginalPrice(),
                 order.getDiscountAmount(),
