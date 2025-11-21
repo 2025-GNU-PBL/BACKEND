@@ -223,7 +223,7 @@ public class PaymentQueryService {
                 order.getMainProductName(),
                 order.getThumbnailUrl(),
 
-                order.getCustomer().getId(),
+                order.getCustomer().getEmail(),
                 order.getCustomer().getName(),
                 order.getCustomer().getPhoneNumber(),
 
