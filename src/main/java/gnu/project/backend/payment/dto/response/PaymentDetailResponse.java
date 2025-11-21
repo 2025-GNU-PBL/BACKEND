@@ -12,6 +12,10 @@ public record PaymentDetailResponse(
         String productName,
         String thumbnailUrl,
 
+        Long customerId,
+        String customerName,
+        String customerPhoneNumber,
+
         Long originalPrice,
         Long discountAmount,
         Long totalPrice,
