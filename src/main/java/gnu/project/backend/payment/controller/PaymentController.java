@@ -110,6 +110,15 @@ public class PaymentController implements PaymentDocs {
     }
 
     @Override
+    @GetMapping("/cancel-requests/{paymentKey}")
+    public ResponseEntity<PaymentDetailResponse> getCancelRequestDetail(
+            @Auth Accessor accessor,
+            @PathVariable String paymentKey
+    ) {
+        return ResponseEntity.ok(paymentQueryService.getCancelRequestDetail(paymentKey, accessor));
+    }
+
+    @Override
     @GetMapping("/settlements/me")
     public ResponseEntity<PaymentSettlementResponse> getMySettlements(
             @Auth Accessor accessor,
@@ -123,6 +132,8 @@ public class PaymentController implements PaymentDocs {
                 paymentQueryService.getMySettlement(accessor, year, month, status, page, size)
         );
     }
+
+
 
 
 }

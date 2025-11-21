@@ -92,4 +92,10 @@ public interface PaymentDocs {
             @PathVariable String paymentKey
     );
 
+    @Operation(summary = "결제 취소 요청 상세(사장)", description = "CANCEL_REQUESTED 상태 결제 단건 상세 조회")
+    ResponseEntity<PaymentDetailResponse> getCancelRequestDetail(
+            @Parameter(hidden = true) Accessor accessor,
+            @PathVariable String paymentKey
+    );
+
 }
