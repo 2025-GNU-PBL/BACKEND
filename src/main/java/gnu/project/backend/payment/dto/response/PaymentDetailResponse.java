@@ -12,7 +12,7 @@ public record PaymentDetailResponse(
         String productName,
         String thumbnailUrl,
 
-        Long customerId,
+        String customerEmail,
         String customerName,
         String customerPhoneNumber,
 
