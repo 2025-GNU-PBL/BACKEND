@@ -16,6 +16,7 @@ public record ScheduleResponseDto(
     LocalTime startTime,
     LocalTime endTime,
     ScheduleType scheduleType,
+    String productName,
     String bzName,
     String address,
     List<ScheduleFileResponse> scheduleFiles
@@ -35,6 +36,7 @@ public record ScheduleResponseDto(
             schedule.getStartTime(),
             schedule.getEndTime(),
             schedule.getScheduleType(),
+            isShared ? schedule.getProduct().getName() : null,
             isShared ? schedule.getOwner().getBzName() : null,
             isShared ? schedule.getOwner().getDetailAddress() : null,
             schedule.getFiles().stream()
