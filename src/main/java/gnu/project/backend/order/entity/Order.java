@@ -122,7 +122,7 @@ public class Order extends BaseEntity {
 
     public String getThumbnailUrl() {
         if (orderDetails != null && !orderDetails.isEmpty()) {
-            return orderDetails.get(0).getDisplayThumbnailUrl();
+            return orderDetails.getFirst().getDisplayThumbnailUrl();
         }
         return null;
     }
@@ -131,7 +131,7 @@ public class Order extends BaseEntity {
         if (orderDetails == null || orderDetails.isEmpty()) {
             return "상품 없음";
         }
-        OrderDetail first = orderDetails.get(0);
+        OrderDetail first = orderDetails.getFirst();
         return first.getDisplayProductName();
     }
 
@@ -156,5 +156,9 @@ public class Order extends BaseEntity {
         return customer != null ? customer.getName() : null;
     }
 
-
+    public Long getMainProductId() {
+        if (orderDetails == null || orderDetails.isEmpty()) return null;
+        OrderDetail first = orderDetails.getFirst();
+        return (first.getProduct() != null) ? first.getProduct().getId() : null;
+    }
 }

@@ -10,6 +10,7 @@ public record PaymentListResponse(
         String shopName,
         String productName,
         String thumbnailUrl,
+        Long productId,
         Long amount,
         PaymentStatus status,
         LocalDateTime approvedAt
