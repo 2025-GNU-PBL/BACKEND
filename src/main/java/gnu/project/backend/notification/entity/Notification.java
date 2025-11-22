@@ -1,14 +1,12 @@
 package gnu.project.backend.notification.entity;
 
 import static gnu.project.backend.common.enumerated.UserRole.CUSTOMER;
+import static gnu.project.backend.notification.enumerated.NotificationType.PAYMENT_COMPLETED;
 import static gnu.project.backend.notification.enumerated.NotificationType.PAYMENT_REQUIRED;
-import static gnu.project.backend.notification.enumerated.NotificationType.RESERVATION_APPROVED;
-import static gnu.project.backend.notification.enumerated.NotificationType.RESERVATION_CANCELLED;
 
 import gnu.project.backend.common.entity.BaseEntity;
 import gnu.project.backend.common.enumerated.UserRole;
 import gnu.project.backend.notification.enumerated.NotificationType;
-import gnu.project.backend.reservation.enumerated.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -86,33 +84,20 @@ public class Notification extends BaseEntity {
         return notification;
     }
 
-    public static Notification createReservationStatusNotification(
+    public static Notification createPaymentCompleted(
         Long recipientId,
-        UserRole recipientRole,
         Long reservationId,
-        String reservationTitle,
-        Status status
+        String reservationTitle
     ) {
         Notification notification = new Notification();
         notification.recipientId = recipientId;
-        notification.recipientRole = recipientRole;
+        notification.recipientRole = CUSTOMER;
+        notification.type = PAYMENT_COMPLETED;
+        notification.title = "결제 완료";
+        notification.message = String.format("'%s' 예약 결제가 완료되었습니다.", reservationTitle);
         notification.reservationId = reservationId;
-
-        switch (status) {
-            case APPROVE -> {
-                notification.type = RESERVATION_APPROVED;
-                notification.title = "예약 승인";
-                notification.message = String.format("'%s' 예약이 승인되었습니다.", reservationTitle);
-                notification.actionUrl = "/reservations/" + reservationId;
-            }
-            case DENY -> {
-                notification.type = RESERVATION_CANCELLED;
-                notification.title = "예약 취소";
-                notification.message = String.format("'%s' 예약이 취소되었습니다.", reservationTitle);
-                notification.actionUrl = "/reservations/" + reservationId;
-            }
-        }
-
+        notification.actionUrl = "/reservations/" + reservationId;
+        notification.isSent = false;
         return notification;
     }
 
