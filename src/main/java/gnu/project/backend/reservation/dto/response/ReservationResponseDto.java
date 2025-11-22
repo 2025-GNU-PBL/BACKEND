@@ -19,7 +19,7 @@ public record ReservationResponseDto(
     String customerEmail,
     String title,
     String content,
-    String Thumbnail
+    String thumbnail
 ) {
 
     public static ReservationResponseDto from(
