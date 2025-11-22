@@ -47,6 +47,7 @@ public class PaymentQueryService {
                         order.getShopName(),
                         order.getMainProductName(),
                         order.getThumbnailUrl(),
+                        order.getMainProductId(),
                         p.getAmount(),
                         p.getStatus(),
                         p.getApprovedAt()
