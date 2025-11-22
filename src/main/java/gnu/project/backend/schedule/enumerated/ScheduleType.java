@@ -1,4 +1,4 @@
-package gnu.project.backend.schedule.enurmurated;
+package gnu.project.backend.schedule.enumerated;
 
 public enum ScheduleType {
     PERSONAL,

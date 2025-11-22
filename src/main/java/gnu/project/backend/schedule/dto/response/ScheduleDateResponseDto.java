@@ -1,7 +1,7 @@
 package gnu.project.backend.schedule.dto.response;
 
 import gnu.project.backend.schedule.entity.Schedule;
-import gnu.project.backend.schedule.enurmurated.ScheduleType;
+import gnu.project.backend.schedule.enumerated.ScheduleType;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
