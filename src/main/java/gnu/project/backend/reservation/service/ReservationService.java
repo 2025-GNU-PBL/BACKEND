@@ -99,7 +99,8 @@ public class ReservationService {
         }
 
         reservation.changeStatus(request.status());
-
+        reservation.confirmedTime(request.reservationStartDate());
+        
         eventPublisher.publishEvent(
             new ReservationApprovedEvent(
                 reservation.getCustomer().getId(),

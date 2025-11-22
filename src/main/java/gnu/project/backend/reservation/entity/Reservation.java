@@ -80,4 +80,8 @@ public class Reservation extends BaseEntity {
     public void changeStatus(final Status status) {
         this.status = status;
     }
+
+    public void confirmedTime(final LocalDate reservationTime) {
+        this.reservationTime = reservationTime;
+    }
 }
