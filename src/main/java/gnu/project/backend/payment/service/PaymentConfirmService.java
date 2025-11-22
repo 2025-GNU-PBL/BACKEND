@@ -56,16 +56,18 @@ public class PaymentConfirmService {
             request.orderCode(),
             request.amount()
         );
-
+        OrderStatus beforeStatus = order.getStatus();
         Payment payment = savePaymentAndUpdateOrder(order, toss);
 
-        applicationEventPublisher.publishEvent(
-            new PaymentApprovedEvent(
-                order.getCustomer().getId(),
-                order.getReservation().getId(),
-                order.getReservation().getTitle()
-            )
-        );
+        if (beforeStatus != OrderStatus.PAID && order.getStatus() == OrderStatus.PAID) {
+            applicationEventPublisher.publishEvent(
+                new PaymentApprovedEvent(
+                    order.getCustomer().getId(),
+                    order.getReservation().getId(),
+                    order.getReservation().getTitle()
+                )
+            );
+        }
 
         log.info("결제 승인 완료: orderCode={}", order.getOrderCode());
         return PaymentConfirmResponse.from(payment);
