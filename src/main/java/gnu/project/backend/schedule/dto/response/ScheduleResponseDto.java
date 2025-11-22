@@ -2,6 +2,7 @@ package gnu.project.backend.schedule.dto.response;
 
 import gnu.project.backend.schedule.entity.Schedule;
 import gnu.project.backend.schedule.entity.ScheduleFile;
+import gnu.project.backend.schedule.enumerated.ScheduleType;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -11,17 +12,21 @@ public record ScheduleResponseDto(
     String title,
     String content,
     LocalDate startScheduleDate,
-
     LocalDate endScheduleDate,
-
     LocalTime startTime,
     LocalTime endTime,
+    ScheduleType scheduleType,
+    String productName,
+    String bzName,
+    String address,
     List<ScheduleFileResponse> scheduleFiles
 
 ) {
 
 
     public static ScheduleResponseDto toResponse(final Schedule schedule) {
+        boolean isShared = schedule.getScheduleType() == ScheduleType.SHARED;
+
         return new ScheduleResponseDto(
             schedule.getId(),
             schedule.getTitle(),
@@ -30,8 +35,12 @@ public record ScheduleResponseDto(
             schedule.getEndScheduleDate(),
             schedule.getStartTime(),
             schedule.getEndTime(),
-            schedule.getFiles().stream().
-                map(ScheduleResponseDto.ScheduleFileResponse::from)
+            schedule.getScheduleType(),
+            isShared && schedule.getProduct() != null ? schedule.getProduct().getName() : null,
+            isShared && schedule.getOwner() != null ? schedule.getOwner().getBzName() : null,
+            isShared && schedule.getOwner() != null ? schedule.getOwner().getDetailAddress() : null,
+            schedule.getFiles().stream()
+                .map(ScheduleFileResponse::from)
                 .toList()
         );
     }

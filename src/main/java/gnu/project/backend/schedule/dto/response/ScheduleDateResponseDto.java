@@ -1,6 +1,7 @@
 package gnu.project.backend.schedule.dto.response;
 
 import gnu.project.backend.schedule.entity.Schedule;
+import gnu.project.backend.schedule.enumerated.ScheduleType;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -9,11 +10,10 @@ public record ScheduleDateResponseDto(
     String title,
     String content,
     LocalDate startScheduleDate,
-
     LocalDate endScheduleDate,
-
     LocalTime startTime,
-    LocalTime endTime
+    LocalTime endTime,
+    ScheduleType scheduleType
 
 ) {
 
@@ -25,7 +25,8 @@ public record ScheduleDateResponseDto(
             schedule.getStartScheduleDate(),
             schedule.getEndScheduleDate(),
             schedule.getStartTime(),
-            schedule.getEndTime()
+            schedule.getEndTime(),
+            schedule.getScheduleType()
         );
     }
 }

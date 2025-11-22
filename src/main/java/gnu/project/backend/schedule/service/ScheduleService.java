@@ -101,6 +101,7 @@ public class ScheduleService {
             request.endScheduleDate(),
             request.startTime(),
             request.endTime()
+
         );
 
         final Schedule savedSchedule = scheduleRepository.save(schedule);
@@ -273,7 +274,6 @@ public class ScheduleService {
             scheduleRequestDto.endScheduleDate(),
             scheduleRequestDto.startTime(),
             scheduleRequestDto.endTime()
-
         );
         scheduleRepository.save(schedule);
     }
