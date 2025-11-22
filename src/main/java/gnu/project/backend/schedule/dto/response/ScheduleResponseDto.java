@@ -19,6 +19,7 @@ public record ScheduleResponseDto(
     String productName,
     String bzName,
     String address,
+    String customerName,
     List<ScheduleFileResponse> scheduleFiles
 
 ) {
@@ -39,6 +40,7 @@ public record ScheduleResponseDto(
             isShared && schedule.getProduct() != null ? schedule.getProduct().getName() : null,
             isShared && schedule.getOwner() != null ? schedule.getOwner().getBzName() : null,
             isShared && schedule.getOwner() != null ? schedule.getOwner().getRoadAddress() : null,
+            isShared && schedule.getCustomer() != null ? schedule.getCustomer().getName() : null,
             schedule.getFiles().stream()
                 .map(ScheduleFileResponse::from)
                 .toList()
