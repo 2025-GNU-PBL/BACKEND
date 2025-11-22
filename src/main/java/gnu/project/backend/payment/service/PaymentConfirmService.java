@@ -37,7 +37,6 @@ public class PaymentConfirmService {
     private final TossPaymentClient tossPaymentClient;
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    @Transactional
     public PaymentConfirmResponse confirm(Accessor accessor, PaymentConfirmRequest request) {
 
         Order order = orderRepository.findByOrderCodeWithDetails(request.orderCode())

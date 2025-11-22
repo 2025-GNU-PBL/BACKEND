@@ -6,6 +6,7 @@ import gnu.project.backend.notification.service.NotificationService;
 import gnu.project.backend.reservation.event.ReservationApprovedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -31,7 +32,7 @@ public class NotificationEventListener {
     }
 
     @Async
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @EventListener
     public void handleProceedPayment(PaymentApprovedEvent event) {
         final Notification notification = Notification.createPaymentCompleted(
             event.customerId(),
