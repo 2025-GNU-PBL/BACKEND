@@ -40,7 +40,7 @@ public class OauthService {
             request.userRole()
         );
         return AuthTokenDto.of(
-            jwtProvider.createAccessToken(user.getSocialId(), user.getUserRole())
+            jwtProvider.createAccessToken(user.getId(), user.getSocialId(), user.getUserRole())
         );
     }
 

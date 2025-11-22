@@ -24,7 +24,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Slf4j
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class NotificationService {
 
@@ -166,7 +165,7 @@ public class NotificationService {
     public SseEmitter subscribe(final Accessor accessor) {
         final Long userId = getId(accessor);
         final SseEmitter emitter = sseEmitterService.createEmitter(accessor.getUserRole(), userId);
-
+        log.info("구독 시작");
         final List<Notification> pending = notificationRepository.findUnsentNotifications(userId,
             accessor.getUserRole());
         pending.stream()
