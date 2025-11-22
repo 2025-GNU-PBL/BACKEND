@@ -1,6 +1,7 @@
 package gnu.project.backend.auth.jwt;
 
 import static gnu.project.backend.auth.constant.JwtConstants.TOKEN_TYPE;
+import static gnu.project.backend.auth.constant.JwtConstants.USER_ID;
 import static gnu.project.backend.auth.constant.JwtConstants.USER_ROLE;
 
 import gnu.project.backend.auth.enumerated.TokenType;
@@ -19,8 +20,10 @@ public class JwtProvider {
 
     private final JwtProperties jwtProperties;
 
-    public String createAccessToken(final String socialId, final UserRole userRole) {
+    public String createAccessToken(final Long userId, final String socialId,
+        final UserRole userRole) {
         return createToken(
+            userId,
             socialId,
             jwtProperties.getAccessTokenExpirationMillis(),
             TokenType.ACCESS_TOKEN,
@@ -29,8 +32,10 @@ public class JwtProvider {
     }
 
     // TODO: 추후 사용
-    public String createRefreshToken(final String socialId, final UserRole userRole) {
+    public String createRefreshToken(final Long userId, final String socialId,
+        final UserRole userRole) {
         return createToken(
+            userId,
             socialId,
             jwtProperties.getAccessTokenExpirationMillis(),
             TokenType.REFRESH_TOKEN,
@@ -39,6 +44,7 @@ public class JwtProvider {
     }
 
     private String createToken(
+        final Long userId,
         final String socialId,
         final long expirationMillis,
         final TokenType tokenType,
@@ -49,6 +55,7 @@ public class JwtProvider {
 
         return Jwts.builder()
             .setSubject(socialId)
+            .claim(USER_ID, userId)
             .claim(USER_ROLE, userRole)
             .setIssuedAt(now)
             .setExpiration(expiredDate)

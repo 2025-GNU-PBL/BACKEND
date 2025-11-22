@@ -38,7 +38,7 @@ public record ScheduleResponseDto(
             schedule.getScheduleType(),
             isShared && schedule.getProduct() != null ? schedule.getProduct().getName() : null,
             isShared && schedule.getOwner() != null ? schedule.getOwner().getBzName() : null,
-            isShared && schedule.getOwner() != null ? schedule.getOwner().getDetailAddress() : null,
+            isShared && schedule.getOwner() != null ? schedule.getOwner().getRoadAddress() : null,
             schedule.getFiles().stream()
                 .map(ScheduleFileResponse::from)
                 .toList()

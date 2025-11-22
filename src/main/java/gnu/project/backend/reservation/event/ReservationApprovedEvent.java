@@ -10,7 +10,6 @@ public record ReservationApprovedEvent(
     LocalDate reservationEndDate,
     LocalTime reservationStartTime,
     LocalTime reservationEndTime,
-
     String title,
     String content
 ) {

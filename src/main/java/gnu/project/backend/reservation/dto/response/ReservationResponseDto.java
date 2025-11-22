@@ -12,8 +12,14 @@ public record ReservationResponseDto(
     Status status,
     LocalDate reservationTime,
     String storeName,
+    String productName,
+    Integer price,
+    String customerName,
+    String customerPhoneNumber,
+    String customerEmail,
     String title,
-    String content
+    String content,
+    String thumbnail
 ) {
 
     public static ReservationResponseDto from(
@@ -27,8 +33,14 @@ public record ReservationResponseDto(
             reservation.getStatus(),
             reservation.getReservationTime(),
             reservation.getOwner() != null ? reservation.getOwner().getBzName() : null,
+            reservation.getProduct() != null ? reservation.getProduct().getName() : null,
+            reservation.getProduct() != null ? reservation.getProduct().getPrice() : null,
+            reservation.getCustomer() != null ? reservation.getCustomer().getName() : null,
+            reservation.getCustomer() != null ? reservation.getCustomer().getPhoneNumber() : null,
+            reservation.getCustomer() != null ? reservation.getCustomer().getEmail() : null,
             reservation.getTitle(),
-            reservation.getContent()
+            reservation.getContent(),
+            reservation.getProduct() != null ? reservation.getProduct().getThumbnailUrl() : null
         );
     }
 }
