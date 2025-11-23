@@ -1,7 +1,5 @@
 package gnu.project.backend.product.entity;
 
-import static gnu.project.backend.product.constant.ProductConstant.STRING_COLUMN_DEFINITION;
-
 import gnu.project.backend.common.entity.BaseEntity;
 import gnu.project.backend.owner.entity.Owner;
 import gnu.project.backend.product.enumerated.Category;
@@ -19,7 +17,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -60,8 +57,7 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private String address;
 
-    @Lob
-    @Column(nullable = false, columnDefinition = STRING_COLUMN_DEFINITION)
+    @Column(nullable = false, length = 3000)
     private String detail;
 
     @Column
@@ -70,8 +66,7 @@ public class Product extends BaseEntity {
     @Column
     private Integer averageRating = 0; //Review 갯수
 
-    @Lob
-    @Column(nullable = false, columnDefinition = STRING_COLUMN_DEFINITION)
+    @Column(nullable = false, length = 3000)
     private String name;
 
     @Column
