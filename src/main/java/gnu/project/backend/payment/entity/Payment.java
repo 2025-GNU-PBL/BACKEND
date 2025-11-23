@@ -100,6 +100,7 @@ public class Payment extends BaseEntity {
         this.status = PaymentStatus.CANCEL_REQUESTED;
         this.cancelReason = reason;
         this.order.updateStatus(OrderStatus.CANCEL_REQUESTED);
+        this.requestedAt = LocalDateTime.now();
     }
 
     public void approveCancel(String reason, LocalDateTime canceledAt) {
