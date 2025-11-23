@@ -30,7 +30,7 @@ import org.springframework.stereotype.Repository;
 public class ProductSearchRepositoryImpl implements ProductSearchCustomRepository {
 
     private static final OrderSpecifier<?>[] DEFAULT_LATEST_ORDER = {
-        product.updatedAt.desc(),
+        product.createdAt.desc(),
         product.id.desc()
     };
     private final JPAQueryFactory query;
