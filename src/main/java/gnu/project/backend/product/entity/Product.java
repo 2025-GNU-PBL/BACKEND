@@ -69,7 +69,7 @@ public class Product extends BaseEntity {
     @Column(nullable = false, length = 3000)
     private String name;
 
-    @Column
+    @Column(length = 3000)
     private String availableTimes;
 
     @Column

@@ -36,11 +36,11 @@ public class ProductConstant {
     public static final String OPTION_PRICE_MIN = "옵션 가격은 0 이상이어야 합니다";
 
     // --- 필드 제한값 ---
-    public static final int MAX_NAME_LENGTH = 10000;
+    public static final int MAX_NAME_LENGTH = 3000;
     public static final int MAX_ADDRESS_LENGTH = 500;
-    public static final int MAX_DETAIL_LENGTH = 10000;
+    public static final int MAX_DETAIL_LENGTH = 3000;
     public static final int MAX_STYLE_LENGTH = 50;
-    public static final int MAX_AVAILABLE_TIMES = 10000;
+    public static final int MAX_AVAILABLE_TIMES = 3000;
     public static final int MAX_TYPE_LENGTH = 50;
     public static final int MAX_OPTION_COUNT = 10;
     public static final int MAX_OPTION_NAME_LENGTH = 500;
