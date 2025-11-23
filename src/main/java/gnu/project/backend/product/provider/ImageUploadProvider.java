@@ -7,6 +7,7 @@ import gnu.project.backend.common.service.FileService;
 import gnu.project.backend.product.entity.Image;
 import gnu.project.backend.product.entity.Product;
 import gnu.project.backend.product.repository.ImageRepository;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -47,22 +48,27 @@ public class ImageUploadProvider {
         final List<Long> keepImageIds,
         final List<Image> existingImages
     ) {
-        // 1. 먼저 새 이미지 업로드 (실패 시 전체 롤백)
-        if (hasFiles(newImages)) {
-            int startSequence = calculateStartSequence(existingImages, keepImageIds);
-            uploadImagesWithSequence(product, newImages, startSequence);
-        }
-
-        // 2. 삭제할 이미지 필터링
         List<Image> imagesToDelete = filterImagesToDelete(existingImages, keepImageIds);
 
-        // 3. DB에서 먼저 삭제
         if (!imagesToDelete.isEmpty()) {
             imageRepository.deleteAll(imagesToDelete);
             product.getImages().removeAll(imagesToDelete);
         }
 
-        // 4. S3에서 삭제 (실패해도 DB는 이미 정리됨)
+        List<Image> remainingImages = existingImages.stream()
+            .filter(image -> !imagesToDelete.contains(image))
+            .sorted(Comparator.comparing(Image::getDisplayOrder))
+            .toList();
+
+        for (int i = 0; i < remainingImages.size(); i++) {
+            remainingImages.get(i).updateDisplayOrder(i);
+        }
+
+        if (hasFiles(newImages)) {
+            int startSequence = remainingImages.size();
+            uploadImagesWithSequence(product, newImages, startSequence);
+        }
+
         deleteImagesFromS3(imagesToDelete);
     }
 
@@ -88,6 +94,7 @@ public class ImageUploadProvider {
         final MultipartFile image,
         final AtomicInteger sequence
     ) {
+        final int assignedSequence = sequence.getAndIncrement();
         return CompletableFuture.supplyAsync(() -> {
             String fileName = image.getOriginalFilename();
             try {
@@ -102,7 +109,7 @@ public class ImageUploadProvider {
                     product,
                     url,
                     key,
-                    sequence.getAndIncrement()
+                    assignedSequence
                 );
             } catch (Exception ex) {
                 log.error("Failed to upload image: {}, product: {}, error: {}",
