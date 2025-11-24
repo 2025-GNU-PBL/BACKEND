@@ -8,6 +8,7 @@ import static gnu.project.backend.common.error.ErrorCode.PAYMENT_NOT_FOUND;
 import gnu.project.backend.auth.entity.Accessor;
 import gnu.project.backend.common.enumerated.OrderStatus;
 import gnu.project.backend.common.enumerated.PaymentStatus;
+import gnu.project.backend.common.enumerated.UserRole;
 import gnu.project.backend.common.exception.BusinessException;
 import gnu.project.backend.notification.event.dto.PaymentApprovedEvent;
 import gnu.project.backend.order.entity.Order;
@@ -64,11 +65,19 @@ public class PaymentConfirmService {
                 new PaymentApprovedEvent(
                     order.getCustomer().getId(),
                     order.getReservation().getId(),
-                    order.getReservation().getTitle()
+                    order.getReservation().getTitle(),
+                    UserRole.CUSTOMER
+                )
+            );
+            applicationEventPublisher.publishEvent(
+                new PaymentApprovedEvent(
+                    order.getReservation().getOwner().getId(),
+                    order.getReservation().getId(),
+                    order.getReservation().getTitle(),
+                    UserRole.OWNER
                 )
             );
         }
-
         log.info("결제 승인 완료: orderCode={}", order.getOrderCode());
         return PaymentConfirmResponse.from(payment);
     }

@@ -4,6 +4,7 @@ import static gnu.project.backend.common.error.ErrorCode.RESERVATION_NOT_FOUND_E
 
 import gnu.project.backend.common.exception.BusinessException;
 import gnu.project.backend.customer.entity.Customer;
+import gnu.project.backend.notification.event.dto.ReservationRequestEvent;
 import gnu.project.backend.product.entity.Product;
 import gnu.project.backend.reservation.dto.response.ReservationResponseDto;
 import gnu.project.backend.reservation.entity.Reservation;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +30,7 @@ public class ReservationPrefillService {
 
     private final ReservationPrefillRepository prefillRepository;
     private final ReservationRepository reservationRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public CreateDraftsResponse createFromCartItems(
         Customer customer,
@@ -89,7 +92,16 @@ public class ReservationPrefillService {
             title,
             content
         );
-        reservationRepository.save(reservation);
+
+        Reservation savedReservation = reservationRepository.save(reservation);
+
+        eventPublisher.publishEvent(
+            new ReservationRequestEvent(
+                savedReservation.getProduct().getOwner().getId(),
+                savedReservation.getId(),
+                savedReservation.getTitle()
+            )
+        );
 
         p.consume();
         return ReservationResponseDto.from(reservation);
