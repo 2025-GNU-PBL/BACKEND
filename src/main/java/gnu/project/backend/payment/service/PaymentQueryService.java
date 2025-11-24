@@ -155,10 +155,11 @@ public class PaymentQueryService {
 
         for (Payment p : filtered) {
             switch (p.getStatus()) {
-                case DONE -> {
+                case DONE, CANCEL_REQUESTED -> {
                     totalSales += p.getAmount();
                     completedCount++;
                 }
+
                 case CANCELED -> {
                     cancelAmount -= p.getAmount();
                     cancelCount++;
