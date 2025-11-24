@@ -1,22 +1,24 @@
 package gnu.project.backend.payment.service;
 
+import static gnu.project.backend.common.error.ErrorCode.PAYMENT_ACCESS_DENIED;
+import static gnu.project.backend.common.error.ErrorCode.PAYMENT_NOT_FOUND;
+
 import gnu.project.backend.auth.entity.Accessor;
-import gnu.project.backend.common.enumerated.OrderStatus;
 import gnu.project.backend.common.enumerated.PaymentStatus;
 import gnu.project.backend.common.exception.BusinessException;
+import gnu.project.backend.notification.event.dto.PaymentCancelApprovedEvent;
+import gnu.project.backend.notification.event.dto.PaymentCancelRequestedEvent;
 import gnu.project.backend.payment.dto.request.PaymentCancelRequest;
 import gnu.project.backend.payment.dto.response.PaymentCancelResponse;
 import gnu.project.backend.payment.dto.response.TossPaymentCancelReponse;
 import gnu.project.backend.payment.entity.Payment;
 import gnu.project.backend.payment.repository.PaymentRepository;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-
-import static gnu.project.backend.common.error.ErrorCode.*;
 
 @Slf4j
 @Service
@@ -25,11 +27,13 @@ public class PaymentCancelService {
 
     private final PaymentRepository paymentRepository;
     private final TossPaymentClient tossPaymentClient;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public PaymentCancelResponse requestCancel(String socialId, PaymentCancelRequest request) {
-        Payment payment = paymentRepository.findWithOrderAndDetailsByPaymentKey(request.paymentKey())
-                .orElseThrow(() -> new BusinessException(PAYMENT_NOT_FOUND));
+        Payment payment = paymentRepository.findWithOrderAndDetailsByPaymentKey(
+                request.paymentKey())
+            .orElseThrow(() -> new BusinessException(PAYMENT_NOT_FOUND));
 
         String customerSocialId = payment.getOrder().getCustomerSocialId();
         if (!socialId.equals(customerSocialId)) {
@@ -37,17 +41,24 @@ public class PaymentCancelService {
         }
 
         payment.requestCancel(request.cancelReason());
+        Payment savedPayment = paymentRepository.save(payment);
 
-        paymentRepository.save(payment);
+        eventPublisher.publishEvent(new PaymentCancelRequestedEvent(
+                savedPayment.getOrder().getReservation().getOwner().getId(),
+                savedPayment.getOrder().getReservation().getId(),
+                savedPayment.getOrder().getReservation().getTitle()
+            )
+        );
         return PaymentCancelResponse.from(payment);
     }
 
     public PaymentCancelResponse approveCancel(Accessor accessor, String paymentKey) {
         Payment payment = paymentRepository.findWithOrderAndDetailsByPaymentKey(paymentKey)
-                .orElseThrow(() -> new BusinessException(PAYMENT_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(PAYMENT_NOT_FOUND));
 
         String ownerSocialId = payment.getOrder().getMainProductOwnerSocialId();
-        if (!accessor.isOwner() || ownerSocialId == null || !ownerSocialId.equals(accessor.getSocialId())) {
+        if (!accessor.isOwner() || ownerSocialId == null || !ownerSocialId.equals(
+            accessor.getSocialId())) {
             throw new BusinessException(PAYMENT_ACCESS_DENIED);
         }
 
@@ -56,13 +67,19 @@ public class PaymentCancelService {
         }
 
         TossPaymentCancelReponse toss = tossPaymentClient.cancelPayment(
-                paymentKey,
-                payment.getCancelReason(),
-                payment.getAmount()
+            paymentKey,
+            payment.getCancelReason(),
+            payment.getAmount()
         );
 
         approveCancelInternal(payment, toss);
 
+        eventPublisher.publishEvent(new PaymentCancelApprovedEvent(
+                payment.getOrder().getReservation().getCustomer().getId(),
+                payment.getOrder().getReservation().getId(),
+                payment.getOrder().getReservation().getTitle()
+            )
+        );
         return PaymentCancelResponse.from(payment);
     }
 
@@ -73,12 +90,14 @@ public class PaymentCancelService {
     }
 
     @Transactional
-    public PaymentCancelResponse rejectCancel(Accessor accessor, String paymentKey, String rejectReason) {
+    public PaymentCancelResponse rejectCancel(Accessor accessor, String paymentKey,
+        String rejectReason) {
         Payment payment = paymentRepository.findWithOrderAndDetailsByPaymentKey(paymentKey)
-                .orElseThrow(() -> new BusinessException(PAYMENT_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(PAYMENT_NOT_FOUND));
 
         String ownerSocialId = payment.getOrder().getMainProductOwnerSocialId();
-        if (!accessor.isOwner() || ownerSocialId == null || !ownerSocialId.equals(accessor.getSocialId())) {
+        if (!accessor.isOwner() || ownerSocialId == null || !ownerSocialId.equals(
+            accessor.getSocialId())) {
             throw new BusinessException(PAYMENT_ACCESS_DENIED);
         }
 

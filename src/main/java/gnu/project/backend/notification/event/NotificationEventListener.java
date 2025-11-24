@@ -2,6 +2,9 @@ package gnu.project.backend.notification.event;
 
 import gnu.project.backend.notification.entity.Notification;
 import gnu.project.backend.notification.event.dto.PaymentApprovedEvent;
+import gnu.project.backend.notification.event.dto.PaymentCancelApprovedEvent;
+import gnu.project.backend.notification.event.dto.PaymentCancelRequestedEvent;
+import gnu.project.backend.notification.event.dto.ReservationRequestEvent;
 import gnu.project.backend.notification.service.NotificationService;
 import gnu.project.backend.reservation.event.ReservationApprovedEvent;
 import lombok.RequiredArgsConstructor;
@@ -32,12 +35,48 @@ public class NotificationEventListener {
     }
 
     @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handleReservationRequest(final ReservationRequestEvent event) {
+        final Notification notification = Notification.createReservationNotification(
+            event.ownerId(),
+            event.reservationId(),
+            event.title(),
+            String.format("/reservations/%d", event.reservationId())
+        );
+        notificationService.createAndSendNotification(notification);
+    }
+
+    @Async
     @EventListener
-    public void handleProceedPayment(PaymentApprovedEvent event) {
-        final Notification notification = Notification.createPaymentCompleted(
+    public void handlePaymentCancelApprove(final PaymentCancelApprovedEvent event) {
+        final Notification notification = Notification.createPaymentCancelApproved(
             event.customerId(),
             event.reservationId(),
             event.title()
+        );
+        notificationService.createAndSendNotification(notification);
+    }
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handlePaymentCancelRequest(final PaymentCancelRequestedEvent event) {
+        final Notification notification = Notification.createPaymentCancelRequested(
+            event.ownerId(),
+            event.reservationId(),
+            event.title()
+        );
+        notificationService.createAndSendNotification(notification);
+    }
+
+
+    @Async
+    @EventListener
+    public void handleProceedPayment(final PaymentApprovedEvent event) {
+        final Notification notification = Notification.createPaymentCompleted(
+            event.customerId(),
+            event.reservationId(),
+            event.title(),
+            event.userRole()
         );
         notificationService.createAndSendNotification(notification);
     }

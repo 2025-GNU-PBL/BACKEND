@@ -1,8 +1,12 @@
 package gnu.project.backend.notification.entity;
 
 import static gnu.project.backend.common.enumerated.UserRole.CUSTOMER;
+import static gnu.project.backend.common.enumerated.UserRole.OWNER;
+import static gnu.project.backend.notification.enumerated.NotificationType.PAYMENT_CANCELED;
+import static gnu.project.backend.notification.enumerated.NotificationType.PAYMENT_CANCEL_REQUEST;
 import static gnu.project.backend.notification.enumerated.NotificationType.PAYMENT_COMPLETED;
 import static gnu.project.backend.notification.enumerated.NotificationType.PAYMENT_REQUIRED;
+import static gnu.project.backend.notification.enumerated.NotificationType.RESERVATION_COMPLETED;
 
 import gnu.project.backend.common.entity.BaseEntity;
 import gnu.project.backend.common.enumerated.UserRole;
@@ -84,7 +88,60 @@ public class Notification extends BaseEntity {
         return notification;
     }
 
+    public static Notification createReservationNotification(
+        final Long recipientId,
+        final Long reservationId,
+        final String reservationTitle,
+        final String paymentUrl
+    ) {
+        Notification notification = new Notification();
+        notification.recipientId = recipientId;
+        notification.recipientRole = OWNER;
+        notification.type = RESERVATION_COMPLETED;
+        notification.title = "예약 요청";
+        notification.message = String.format("'%s' 예약이 들어왔습니다. 확인을 부탁드립니다..",
+            reservationTitle);
+        notification.reservationId = reservationId;
+        notification.actionUrl = paymentUrl;
+        notification.expiresAt = LocalDateTime.now().plusDays(3);
+        return notification;
+    }
+
     public static Notification createPaymentCompleted(
+        Long recipientId,
+        Long reservationId,
+        String reservationTitle,
+        UserRole userRole
+    ) {
+        Notification notification = new Notification();
+        notification.recipientId = recipientId;
+        notification.recipientRole = userRole;
+        notification.type = PAYMENT_COMPLETED;
+        notification.title = "결제 완료";
+        notification.message = String.format("'%s' 예약 결제가 완료되었습니다.", reservationTitle);
+        notification.reservationId = reservationId;
+        notification.actionUrl = "/reservations/" + reservationId;
+        notification.isSent = false;
+        return notification;
+    }
+
+    public static Notification createPaymentCancelRequested(
+        Long recipientId,
+        Long reservationId,
+        String reservationTitle
+    ) {
+        Notification notification = new Notification();
+        notification.recipientId = recipientId;
+        notification.recipientRole = OWNER;
+        notification.type = PAYMENT_CANCEL_REQUEST;
+        notification.title = "결제 취소 요청";
+        notification.message = String.format("'%s' 예약에 대해 결제 취소 요청이 접수되었습니다.", reservationTitle);
+        notification.reservationId = reservationId;
+        notification.actionUrl = "/reservations/" + reservationId;
+        return notification;
+    }
+
+    public static Notification createPaymentCancelApproved(
         Long recipientId,
         Long reservationId,
         String reservationTitle
@@ -92,12 +149,11 @@ public class Notification extends BaseEntity {
         Notification notification = new Notification();
         notification.recipientId = recipientId;
         notification.recipientRole = CUSTOMER;
-        notification.type = PAYMENT_COMPLETED;
-        notification.title = "결제 완료";
-        notification.message = String.format("'%s' 예약 결제가 완료되었습니다.", reservationTitle);
+        notification.type = PAYMENT_CANCELED;
+        notification.title = "결제 취소 승인";
+        notification.message = String.format("'%s' 예약 결제 취소가 승인되었습니다.", reservationTitle);
         notification.reservationId = reservationId;
         notification.actionUrl = "/reservations/" + reservationId;
-        notification.isSent = false;
         return notification;
     }
 
