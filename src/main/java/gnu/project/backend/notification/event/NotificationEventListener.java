@@ -41,7 +41,7 @@ public class NotificationEventListener {
             event.ownerId(),
             event.reservationId(),
             event.title(),
-            String.format("/reservationId=%d", event.reservationId())
+            String.format("/reservations/%d", event.reservationId())
         );
         notificationService.createAndSendNotification(notification);
     }
