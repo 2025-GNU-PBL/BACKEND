@@ -149,7 +149,7 @@ public class PaymentQueryService {
         List<Payment> filtered = stream.toList();
 
         long totalSales = 0L;
-        long expectedSettlement = 0L;
+        long cancelAmount = 0L;
         int completedCount = 0;
         int cancelCount = 0;
 
@@ -157,12 +157,10 @@ public class PaymentQueryService {
             switch (p.getStatus()) {
                 case DONE -> {
                     totalSales += p.getAmount();
-                    expectedSettlement += p.getAmount();
                     completedCount++;
                 }
                 case CANCELED -> {
-                    totalSales -= p.getAmount();
-                    expectedSettlement -= p.getAmount();
+                    cancelAmount -= p.getAmount();
                     cancelCount++;
                 }
                 default -> {
@@ -170,6 +168,7 @@ public class PaymentQueryService {
                 }
             }
         }
+        long expectedSettlement = totalSales + cancelAmount;
 
         PaymentSettlementSummaryResponse summary = new PaymentSettlementSummaryResponse(
             owner.getBzName(),
