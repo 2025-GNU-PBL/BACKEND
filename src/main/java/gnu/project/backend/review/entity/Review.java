@@ -10,6 +10,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -37,7 +40,7 @@ public class Review  extends BaseEntity {
     private String comment;
 
     @Column
-    private String imageUrl;
+    private List<String> imageUrls = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "satisfaction", length = 20)
@@ -49,7 +52,7 @@ public class Review  extends BaseEntity {
             final Short star,
             final String title,
             final String comment,
-            final String imageUrl,
+            final List<String> imageUrls,
             final ReviewSatisfaction satisfaction
     ) {
         final Review review = new Review();
@@ -58,7 +61,7 @@ public class Review  extends BaseEntity {
         review.star = star;
         review.title = title;
         review.comment = comment;
-        review.imageUrl = imageUrl;
+        review.imageUrls = imageUrls;
         review.satisfaction = satisfaction;
         return review;
     }

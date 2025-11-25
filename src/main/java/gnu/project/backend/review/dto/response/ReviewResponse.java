@@ -3,6 +3,8 @@ package gnu.project.backend.review.dto.response;
 import gnu.project.backend.common.enumerated.ReviewSatisfaction;
 import gnu.project.backend.review.entity.Review;
 
+import java.util.List;
+
 public record ReviewResponse(
         Long id,
         Long customerId,
@@ -11,7 +13,7 @@ public record ReviewResponse(
         Short star,
         String title,
         String comment,
-        String imageUrl,
+        List<String> imageUrls,
         ReviewSatisfaction satisfaction
 ) {
     public static ReviewResponse from(final Review review) {
@@ -23,7 +25,7 @@ public record ReviewResponse(
                 review.getStar(),
                 review.getTitle(),
                 review.getComment(),
-                review.getImageUrl(),
+                review.getImageUrls(),
                 review.getSatisfaction()
         );
     }
