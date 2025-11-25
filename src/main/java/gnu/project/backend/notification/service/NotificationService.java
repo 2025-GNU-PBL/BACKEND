@@ -163,7 +163,7 @@ public class NotificationService {
     }
 
     public SseEmitter subscribe(final Accessor accessor) {
-        final Long userId = getId(accessor);
+        final Long userId = accessor.getUserId();
         final SseEmitter emitter = sseEmitterService.createEmitter(accessor.getUserRole(), userId);
         log.info("구독 시작");
         final List<Notification> pending = notificationRepository.findUnsentNotifications(userId,

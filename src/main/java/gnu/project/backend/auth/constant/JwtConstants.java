@@ -18,4 +18,6 @@ public class JwtConstants {
     // Request Attribute
     public static final String REQUEST_ATTR_SOCIAL_ID = "socialId";
     public static final String REQUEST_ATTR_USER_ROLE = "userRole";
+    public static final String REQUEST_ATTR_USER_ID = "userId";
+
 }

@@ -1,6 +1,7 @@
 package gnu.project.backend.auth.jwt;
 
 import static gnu.project.backend.auth.constant.JwtConstants.TOKEN_TYPE;
+import static gnu.project.backend.auth.constant.JwtConstants.USER_ID;
 import static gnu.project.backend.auth.constant.JwtConstants.USER_ROLE;
 import static gnu.project.backend.common.error.ErrorCode.AUTH_TOKEN_EXPIRED;
 import static gnu.project.backend.common.error.ErrorCode.AUTH_TOKEN_INVALID;
@@ -39,6 +40,10 @@ public class JwtResolver {
     public UserRole extractUserRole(String token) {
         String value = parseClaims(token).get(USER_ROLE, String.class);
         return UserRole.valueOf(value);
+    }
+
+    public Long extractUserId(String token) {
+        return parseClaims(token).get(USER_ID, Long.class);
     }
 
     // TODO : 추후 사용

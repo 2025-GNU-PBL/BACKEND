@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequiredArgsConstructor
 public class SseEmitterService {
 
-    private static final Long DEFAULT_TIMEOUT = 30 * 60 * 1000L;
+    private static final Long DEFAULT_TIMEOUT = 5 * 60 * 1000L;
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
 
     private static String generateKey(UserRole userRole, Long userId) {

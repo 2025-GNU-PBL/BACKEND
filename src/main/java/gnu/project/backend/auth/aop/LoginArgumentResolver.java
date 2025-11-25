@@ -1,6 +1,7 @@
 package gnu.project.backend.auth.aop;
 
 import static gnu.project.backend.auth.constant.JwtConstants.REQUEST_ATTR_SOCIAL_ID;
+import static gnu.project.backend.auth.constant.JwtConstants.REQUEST_ATTR_USER_ID;
 import static gnu.project.backend.auth.constant.JwtConstants.REQUEST_ATTR_USER_ROLE;
 import static gnu.project.backend.common.error.ErrorCode.AUTH_USER_NOT_FOUND;
 
@@ -38,10 +39,12 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     ) {
         final HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
         final String socialId = (String) request.getAttribute(REQUEST_ATTR_SOCIAL_ID);
+        final Long userId = (Long) request.getAttribute(REQUEST_ATTR_USER_ID);
         final UserRole userRole = (UserRole) request.getAttribute(REQUEST_ATTR_USER_ROLE);
+
         if (socialId == null || userRole == null) {
             throw new AuthException(AUTH_USER_NOT_FOUND);
         }
-        return oauthService.getCurrentAccessor(socialId, userRole);
+        return oauthService.getCurrentAccessor(socialId, userId, userRole);
     }
 }

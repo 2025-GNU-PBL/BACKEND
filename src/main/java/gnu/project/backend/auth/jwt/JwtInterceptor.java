@@ -3,6 +3,7 @@ package gnu.project.backend.auth.jwt;
 import static gnu.project.backend.auth.constant.JwtConstants.AUTHORIZATION_HEADER;
 import static gnu.project.backend.auth.constant.JwtConstants.BEARER_PREFIX_LENGTH;
 import static gnu.project.backend.auth.constant.JwtConstants.REQUEST_ATTR_SOCIAL_ID;
+import static gnu.project.backend.auth.constant.JwtConstants.REQUEST_ATTR_USER_ID;
 import static gnu.project.backend.auth.constant.JwtConstants.REQUEST_ATTR_USER_ROLE;
 import static gnu.project.backend.auth.constant.KakaoOauthConstants.BEARER_PREFIX;
 import static gnu.project.backend.common.error.ErrorCode.AUTH_TOKEN_INVALID;
@@ -55,8 +56,10 @@ public class JwtInterceptor implements HandlerInterceptor {
     private void setUserAttributes(HttpServletRequest request, String token) {
         String socialId = jwtResolver.extractSocialId(token);
         UserRole userRole = jwtResolver.extractUserRole(token);
+        Long userId = jwtResolver.extractUserId(token);
 
         request.setAttribute(REQUEST_ATTR_SOCIAL_ID, socialId);
+        request.setAttribute(REQUEST_ATTR_USER_ID, userId);
         request.setAttribute(REQUEST_ATTR_USER_ROLE, userRole);
     }
 
