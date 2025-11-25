@@ -44,7 +44,8 @@ public class OauthService {
         );
     }
 
-    public Accessor getCurrentAccessor(final String socialId, final UserRole userRole) {
+    public Accessor getCurrentAccessor(final String socialId, final Long userId,
+        final UserRole userRole) {
         log.debug("Getting accessor for socialId: {}, userRole: {}", socialId, userRole);
 
         if (!isUserExists(socialId, userRole)) {
@@ -52,7 +53,7 @@ public class OauthService {
             throw new AuthException(AUTH_USER_NOT_FOUND);
         }
 
-        return Accessor.user(socialId, userRole);
+        return Accessor.user(socialId, userId, userRole);
     }
 
     private boolean isUserExists(String socialId, UserRole userRole) {

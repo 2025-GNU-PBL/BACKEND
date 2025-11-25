@@ -10,10 +10,11 @@ import lombok.Getter;
 public class Accessor {
 
     private final String socialId;
+    private final Long userId;
     private final UserRole userRole;
 
-    public static Accessor user(String socialId, UserRole userROle) {
-        return new Accessor(socialId, userROle);
+    public static Accessor user(String socialId, Long userId, UserRole userROle) {
+        return new Accessor(socialId, userId, userROle);
     }
 
     public boolean isCustomer() {
