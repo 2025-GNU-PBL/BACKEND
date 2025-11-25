@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -32,9 +34,9 @@ public class ReviewController implements ReviewDocs {
             @PathVariable("productId") final Long productId,
             @Parameter(hidden = true) @Auth final Accessor accessor,
             @Valid @RequestPart("request") final ReviewCreateRequest request,
-            @RequestPart(name = "image", required = false) final MultipartFile image
+            @RequestPart(name = "image", required = false) final List<MultipartFile> images
     ) {
-        reviewService.createReview(productId, accessor, request, image);
+        reviewService.createReview(productId, accessor, request, images);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Tag(
         name = "Review API",
         description = "상품 리뷰 CRUD API"
@@ -31,7 +33,7 @@ public interface ReviewDocs {
             @PathVariable("productId") Long productId,
             @Parameter(hidden = true) @Auth Accessor accessor,
             @RequestPart("request") ReviewCreateRequest request,
-            @RequestPart(name = "image", required = false) MultipartFile image
+            @RequestPart(name = "image", required = false) List<MultipartFile> images
     );
 
     @Operation(

@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static gnu.project.backend.common.error.ErrorCode.IMAGE_UPLOAD_FAILED;
 
 @Component
@@ -15,26 +18,30 @@ public class ReviewImageProvider {
 
     private final ImageService imageService;
 
-    public String uploadReviewImage(
+    public List<String> uploadReviewImages(
             final Product product,
             final String customerSocialId,
-            final MultipartFile image
+            final List<MultipartFile> images
     ) {
-        if (image == null || image.isEmpty()) {
-            return null;
+        if (images == null || images.isEmpty()) return List.of();
+
+        List<String> result = new ArrayList<>();
+
+        for (MultipartFile image : images) {
+            try {
+                String key = imageService.uploadImage(
+                        "REVIEW-" + product.getCategory(),
+                        customerSocialId,
+                        image
+                );
+
+                result.add(imageService.generateImageUrl(key));
+
+            } catch (Exception e) {
+                throw new BusinessException(IMAGE_UPLOAD_FAILED);
+            }
         }
 
-        try {
-            final String key = imageService.uploadImage(
-                    "REVIEW-" + product.getCategory().toString(),
-                    customerSocialId,
-                    image
-            );
-
-            return imageService.generateImageUrl(key);
-
-        } catch (Exception e) {
-            throw new BusinessException(IMAGE_UPLOAD_FAILED);
-        }
+        return result;
     }
 }

@@ -81,7 +81,7 @@ public class ReviewService {
             final Long productId,
             final Accessor accessor,
             final ReviewCreateRequest request,
-            final MultipartFile image
+            final List<MultipartFile> images
     ) {
         final Customer customer = getCurrentCustomer(accessor);
         final Product product = getProductOrThrow(productId);
@@ -93,10 +93,10 @@ public class ReviewService {
             throw new BusinessException(REVIEW_DUPLICATE);
         }
 
-        final String imageUrl = reviewImageProvider.uploadReviewImage(
+        final List<String> imageUrls = reviewImageProvider.uploadReviewImages(
                 product,
                 customer.getSocialId(),
-                image
+                images
         );
 
         final Review review = Review.create(
@@ -105,7 +105,7 @@ public class ReviewService {
                 request.star(),
                 request.title(),
                 request.comment(),
-                imageUrl,
+                imageUrls,
                 request.satisfaction()
         );
 
