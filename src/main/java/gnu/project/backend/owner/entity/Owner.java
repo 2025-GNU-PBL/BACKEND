@@ -47,6 +47,10 @@ public class Owner extends BaseEntity implements OauthUser {
     @Column
     private String bankAccount;
 
+    // TODO : Enum으로 관리
+    @Column
+    private String bankName;
+
     @Column
     private String zipCode;
 
@@ -77,7 +81,7 @@ public class Owner extends BaseEntity implements OauthUser {
         final SocialProvider provider
     ) {
         final OauthInfo oauthInfo = OauthInfo.of(email, name, socialId, provider);
-        return new Owner(null, null, null, null, null, null, null, null, null, null,
+        return new Owner(null, null, null, null, null, null, null, null, null, null, null,
             null, UserRole.OWNER, oauthInfo);
     }
 
@@ -91,7 +95,8 @@ public class Owner extends BaseEntity implements OauthUser {
         final String roadAddress,
         final String jibunAddress,
         final String detailAddress,
-        final String buildingName
+        final String buildingName,
+        final String bankName
     ) {
         this.bzName = bzName;
         this.profileImage = profileImage;
@@ -103,6 +108,7 @@ public class Owner extends BaseEntity implements OauthUser {
         this.jibunAddress = jibunAddress;
         this.detailAddress = detailAddress;
         this.buildingName = buildingName;
+        this.bankName = bankName;
     }
 
     public void updateProfile(
@@ -115,7 +121,8 @@ public class Owner extends BaseEntity implements OauthUser {
         final String roadAddress,
         final String jibunAddress,
         final String detailAddress,
-        final String buildingName
+        final String buildingName,
+        final String bankName
     ) {
         this.bzName = bzName;
         this.profileImage = profileImage;
@@ -127,6 +134,7 @@ public class Owner extends BaseEntity implements OauthUser {
         this.jibunAddress = jibunAddress;
         this.detailAddress = detailAddress;
         this.buildingName = buildingName;
+        this.bankName = bankName;
     }
 
     public String getDisplayName() {

@@ -62,7 +62,8 @@ public class OwnerService {
             signInRequest.roadAddress(),
             signInRequest.jibunAddress(),
             signInRequest.detailAddress(),
-            signInRequest.buildingName()
+            signInRequest.buildingName(),
+            signInRequest.bankName()
         );
         return OwnerSignInResponse.from(owner);
     }
@@ -82,7 +83,8 @@ public class OwnerService {
             updateRequest.roadAddress(),
             updateRequest.jibunAddress(),
             updateRequest.detailAddress(),
-            updateRequest.buildingName()
+            updateRequest.buildingName(),
+            updateRequest.bankName()
         );
 
         return OwnerUpdateResponse.from(owner);
