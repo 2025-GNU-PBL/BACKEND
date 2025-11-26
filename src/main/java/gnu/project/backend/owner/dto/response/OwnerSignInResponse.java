@@ -15,7 +15,8 @@ public record OwnerSignInResponse(
     String roadAddress,
     String jibunAddress,
     String detailAddress,
-    String buildingName
+    String buildingName,
+    String bankName
 ) {
 
     public static OwnerSignInResponse from(Owner owner) {
@@ -32,7 +33,8 @@ public record OwnerSignInResponse(
             owner.getRoadAddress(),
             owner.getJibunAddress(),
             owner.getDetailAddress(),
-            owner.getBuildingName()
+            owner.getBuildingName(),
+            owner.getBankName()
         );
     }
 }

@@ -15,7 +15,8 @@ public record OwnerUpdateResponse(
     String roadAddress,
     String jibunAddress,
     String detailAddress,
-    String buildingName
+    String buildingName,
+    String bankName
 ) {
 
     public static OwnerUpdateResponse from(Owner owner) {
@@ -32,7 +33,8 @@ public record OwnerUpdateResponse(
             owner.getRoadAddress(),
             owner.getJibunAddress(),
             owner.getDetailAddress(),
-            owner.getBuildingName()
+            owner.getBuildingName(),
+            owner.getBankName()
         );
     }
 
