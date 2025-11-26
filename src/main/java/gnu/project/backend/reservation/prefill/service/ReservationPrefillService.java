@@ -71,7 +71,8 @@ public class ReservationPrefillService {
             prod.getOwner().getProfileImage(),
             prod.getPrice(),
             prod.getThumbnailUrl(),
-            p.getQuantity()
+            p.getQuantity(),
+            prod.getCategory()
         );
     }
 

@@ -1,6 +1,8 @@
 package gnu.project.backend.reservation.prefill.dto.response;
 
 
+import gnu.project.backend.product.enumerated.Category;
+
 public record ReservationPrefillResponse(
     Long prefillId,
     Long productId,
@@ -9,7 +11,8 @@ public record ReservationPrefillResponse(
     String ownerProfileImage,
     Integer price,
     String thumbnailUrl,
-    Integer quantity
+    Integer quantity,
+    Category category
 ) {
 
 }
