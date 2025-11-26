@@ -96,6 +96,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
                 dress.region(),
                 dress.thumbnail(),
                 dress.category(),
+                dress.bzName(),
                 tagsMap.getOrDefault(dress.id(), List.of())
             ))
             .toList();
@@ -177,6 +178,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
                 dress.region(),
                 dress.thumbnail(),
                 dress.category(),
+                dress.bzName(),
                 tagsMap.getOrDefault(dress.id(), List.of())
             ))
             .toList();
@@ -211,6 +213,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
             dress.region,
             image.url,
             dress.category,
+            dress.owner.bzName,
             Expressions.nullExpression(List.class)
         );
     }

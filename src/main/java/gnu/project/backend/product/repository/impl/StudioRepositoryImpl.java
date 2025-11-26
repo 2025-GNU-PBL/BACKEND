@@ -121,6 +121,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
                 studio.region(),
                 studio.thumbnail(),
                 studio.category(),
+                studio.bzName(),
                 tagsMap.getOrDefault(studio.id(), List.of())
             ))
             .toList();
@@ -202,6 +203,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
                 studio.region(),
                 studio.thumbnail(),
                 studio.category(),
+                studio.bzName(),
                 tagsMap.getOrDefault(studio.id(), List.of())
             ))
             .toList();
@@ -240,6 +242,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
             studio.region,
             image.url,
             studio.category,
+            studio.owner.bzName,
             Expressions.nullExpression(List.class)
         );
     }

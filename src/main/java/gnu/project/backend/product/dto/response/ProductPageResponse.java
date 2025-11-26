@@ -17,6 +17,7 @@ public record ProductPageResponse(
     Region region,
     String thumbnail,
     Category category,
+    String bzName,
     List<TagResponse> tags
 ) {
 
