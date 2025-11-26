@@ -36,7 +36,8 @@ public record OwnerRequest(
     String roadAddress,
     String jibunAddress,
     String detailAddress,
-    String buildingName
+    String buildingName,
+    String bankName
 ) {
 
 }

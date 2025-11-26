@@ -101,6 +101,7 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
                     p.region(),
                     p.thumbnail(),
                     p.category(),
+                    p.bzName(),
                     tagsMap.getOrDefault(p.id(), List.of())
                 ))
                 .toList();
@@ -133,6 +134,7 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
             product.region,
             image.url,
             product.category,
+            product.owner.bzName,
             Expressions.nullExpression(List.class)
         );
     }

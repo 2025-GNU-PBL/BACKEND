@@ -99,6 +99,7 @@ public class ProductSearchRepositoryImpl implements ProductSearchCustomRepositor
                     p.region(),
                     p.thumbnail(),
                     p.category(),
+                    p.bzName(),
                     tagsMap.getOrDefault(p.id(), List.of())
                 ))
                 .toList();
@@ -143,6 +144,7 @@ public class ProductSearchRepositoryImpl implements ProductSearchCustomRepositor
             product.region,
             image.url,
             product.category,
+            product.owner.bzName,
             Expressions.nullExpression(List.class)
         );
     }

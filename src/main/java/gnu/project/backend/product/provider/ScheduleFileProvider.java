@@ -56,15 +56,15 @@ public class ScheduleFileProvider {
     ) {
         final List<ScheduleFile> existingFiles = schedule.getFiles();
 
-        if (hasFiles(files)) {
-            uploadAndSaveFiles(schedule, files);
-        }
-
         final List<ScheduleFile> filesToDelete = filterFilesToDelete(existingFiles, keepFileIds);
 
         if (!filesToDelete.isEmpty()) {
             scheduleFileRepository.deleteAll(filesToDelete);
             existingFiles.removeAll(filesToDelete);
+        }
+
+        if (hasFiles(files)) {
+            uploadAndSaveFiles(schedule, files);
         }
 
         deleteFilesFromS3(filesToDelete);

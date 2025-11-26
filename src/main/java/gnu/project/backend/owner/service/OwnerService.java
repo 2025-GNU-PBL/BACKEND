@@ -62,7 +62,8 @@ public class OwnerService {
             signInRequest.roadAddress(),
             signInRequest.jibunAddress(),
             signInRequest.detailAddress(),
-            signInRequest.buildingName()
+            signInRequest.buildingName(),
+            signInRequest.bankName()
         );
         return OwnerSignInResponse.from(owner);
     }
@@ -82,7 +83,8 @@ public class OwnerService {
             updateRequest.roadAddress(),
             updateRequest.jibunAddress(),
             updateRequest.detailAddress(),
-            updateRequest.buildingName()
+            updateRequest.buildingName(),
+            updateRequest.bankName()
         );
 
         return OwnerUpdateResponse.from(owner);
@@ -91,7 +93,8 @@ public class OwnerService {
     private Owner findOwnerBySocialId(final Accessor accessor) {
         return ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
             .orElseThrow(() -> new BusinessException(
-                OWNER_NOT_FOUND_EXCEPTION)
+                    OWNER_NOT_FOUND_EXCEPTION
+                )
             );
     }
 }

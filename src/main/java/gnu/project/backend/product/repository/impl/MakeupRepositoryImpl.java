@@ -121,6 +121,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
                 makeup.region(),
                 makeup.thumbnail(),
                 makeup.category(),
+                makeup.bzName(),
                 tagsMap.getOrDefault(makeup.id(), List.of())
             ))
             .toList();
@@ -187,6 +188,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
             makeup.region,
             image.url,
             makeup.category,
+            makeup.owner.bzName,
             Expressions.nullExpression(List.class)
         );
     }
