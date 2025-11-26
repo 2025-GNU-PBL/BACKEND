@@ -93,7 +93,8 @@ public class OwnerService {
     private Owner findOwnerBySocialId(final Accessor accessor) {
         return ownerRepository.findByOauthInfo_SocialId(accessor.getSocialId())
             .orElseThrow(() -> new BusinessException(
-                OWNER_NOT_FOUND_EXCEPTION)
+                    OWNER_NOT_FOUND_EXCEPTION
+                )
             );
     }
 }
