@@ -10,6 +10,7 @@ import gnu.project.backend.product.dto.request.WeddingHallRequest;
 import gnu.project.backend.product.dto.request.WeddingHallUpdateRequest;
 import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.dto.response.WeddingHallResponse;
+import gnu.project.backend.product.entity.Image;
 import gnu.project.backend.product.entity.WeddingHall;
 import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.Region;
@@ -105,9 +106,11 @@ public class WeddingHallService {
             .orElseThrow(() -> new BusinessException(WEDDING_HALL_NOT_FOUND_EXCEPTION));
 
         ownerHelper.validateOwner(accessor, hall);
+        List<Image> existingImages = hall.getImages();
 
         productHelper.updateProductEnrichment(
             hall,
+            existingImages,
             newImages,
             keepImagesId,
             request.options(),

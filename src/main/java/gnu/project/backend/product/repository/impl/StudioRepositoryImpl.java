@@ -136,6 +136,7 @@ public class StudioRepositoryImpl implements StudioCustomRepository {
                 .leftJoin(studio.options, option)
                 .leftJoin(studio.tags, tag)
                 .where(studio.id.eq(id).and(studio.isDeleted.isFalse()))
+                .distinct()
                 .fetchOne()
         );
     }

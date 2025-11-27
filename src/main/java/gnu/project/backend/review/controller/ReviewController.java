@@ -8,15 +8,21 @@ import gnu.project.backend.review.dto.response.ReviewResponse;
 import gnu.project.backend.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,14 +33,14 @@ public class ReviewController implements ReviewDocs {
 
     @Override
     @PostMapping(
-            value = "/products/{productId}/reviews",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+        value = "/products/{productId}/reviews",
+        consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ResponseEntity<Void> createReview(
-            @PathVariable("productId") final Long productId,
-            @Parameter(hidden = true) @Auth final Accessor accessor,
-            @Valid @RequestPart("request") final ReviewCreateRequest request,
-            @RequestPart(name = "image", required = false) final List<MultipartFile> images
+        @PathVariable("productId") final Long productId,
+        @Parameter(hidden = true) @Auth final Accessor accessor,
+        @Valid @RequestPart("request") final ReviewCreateRequest request,
+        @RequestPart(name = "images", required = false) final List<MultipartFile> images
     ) {
         reviewService.createReview(productId, accessor, request, images);
         return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -43,43 +49,43 @@ public class ReviewController implements ReviewDocs {
     @Override
     @GetMapping("/products/{productId}/reviews")
     public ResponseEntity<Page<ReviewResponse>> findReviewsByProduct(
-            @PathVariable("productId") final Long productId,
-            @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
-            @RequestParam(name = "pageSize", required = false, defaultValue = "10") final Integer pageSize
+        @PathVariable("productId") final Long productId,
+        @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
+        @RequestParam(name = "pageSize", required = false, defaultValue = "10") final Integer pageSize
     ) {
         return ResponseEntity.ok(
-                reviewService.readReviewsByProduct(productId, pageNumber, pageSize)
+            reviewService.readReviewsByProduct(productId, pageNumber, pageSize)
         );
     }
 
     @Override
     @GetMapping("/reviews/me")
     public ResponseEntity<Page<ReviewResponse>> readMyReviews(
-            @Parameter(hidden = true) @Auth final Accessor accessor,
-            @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
-            @RequestParam(name = "pageSize", required = false, defaultValue = "10") final Integer pageSize
+        @Parameter(hidden = true) @Auth final Accessor accessor,
+        @RequestParam(name = "pageNumber", required = false, defaultValue = "1") final Integer pageNumber,
+        @RequestParam(name = "pageSize", required = false, defaultValue = "10") final Integer pageSize
     ) {
         return ResponseEntity.ok(
-                reviewService.readMyReviews(accessor, pageNumber, pageSize)
+            reviewService.readMyReviews(accessor, pageNumber, pageSize)
         );
     }
 
     @Override
     @GetMapping("/reviews/{reviewId}")
     public ResponseEntity<ReviewResponse> readMyReviewDetail(
-            @PathVariable("reviewId") final Long reviewId,
-            @Parameter(hidden = true) @Auth final Accessor accessor
+        @PathVariable("reviewId") final Long reviewId,
+        @Parameter(hidden = true) @Auth final Accessor accessor
     ) {
         return ResponseEntity.ok(
-                reviewService.readMyReviewDetail(reviewId, accessor)
+            reviewService.readMyReviewDetail(reviewId, accessor)
         );
     }
 
     @Override
     @DeleteMapping("/reviews/{reviewId}")
     public ResponseEntity<Void> deleteReview(
-            @PathVariable("reviewId") final Long reviewId,
-            @Parameter(hidden = true) @Auth final Accessor accessor
+        @PathVariable("reviewId") final Long reviewId,
+        @Parameter(hidden = true) @Auth final Accessor accessor
     ) {
         reviewService.deleteReview(reviewId, accessor);
         return ResponseEntity.noContent().build();

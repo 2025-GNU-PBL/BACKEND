@@ -3,6 +3,7 @@ package gnu.project.backend.product.helper;
 import gnu.project.backend.product.dto.request.OptionCreateRequest;
 import gnu.project.backend.product.dto.request.OptionUpdateRequest;
 import gnu.project.backend.product.dto.request.TagRequest;
+import gnu.project.backend.product.entity.Image;
 import gnu.project.backend.product.entity.Product;
 import gnu.project.backend.product.provider.ImageUploadProvider;
 import gnu.project.backend.product.provider.OptionProvider;
@@ -36,12 +37,13 @@ public class ProductHelper {
     @Transactional
     public void updateProductEnrichment(
         Product product,
+        List<Image> existingImages,
         List<MultipartFile> newImages,
         List<Long> keepImagesId,
         List<OptionUpdateRequest> options,
         List<TagRequest> tags
     ) {
-        imageUploadProvider.updateImages(product, newImages, keepImagesId, product.getImages());
+        imageUploadProvider.updateImages(product, newImages, keepImagesId, existingImages);
         optionProvider.updateOptions(product, options);
         tagProvider.updateTags(product, tags);
     }

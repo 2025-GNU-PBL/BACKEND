@@ -10,6 +10,7 @@ import gnu.project.backend.product.dto.request.MakeupRequest;
 import gnu.project.backend.product.dto.request.MakeupUpdateRequest;
 import gnu.project.backend.product.dto.response.MakeupResponse;
 import gnu.project.backend.product.dto.response.ProductPageResponse;
+import gnu.project.backend.product.entity.Image;
 import gnu.project.backend.product.entity.Makeup;
 import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.MakeupTag;
@@ -90,9 +91,10 @@ public class MakeupService {
             );
 
         ownerHelper.validateOwner(accessor, makeup);
-
+        List<Image> existingImages = makeup.getImages();
         productHelper.updateProductEnrichment(
             makeup,
+            existingImages,
             images,
             keepImagesId,
             request.options(),

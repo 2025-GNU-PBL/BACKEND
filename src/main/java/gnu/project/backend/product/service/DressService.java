@@ -11,6 +11,7 @@ import gnu.project.backend.product.dto.request.DressUpdateRequest;
 import gnu.project.backend.product.dto.response.DressResponse;
 import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.entity.Dress;
+import gnu.project.backend.product.entity.Image;
 import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.DressTag;
 import gnu.project.backend.product.enumerated.Region;
@@ -86,9 +87,10 @@ public class DressService {
             );
 
         ownerHelper.validateOwner(accessor, dress);
-
+        List<Image> existingImages = dress.getImages();
         productHelper.updateProductEnrichment(
             dress,
+            existingImages,
             images,
             keepImagesId,
             request.options(),
@@ -112,7 +114,7 @@ public class DressService {
         final Accessor accessor
     ) {
         final Owner owner = ownerHelper.findOwnerBySocialId(accessor);
-        
+
         final Dress savedDress = dressRepository.save(
             Dress.create(
                 owner,
