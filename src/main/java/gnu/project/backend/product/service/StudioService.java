@@ -11,6 +11,7 @@ import gnu.project.backend.product.dto.request.StudioRequest;
 import gnu.project.backend.product.dto.request.StudioUpdateRequest;
 import gnu.project.backend.product.dto.response.ProductPageResponse;
 import gnu.project.backend.product.dto.response.StudioResponse;
+import gnu.project.backend.product.entity.Image;
 import gnu.project.backend.product.entity.Studio;
 import gnu.project.backend.product.enumerated.Category;
 import gnu.project.backend.product.enumerated.Region;
@@ -89,8 +90,11 @@ public class StudioService {
 
         ownerHelper.validateOwner(accessor, studio);
 
+        List<Image> existingImages = studio.getImages();
+
         productHelper.updateProductEnrichment(
             studio,
+            existingImages,
             images,
             keepImagesId,
             request.options(),

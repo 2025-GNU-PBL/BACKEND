@@ -75,7 +75,7 @@ public class Product extends BaseEntity {
     @Column
     @Enumerated(EnumType.STRING)
     private Region region;
-
+    
     @BatchSize(size = 100)
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Option> options = new ArrayList<>();

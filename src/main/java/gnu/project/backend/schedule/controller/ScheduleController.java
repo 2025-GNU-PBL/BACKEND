@@ -79,7 +79,7 @@ public class ScheduleController implements ScheduleDocs {
     public ResponseEntity<ScheduleResponseDto> updateSchedule(
         @PathVariable final Long id,
         @RequestPart("request") final ScheduleUpdateRequestDto request,
-        @RequestPart(value = "file", required = false) final List<MultipartFile> files,
+        @RequestPart(value = "files", required = false) final List<MultipartFile> files,
         @Auth final Accessor accessor
     ) {
         return ResponseEntity.ok(
