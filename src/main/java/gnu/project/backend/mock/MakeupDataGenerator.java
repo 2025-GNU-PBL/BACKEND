@@ -5,8 +5,6 @@
 //import gnu.project.backend.product.entity.Makeup;
 //import gnu.project.backend.product.enumerated.Region;
 //import gnu.project.backend.product.repository.MakeupRepository;
-//import jakarta.persistence.EntityManager;
-//import jakarta.persistence.PersistenceContext;
 //import java.util.ArrayList;
 //import java.util.List;
 //import java.util.Random;
@@ -25,21 +23,8 @@
 //@Profile("perform")
 //public class MakeupDataGenerator implements CommandLineRunner {
 //
-//    private static final String[] STYLES = {
-//        "내추럴", "글램", "스모키", "코랄", "누드", "핑크", "레드립", "데일리",
-//        "파티", "웨딩", "클래식", "모던", "로맨틱", "시크", "엘레강스", "빈티지"
-//    };
-//    private static final String[] TIMES = {
-//        "09:00-18:00", "10:00-19:00", "11:00-20:00", "12:00-21:00",
-//        "평일 10:00-18:00", "주말 09:00-20:00", "연중무휴 09:00-22:00"
-//    };
-//    private static final String[] TYPES = {
-//        "베이스메이크업", "포인트메이크업", "풀메이크업", "속눈썹연장",
-//        "눈썹정리", "웨딩메이크업", "파티메이크업", "졸업사진메이크업",
-//        "증명사진메이크업", "면접메이크업", "데이트메이크업", "쉐딩/하이라이팅"
-//    };
 //    private static final Region[] REGIONS = {
-//        Region.BUSAN, Region.GYEONGGI, Region.SEOUL, Region.ETC
+//        Region.BUSAN, Region.GYEONGGI, Region.SEOUL, Region.INCHEON
 //    };
 //    private static final String[] DETAIL_TEMPLATES = {
 //        "전문 메이크업 아티스트가 고객님의 피부톤과 얼굴형에 맞춘 맞춤형 메이크업을 제공합니다.",
@@ -56,8 +41,6 @@
 //    private final OwnerRepository ownerRepository;
 //    private final Random random = new Random();
 //
-//    @PersistenceContext
-//    private EntityManager entityManager;
 //
 //    @Override
 //    @Transactional
@@ -98,7 +81,6 @@
 //    }
 //
 //    private Makeup createRandomMakeup(Owner owner) {
-//        String times = TIMES[random.nextInt(TIMES.length)];
 //        Region region = REGIONS[random.nextInt(REGIONS.length)];
 //        String detail = DETAIL_TEMPLATES[random.nextInt(DETAIL_TEMPLATES.length)];
 //
@@ -106,10 +88,7 @@
 //        int maxPrice = 200000;
 //        int price = basePrice + (random.nextInt((maxPrice - basePrice) / 1000) * 1000);
 //
-//        String style = STYLES[random.nextInt(STYLES.length)];
-//        String type = TYPES[random.nextInt(TYPES.length)];
-//
-//        String name = String.format("%s %s 전문", style, type);
+//        String name = String.format("%s %s 전문", region, detail);
 //        String address = String.format("%s %d번길 %d",
 //            region,
 //            random.nextInt(100) + 1,
@@ -121,7 +100,7 @@
 //            address,
 //            detail,
 //            name,
-//            times,
+//            "언제든 가능합니다.",
 //            region
 //        );
 //    }

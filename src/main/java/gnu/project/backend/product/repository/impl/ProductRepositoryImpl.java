@@ -102,6 +102,7 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
                     p.thumbnail(),
                     p.category(),
                     p.bzName(),
+                    p.averageRating(),
                     tagsMap.getOrDefault(p.id(), List.of())
                 ))
                 .toList();
@@ -135,6 +136,7 @@ public class ProductRepositoryImpl implements ProductCustomRepository {
             image.url,
             product.category,
             product.owner.bzName,
+            product.averageRating,
             Expressions.nullExpression(List.class)
         );
     }

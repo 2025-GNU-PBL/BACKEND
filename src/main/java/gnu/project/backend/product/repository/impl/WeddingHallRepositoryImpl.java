@@ -94,7 +94,7 @@ public class WeddingHallRepositoryImpl implements WeddingHallCustomRepository {
             .map(r -> new ProductPageResponse(
                 r.id(), r.name(), r.starCount(), r.address(), r.detail(),
                 r.price(), r.availableTime(), r.createdAt(), r.region(), r.thumbnail(),
-                r.category(), r.bzName(),
+                r.category(), r.bzName(), r.averageRating(),
                 tagsMap.getOrDefault(r.id(), List.of())
             ))
             .toList();
@@ -187,6 +187,7 @@ public class WeddingHallRepositoryImpl implements WeddingHallCustomRepository {
                 r.thumbnail(),
                 r.category(),
                 r.bzName(),
+                r.averageRating(),
                 tagsMap.getOrDefault(r.id(), List.of())
             ))
             .toList();
@@ -230,6 +231,7 @@ public class WeddingHallRepositoryImpl implements WeddingHallCustomRepository {
             image.url,
             weddingHall.category,
             weddingHall.owner.bzName,
+            weddingHall.averageRating,
             Expressions.nullExpression(List.class)
         );
     }

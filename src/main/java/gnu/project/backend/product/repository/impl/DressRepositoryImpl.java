@@ -97,6 +97,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
                 dress.thumbnail(),
                 dress.category(),
                 dress.bzName(),
+                dress.averageRating(),
                 tagsMap.getOrDefault(dress.id(), List.of())
             ))
             .toList();
@@ -179,6 +180,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
                 dress.thumbnail(),
                 dress.category(),
                 dress.bzName(),
+                dress.averageRating(),
                 tagsMap.getOrDefault(dress.id(), List.of())
             ))
             .toList();
@@ -214,6 +216,7 @@ public class DressRepositoryImpl implements DressCustomRepository {
             image.url,
             dress.category,
             dress.owner.bzName,
+            dress.averageRating,
             Expressions.nullExpression(List.class)
         );
     }

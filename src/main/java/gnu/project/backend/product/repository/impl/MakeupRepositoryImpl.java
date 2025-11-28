@@ -122,6 +122,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
                 makeup.thumbnail(),
                 makeup.category(),
                 makeup.bzName(),
+                makeup.averageRating(),
                 tagsMap.getOrDefault(makeup.id(), List.of())
             ))
             .toList();
@@ -189,6 +190,7 @@ public class MakeupRepositoryImpl implements MakeupCustomRepository {
             image.url,
             makeup.category,
             makeup.owner.bzName,
+            makeup.averageRating,
             Expressions.nullExpression(List.class)
         );
     }
