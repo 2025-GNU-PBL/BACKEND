@@ -18,6 +18,7 @@ public record ProductPageResponse(
     String thumbnail,
     Category category,
     String bzName,
+    Integer averageRating,
     List<TagResponse> tags
 ) {
 
