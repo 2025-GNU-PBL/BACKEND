@@ -14,7 +14,8 @@ public record ReviewResponse(
         String title,
         String comment,
         List<String> imageUrls,
-        ReviewSatisfaction satisfaction
+        ReviewSatisfaction timeSatisfaction,
+        ReviewSatisfaction picSatisfaction
 ) {
     public static ReviewResponse from(final Review review) {
         return new ReviewResponse(
@@ -26,7 +27,9 @@ public record ReviewResponse(
                 review.getTitle(),
                 review.getComment(),
                 review.getImageUrls(),
-                review.getSatisfaction()
+                review.getTimeSatisfaction(),
+                review.getPicSatisfaction()
+
         );
     }
 }

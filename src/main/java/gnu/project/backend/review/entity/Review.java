@@ -54,8 +54,12 @@ public class Review extends BaseEntity {
     private List<String> imageUrls = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "satisfaction", length = 20)
-    private ReviewSatisfaction satisfaction;
+    @Column(name = "timesatisfaction", length = 20)
+    private ReviewSatisfaction timeSatisfaction;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "picsatisfaction", length = 20)
+    private ReviewSatisfaction picSatisfaction;
 
     public static Review create(
         final Customer customer,
@@ -64,7 +68,8 @@ public class Review extends BaseEntity {
         final String title,
         final String comment,
         final List<String> imageUrls,
-        final ReviewSatisfaction satisfaction
+        final ReviewSatisfaction timeSatisfaction,
+        final ReviewSatisfaction picSatisfaction
     ) {
         final Review review = new Review();
         review.customer = customer;
@@ -73,7 +78,8 @@ public class Review extends BaseEntity {
         review.title = title;
         review.comment = comment;
         review.imageUrls = imageUrls;
-        review.satisfaction = satisfaction;
+        review.timeSatisfaction = timeSatisfaction;
+        review.picSatisfaction = picSatisfaction;
         return review;
     }
 
