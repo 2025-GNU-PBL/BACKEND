@@ -3,6 +3,7 @@ package gnu.project.backend.reservation.dto.response;
 import gnu.project.backend.reservation.entity.Reservation;
 import gnu.project.backend.reservation.enumerated.Status;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record ReservationResponseDto(
     Long id,
@@ -19,7 +20,8 @@ public record ReservationResponseDto(
     String customerEmail,
     String title,
     String content,
-    String thumbnail
+    String thumbnail,
+    LocalDateTime createdAt
 ) {
 
     public static ReservationResponseDto from(
@@ -40,7 +42,8 @@ public record ReservationResponseDto(
             reservation.getCustomer() != null ? reservation.getCustomer().getEmail() : null,
             reservation.getTitle(),
             reservation.getContent(),
-            reservation.getProduct() != null ? reservation.getProduct().getThumbnailUrl() : null
+            reservation.getProduct() != null ? reservation.getProduct().getThumbnailUrl() : null,
+            reservation.getCreatedAt()
         );
     }
 }

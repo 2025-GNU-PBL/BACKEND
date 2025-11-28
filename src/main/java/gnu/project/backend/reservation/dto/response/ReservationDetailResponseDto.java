@@ -2,6 +2,7 @@ package gnu.project.backend.reservation.dto.response;
 
 import gnu.project.backend.reservation.enumerated.Status;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record ReservationDetailResponseDto(
     Long id,
@@ -18,7 +19,8 @@ public record ReservationDetailResponseDto(
     String customerEmail,
     String title,
     String content,
-    String thumbnail
+    String thumbnail,
+    LocalDateTime createdAt
 ) {
 
 
