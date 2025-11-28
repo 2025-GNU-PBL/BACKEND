@@ -20,5 +20,6 @@ public record ReviewCreateRequest(
 
         String comment,
 
-        ReviewSatisfaction satisfaction
+        ReviewSatisfaction timeSatisfaction,
+        ReviewSatisfaction picSatisfaction
 ) {}
