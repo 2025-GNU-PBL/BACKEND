@@ -158,13 +158,11 @@ public class ScheduleService {
             request.endTime()
         );
 
-        if (files != null && !files.isEmpty()) {
-            fileProvider.updateScheduleFiles(
-                schedule,
-                files,
-                request.keepFileIds()
-            );
-        }
+        fileProvider.updateScheduleFiles(
+            schedule,
+            files,
+            request.keepFileIds()
+        );
 
         return ScheduleResponseDto.toResponse(schedule);
     }
