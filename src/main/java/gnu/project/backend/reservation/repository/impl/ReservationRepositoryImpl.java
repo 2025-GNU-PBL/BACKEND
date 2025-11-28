@@ -107,7 +107,8 @@ public class ReservationRepositoryImpl implements ReservationCustomRepository {
             customer.oauthInfo.email,
             reservation.title,
             reservation.content,
-            image.url
+            image.url,
+            reservation.createdAt
         );
     }
 }
