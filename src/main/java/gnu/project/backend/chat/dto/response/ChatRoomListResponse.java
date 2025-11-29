@@ -12,5 +12,6 @@ public record ChatRoomListResponse(
         String lastMessage,
         LocalDateTime lastMessageTime,
         long unreadCount,
-        Category lastProductCategory
+        Category lastProductCategory,
+        Long lastProductId
 ) {}

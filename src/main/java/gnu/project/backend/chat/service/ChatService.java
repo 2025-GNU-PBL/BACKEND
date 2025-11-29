@@ -54,6 +54,7 @@ public class ChatService {
         ChatRoom room = chatRoomRepository.findByOwnerIdAndCustomerId(ownerId, customer.getOauthInfo().getSocialId())
                 .orElseGet(() -> chatRoomRepository.save(ChatRoom.create(ownerId, customer.getOauthInfo().getSocialId())));
         room.touchCategory(category);
+        room.touchProduct(product.getId());
         return room.getId();
     }
 

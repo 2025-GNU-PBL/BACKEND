@@ -33,11 +33,18 @@ public class ChatRoom extends BaseEntity {
     @Column(name = "last_product_category", length = 50)
     private Category lastProductCategory;
 
+    @Column(name = "last_product_id")
+    private Long lastProductId;
+
     public static ChatRoom create(String ownerId, String customerId) {
         ChatRoom room = new ChatRoom();
         room.ownerId = ownerId;
         room.customerId = customerId;
         return room;
+    }
+
+    public void touchProduct(Long productId) {
+        this.lastProductId = productId;
     }
 
     public void touchCategory(Category category) {
