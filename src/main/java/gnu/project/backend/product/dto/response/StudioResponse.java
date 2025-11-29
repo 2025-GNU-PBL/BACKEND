@@ -16,6 +16,8 @@ public record StudioResponse(
     String availableTimes,
     Region region,
     String bzName,
+    Double starCount,
+    Integer averageRating,
     List<ImageResponse> images,
     List<OptionResponse> options,
     List<TagResponse> tags
@@ -31,6 +33,8 @@ public record StudioResponse(
             studio.getAvailableTimes(),
             studio.getRegion(),
             studio.getOwner().getBzName(),
+            studio.getStarCount(),
+            studio.getAverageRating(),
             studio.getImages().stream()
                 .map(ImageResponse::from)
                 .toList(),
