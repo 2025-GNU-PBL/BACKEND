@@ -43,7 +43,8 @@ public class ChatRoomQueryRepositoryImpl implements ChatRoomQueryRepository {
                                 .then(1L)
                                 .otherwise(0L)
                                 .sum(),
-                        cr.lastProductCategory
+                        cr.lastProductCategory,
+                        cr.lastProductId
                 ))
                 .from(cr)
                 .leftJoin(ct).on(ct.chatRoom.eq(cr))
@@ -81,7 +82,8 @@ public class ChatRoomQueryRepositoryImpl implements ChatRoomQueryRepository {
                                 .then(1L)
                                 .otherwise(0L)
                                 .sum(),
-                        cr.lastProductCategory
+                        cr.lastProductCategory,
+                        cr.lastProductId
                 ))
                 .from(cr)
                 .leftJoin(ct).on(ct.chatRoom.eq(cr))
