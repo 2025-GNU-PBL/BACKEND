@@ -100,7 +100,7 @@ public class ReservationService {
 
         reservation.changeStatus(request.status());
         reservation.confirmedTime(request.reservationStartDate());
-        
+
         eventPublisher.publishEvent(
             new ReservationApprovedEvent(
                 reservation.getCustomer().getId(),
@@ -117,6 +117,7 @@ public class ReservationService {
         return ReservationResponseDto.from(reservation);
     }
 
+    @Transactional(readOnly = true)
     public List<ReservationResponseDto> findReservations(final Accessor accessor) {
         switch (accessor.getUserRole()) {
             case CUSTOMER -> {
@@ -155,6 +156,7 @@ public class ReservationService {
             .toList();
     }
 
+    @Transactional(readOnly = true)
     public ReservationDetailResponseDto findReservationDetail(
         final Accessor accessor,
         final Long reservationId

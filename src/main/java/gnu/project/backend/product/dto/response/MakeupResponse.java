@@ -16,6 +16,8 @@ public record MakeupResponse(
     String availableTimes,
     Region region,
     String bzName,
+    Double starCount,
+    Integer averageRating,
     List<ImageResponse> images,
     List<OptionResponse> options,
     List<TagResponse> tag
@@ -32,6 +34,8 @@ public record MakeupResponse(
             makeup.getAvailableTimes(),
             makeup.getRegion(),
             makeup.getOwner().getBzName(),
+            makeup.getStarCount(),
+            makeup.getAverageRating(),
             makeup.getImages().stream()
                 .map(ImageResponse::from)
                 .toList(),

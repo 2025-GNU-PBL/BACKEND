@@ -16,6 +16,8 @@ public record DressResponse(
     String availableTimes,
     Region region,
     String bzName,
+    Double starCount,
+    Integer averageRating,
     List<ImageResponse> images,
     List<OptionResponse> options,
     List<TagResponse> tags
@@ -31,6 +33,8 @@ public record DressResponse(
             dress.getAvailableTimes(),
             dress.getRegion(),
             dress.getOwner().getBzName(),
+            dress.getStarCount(),
+            dress.getAverageRating(),
             dress.getImages().stream()
                 .map(DressResponse.ImageResponse::from)
                 .toList(),
