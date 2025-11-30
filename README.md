@@ -1,6 +1,8 @@
 # BACKEND
-### DOCS
+# DOCS
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/2025-GNU-PBL/BACKEND)
 
-### 아키텍쳐
-<img width="2247" height="862" alt="image" src="https://github.com/user-attachments/assets/efd7974a-3032-4324-9989-cd2d175c1ae4" />
+# 서비스 요청 흐름도
+<img width="8632" height="5751" alt="웨딩픽 서버 아키텍처" src="https://github.com/user-attachments/assets/0450664e-15db-4f7d-9d5a-44d01b98d824" />
+
+
