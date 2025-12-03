@@ -5,8 +5,8 @@ spring:
     name: yeon
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+      max-file-size: 50MB
+      max-request-size: 50MB
   jpa:
     open-in-view: false
 
@@ -34,7 +34,7 @@ oauth:
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
-  accessToken-expiration-millis: 18000000000 # 추후 수정
+  accessToken-expiration-millis: 1000000 # 추후 수정
 
 aws:
   s3:
