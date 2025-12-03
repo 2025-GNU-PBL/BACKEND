@@ -20,7 +20,7 @@ public record MakeupResponse(
     Integer averageRating,
     List<ImageResponse> images,
     List<OptionResponse> options,
-    List<TagResponse> tag
+    List<TagResponse> tags
 
 ) {
 
