@@ -15,6 +15,8 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -26,6 +28,7 @@ public class OrderCreationOnReservationApprovedListener {
     private final ReservationRepository reservationRepository;
     private final OrderRepository orderRepository;
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onReservationApproved(final ReservationApprovedEvent event) {
         Long reservationId = event.reservationId();
@@ -35,7 +38,7 @@ public class OrderCreationOnReservationApprovedListener {
             return;
         }
 
-        Reservation reservation = reservationRepository.findById(reservationId)
+        Reservation reservation = reservationRepository.findByIdWithAllRelations(reservationId)
             .orElseThrow(() -> new BusinessException(RESERVATION_NOT_FOUND_EXCEPTION));
 
         Product product = reservation.getProduct();
