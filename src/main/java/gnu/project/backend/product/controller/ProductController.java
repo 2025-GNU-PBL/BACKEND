@@ -12,6 +12,7 @@ import gnu.project.backend.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,10 @@ public class ProductController implements ProductDocs {
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE_NUMBER) Integer pageNumber,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE_SIZE) Integer pageSize
     ) {
-        return ResponseEntity.ok(productService.getMyProducts(accessor, pageNumber, pageSize));
+        return ResponseEntity.ok()
+            .cacheControl(CacheControl.noStore())
+            .header("Pragma", "no-cache")
+            .header("Expires", "0")
+            .body(productService.getMyProducts(accessor, pageNumber, pageSize));
     }
 }
